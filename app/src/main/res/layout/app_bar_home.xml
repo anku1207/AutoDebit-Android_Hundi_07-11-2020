@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".Activity.Home"
+
+    >
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+
+        >
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:titleTextColor="@color/appbar"
+            android:minHeight="?attr/actionBarSize"
+            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:background="@color/activitybackground"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetEnd="0dp"
+            >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:orientation="horizontal"
+               >
+                <LinearLayout
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:id="@+id/faq_layout"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/faq_icon"
+                        android:tint="@drawable/action_bar_icon_color"
+                        android:id="@+id/faq_icon"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="FAQs"
+                        android:textColor="@drawable/text_change_color_black"
+                        android:textSize="13dp"
+                        android:fontFamily="@font/poppinsmedium"
+                        />
+                </LinearLayout>
+
+
+
+
+                <RelativeLayout
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:id="@+id/notification_layout"
+                    >
+                    <ImageView
+                        android:id="@+id/active_notification_icon"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_toRightOf="@+id/id_index_gallery_item_image"
+                        android:layout_marginRight="-5dp"
+                        android:background="@drawable/util_default_indicator"
+                        android:visibility="gone"
+                        />
+
+                    <ImageView
+                        android:id="@+id/notificationicon"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/notifications_black"
+                        android:tint="@drawable/action_bar_icon_color" />
+                </RelativeLayout>
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <include
+        layout="@layout/content_home"
+        android:paddingTop="?attr/actionBarSize"
+        />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+

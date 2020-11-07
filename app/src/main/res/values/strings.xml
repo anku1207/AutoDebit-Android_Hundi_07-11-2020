@@ -1,0 +1,92 @@
+<resources>
+    <string name="app_name">AutoPe</string>
+    <string name="tram_and_condition"><![CDATA[T & C]]></string>
+
+    <string name="pin_content_desc">PIN input field</string>
+    <string name="phone_pin_label_text">Phone OTP</string>
+    <string name="email_pin_label_text">Email OTP</string>
+    <string name="title_activity_webview">webview</string>
+
+    <string name="newuser_signuptext">"New to AutoPe? Create an account"</string>
+    <string name="title_activity_home">Home</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Logout</string>
+
+
+    <string name="Rs">\u20B9</string>
+    '
+
+
+    <string name="bottom_menu_home">Home</string>
+    <string name="bottom_menu_profile">Profile</string>
+    <string name="bottom_menu_history">History</string>
+    <string name="bottom_menu_help">Contact Us</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="AccountNumerDigits">"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"</string>
+    <string name="PanNumberDigits">"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"</string>
+    <string name="NumberDigits">"0123456789"</string>
+
+    <string name="NameDigits">"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "</string>
+    <string name="title_activity_browse__plan">Browse_Plan</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab 3</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="instructions">Place your fingertip on the Home button to verify your identity</string>
+
+    <string name="terms_condition_msg"><![CDATA[Terms & Conditions ]]></string>
+
+    <string name="user_registration_condition_msg">I agree to allow AutoPe to check my credit information with RBI approved credit bureaus.</string>
+    <string name="agreeAndContinue"><![CDATA[Agree & Continue]]></string>
+    <string name="mandates">Mandates</string>
+    <string name="mandate_detail">Mandate Details</string>
+    <string name="sbi_bank">SBI Bank</string>
+    <string name="add_benifitial">Add Beneficiary</string>
+
+    <string name="modify">Revoke</string>
+    <string name="title_activity_mandate_detail">MandateDetailActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_sbi_credit_cad_apply">SbiCreditCadApplyActivity</string>
+    <string name="age_range">Age Range</string>
+    <string name="profession">Profession</string>
+    <string name="income">Gross Annual income</string>
+
+    <string-array name="agerange_arrays">
+        <item>Age Range</item>
+        <item>Less than 21 Years</item>
+        <item>21 to 23 Years</item>
+        <item>23 to 40 Years</item>
+        <item>More than 40 Years</item>
+    </string-array>
+
+    <string-array name="profession_arrays">
+        <item>Profession</item>
+        <item>Salaried</item>
+        <item>Self-Employed</item>
+        <item>Retired</item>
+        <item>Housewife</item>
+    </string-array>
+    <string-array name="incomerange_arrays">
+        <item>Gross Annual Income</item>
+        <item>Below 3 lacs</item>
+        <item>3 lacs to 6 lacs</item>
+        <item>6 lacs to 12 lacs</item>
+        <item>More than 12 lacs</item>
+    </string-array>
+</resources>
