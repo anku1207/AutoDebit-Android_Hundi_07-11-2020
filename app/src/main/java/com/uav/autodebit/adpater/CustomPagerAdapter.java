@@ -163,6 +163,7 @@ public class CustomPagerAdapter extends PagerAdapter {
                         },context,null,"Your AutoPe DMRC card application will be cancelled.\n" +
                                 "Do you want to proceed?",null,new String[]{"Yes","No"});
 
+                        //
                     }
                 }else {
                     Utility.showSingleButtonDialogOld(context,"Alert", Content_Message.CONTACT_CUSTOMER_CARE,false);
