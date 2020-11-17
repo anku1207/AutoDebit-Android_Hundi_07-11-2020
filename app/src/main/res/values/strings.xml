@@ -65,6 +65,10 @@
     <string name="title_activity_sbi_credit_cad_apply">SbiCreditCadApplyActivity</string>
     <string name="age_range">Age Range</string>
     <string name="profession">Profession</string>
+
+    <string name="consent">I have read &amp; fully accepted the Authorization Statement, Know Your Credit Card, Card Member Terms and conditions and Most Important Terms and conditions and consent to receiving information from Central KYC Registry through SMS/Email. I authorize SBI and/or its associates/subsidiaries/affiliates to contact me for offers/products. This will override any registration for DNC/NDNC.</string>
+
+
     <string name="income">Gross Annual income</string>
 
     <string-array name="agerange_arrays">

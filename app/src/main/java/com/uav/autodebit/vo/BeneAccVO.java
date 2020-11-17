@@ -3,8 +3,6 @@ package com.uav.autodebit.vo;
 public class BeneAccVO extends  BaseVO{
 
     private Integer beneficialAccountId;
-    private CustomerVO customer;
-    private String beneficialFullName;
     private String beneficialPhone;
     private String beneficialAccountNum;
     private String beneficialIFSCcode;
@@ -28,16 +26,6 @@ public class BeneAccVO extends  BaseVO{
     public void setBeneficialAccountId(Integer beneficialAccountId) {
         this.beneficialAccountId = beneficialAccountId;
     }
-
-    public CustomerVO getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(CustomerVO customer) {
-        this.customer = customer;
-    }
-
-
 
     public String getBeneficialPhone() {
         return beneficialPhone;
@@ -127,11 +115,5 @@ public class BeneAccVO extends  BaseVO{
         this.createdBy = createdBy;
     }
 
-    public String getBeneficialFullName() {
-        return beneficialFullName;
-    }
 
-    public void setBeneficialFullName(String beneficialFullName) {
-        this.beneficialFullName = beneficialFullName;
-    }
 }

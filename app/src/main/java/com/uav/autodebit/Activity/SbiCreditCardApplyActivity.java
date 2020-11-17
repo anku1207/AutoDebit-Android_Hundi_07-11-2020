@@ -1,38 +1,37 @@
 package com.uav.autodebit.Activity;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.database.DataSetObserver;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.ConsoleMessage;
+import android.webkit.JavascriptInterface;
+import android.webkit.JsResult;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.uav.autodebit.BO.CustomerBO;
 import com.uav.autodebit.DMRC.DMRCApi;
+import com.uav.autodebit.Interface.ConfirmationDialogInterface;
+import com.uav.autodebit.Interface.ConfirmationGetObjet;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
-import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
@@ -57,8 +56,9 @@ public class SbiCreditCardApplyActivity extends Base_Activity{
     TextView name,mobileNo;
     Button apply;
     CityVO cityVO;
-
+    CheckBox checkBox;
     String[] ageRange,professions,incomeRange;
+    LinearLayout main_container;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +76,9 @@ public class SbiCreditCardApplyActivity extends Base_Activity{
         mobileNo = findViewById(R.id.mobNo);
         pincode = findViewById(R.id.pin);
         city = findViewById(R.id.city);
+        checkBox = findViewById(R.id.consent);
+        main_container=findViewById(R.id.main_container);
+
         cityVO  =new CityVO();
 
         ((ImageView)findViewById(R.id.back_activity_button)).setOnClickListener(new View.OnClickListener() {
@@ -150,47 +153,52 @@ public class SbiCreditCardApplyActivity extends Base_Activity{
             @Override
             public void onClick(View v) {
                 if(name.getText().toString().isEmpty()){
-                    name.setError("Name cannot be left blank");
+                    name.setError("Name cannot be left blank.");
                     return;
                 }
                 if(name.getText().toString().length()<3){
-                    name.setError("Name should be more than 2 letters");
+                    name.setError("Name should be more than 2 letters.");
                     return;
 
                 }
                 if(mobileNo.getText().toString().isEmpty()){
-                    mobileNo.setError("Mobile number cannot be left blank");
+                    mobileNo.setError("Mobile number cannot be left blank.");
                     return;
                 }
                 if(mobileNo.getText().toString().length()!=10){
-                    mobileNo.setError("Mobile number should be of 10 digits");
+                    mobileNo.setError("Mobile number should be of 10 digits.");
                     return;
                 }
                 if(pincode.getText().toString().isEmpty()){
-                    pincode.setError("pincode cannot be left blank");
+                    pincode.setError("pincode cannot be left blank.");
                     return;
                 }
                 if(pincode.getText().toString().length()!=6){
-                    pincode.setError("Pincode should be of 6 digit");
+                    pincode.setError("Pincode should be of 6 digit.");
                     return;
                 }
                 if(city.getText().toString().isEmpty()){
-                    city.setError("City cannot be left blank");
+                    city.setError("City cannot be left blank.");
                     return;
                 }
                 if(spAge.getSelectedItemPosition()==0){
                     ((TextView)findViewById(R.id.ageError)).setVisibility(View.VISIBLE);
-                    ((TextView)findViewById(R.id.ageError)).setText("* Kindly,select an age group");
+                    ((TextView)findViewById(R.id.ageError)).setText("* Kindly,select an age group.");
                     return;
                 }
                 if(spProfession.getSelectedItemPosition()==0){
                     ((TextView)findViewById(R.id.professionError)).setVisibility(View.VISIBLE);
-                    ((TextView)findViewById(R.id.professionError)).setText("* Kindly,select your profession");
+                    ((TextView)findViewById(R.id.professionError)).setText("* Kindly,select your profession.");
                     return;
                 }
                 if(spIncome.getSelectedItemPosition()==0){
                     ((TextView)findViewById(R.id.incomeError)).setVisibility(View.VISIBLE);
-                    ((TextView)findViewById(R.id.incomeError)).setText("* Kindly,select an income group");
+                    ((TextView)findViewById(R.id.incomeError)).setText("* Kindly,select an income group.");
+                    return;
+                }
+                if(!checkBox.isChecked()) {
+                    ((TextView)findViewById(R.id.consentError)).setVisibility(View.VISIBLE);
+                    ((TextView)findViewById(R.id.consentError)).setText("* Kindly,Accept term & condition.");
                     return;
                 }
 
@@ -296,15 +304,82 @@ public class SbiCreditCardApplyActivity extends Base_Activity{
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    // Utility.alertDialog(PanVerification.this,"Alert",sb.toString(),"Ok");
                     Utility.showSingleButtonDialog(SbiCreditCardApplyActivity.this,baseVO.getDialogTitle(),sb.toString(),false);
                 }else {
-                    Utility.showSingleButtonDialog(SbiCreditCardApplyActivity.this,baseVO.getDialogTitle(),baseVO.getDialogMessage(),true);
-                }
+                    if(main_container.getChildCount()>0) main_container.removeAllViews();
+                    if(baseVO.getImage()!=null){
+                        getWebviewWithImage(SbiCreditCardApplyActivity.this,baseVO.getImage(),main_container,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
 
+                        }));
+                    }else {
+                        finish();
+                    }
+                }
             }
         });
     }
+
+    public void getWebviewWithImage(Context context , String loadUrl , LinearLayout linearLayout , ConfirmationGetObjet confirmationGetObjet){
+        WebView webview = new WebView(SbiCreditCardApplyActivity.this);
+        webview.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        ProgressDialog progressBar = ProgressDialog.show(context, null, " Please wait...", false, false);;
+        linearLayout.addView(webview);
+
+        WebSettings ws = webview.getSettings();
+        ws.setJavaScriptEnabled(true);
+        webview.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+                return super.onJsAlert(view, url, message, result);
+            }
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                android.util.Log.d("WebView", consoleMessage.message());
+                return true;
+            }
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                if(!((Activity)context).isFinishing() &&  progressBar!=null && !progressBar.isShowing()){
+                    try {
+                        progressBar.show();
+                    }catch (Exception e){
+                    }
+                }
+                if(newProgress==100){
+                    Utility.dismissDialog(context, progressBar);
+                }
+            }
+        });
+
+        webview.setVerticalScrollBarEnabled(false);
+        webview.setHorizontalScrollBarEnabled(false);
+        webview.getSettings().setBuiltInZoomControls(false);
+
+        webview.getSettings().setLoadsImagesAutomatically(true);
+        webview.getSettings().setDomStorageEnabled(true);
+        webview.setInitialScale(1);
+        webview.getSettings().setUseWideViewPort(true);
+
+        webview.loadUrl(loadUrl); //receiptUrl
+        webview.addJavascriptInterface(new Object() {
+            @JavascriptInterface // For API 17+
+            public void performClick(String message) {
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (message.equalsIgnoreCase("ok")) {
+                            confirmationGetObjet.onOk("ok");
+                        } else if (message.equalsIgnoreCase("cancel")) {
+                            confirmationGetObjet.onCancel("cancel");
+                        }
+                    }
+                });
+            }
+        }, "ok");
+    }
+
+
     public void onClickBackButton(View view) {
         finish();
     }

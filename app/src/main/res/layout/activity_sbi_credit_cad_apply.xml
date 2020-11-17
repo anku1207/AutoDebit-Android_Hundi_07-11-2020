@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.SbiCreditCardApplyActivity">
+    tools:context=".Activity.SbiCreditCardApplyActivity"
+    android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_awesome_toolbar"
@@ -56,6 +57,7 @@
             style="@style/ActionBarTitleTextStyle"
             />
     </androidx.appcompat.widget.Toolbar>
-    <include layout="@layout/content_sbi_credit_cad_apply" />
+    <include
+        layout="@layout/content_sbi_credit_cad_apply" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

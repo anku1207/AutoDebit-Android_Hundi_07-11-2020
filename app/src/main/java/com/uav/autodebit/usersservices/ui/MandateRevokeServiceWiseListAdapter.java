@@ -4,19 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.media.Image;
-import android.print.PrintAttributes;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,22 +19,14 @@ import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
-import com.uav.autodebit.BO.CustomerBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.permission.Session;
-import com.uav.autodebit.util.Utility;
-import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerServiceOperatorVO;
-import com.uav.autodebit.vo.CustomerVO;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MandateRevokeServiceWiseListAdapter extends RecyclerView.Adapter<MandateRevokeServiceWiseListAdapter.UsersMandateViewHolder> {
 

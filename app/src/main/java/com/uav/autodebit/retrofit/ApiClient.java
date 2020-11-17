@@ -5,7 +5,6 @@ import com.uav.autodebit.constant.ApplicationConstant;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

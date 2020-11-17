@@ -118,7 +118,7 @@ public class User_Registration extends Base_Activity {
                     inputvalid=false;
                 }
                 if (!userphone.getText().toString().trim().equals("") &&  Utility.validatePattern(userphone.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION)!=null){
-                    userphone.setError(Utility.validatePattern(userphone.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION));
+                    userphone.setError(Utility.validatePattern(userphone.getText().toString().trim(), ApplicationConstant.MOBILENO_VALIDATION));
                     inputvalid=false;
                 }
 

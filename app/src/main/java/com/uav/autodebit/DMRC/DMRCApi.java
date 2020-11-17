@@ -17,6 +17,7 @@ import com.uav.autodebit.vo.CityVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
+import com.uav.autodebit.vo.RefundVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
@@ -90,6 +91,40 @@ public class DMRCApi {
 
         Gson gson =new Gson();
         String json = gson.toJson(request_dmrc_customer_cardVO);
+        Log.w("request",json);
+        params.put("volley", json);
+        connectionVO.setParams(params);
+
+        VolleyUtils.makeJsonObjectRequest(context, connectionVO, new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+                JSONObject response = (JSONObject) resp;
+
+                DMRC_Customer_CardVO dmrc_customer_cardVO = new Gson().fromJson(response.toString(),DMRC_Customer_CardVO.class);
+                if(dmrc_customer_cardVO.getStatusCode().equals("400")){
+                    ArrayList error = (ArrayList) dmrc_customer_cardVO.getErrorMsgs();
+                    StringBuilder sb = new StringBuilder();
+                    for(int i=0; i<error.size(); i++){
+                        sb.append(error.get(i)).append("\n");
+                    }
+                    volleyResponse.onError(sb.toString());
+                }else {
+                    volleyResponse.onSuccess(dmrc_customer_cardVO);
+                }
+            }
+        });
+    }
+
+
+    public static void saveNFTDetailsForDmrc(Context context, RefundVO refundVO, VolleyResponse volleyResponse ){
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ConnectionVO connectionVO = MetroBO.saveNFTDetailsForDmrc();
+        Gson gson =new Gson();
+        String json = gson.toJson(refundVO);
         Log.w("request",json);
         params.put("volley", json);
         connectionVO.setParams(params);

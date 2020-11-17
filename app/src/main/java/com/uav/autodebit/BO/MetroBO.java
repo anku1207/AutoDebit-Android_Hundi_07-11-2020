@@ -63,6 +63,15 @@ public class MetroBO implements Serializable {
     }
 
 
+    public static ConnectionVO saveNFTDetailsForDmrc(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("saveNFTDetailsForDmrc");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
+
 
 
 

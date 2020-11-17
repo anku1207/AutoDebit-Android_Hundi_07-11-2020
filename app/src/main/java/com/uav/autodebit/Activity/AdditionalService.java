@@ -330,7 +330,7 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK){
-            if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
+            if(requestCode== ApplicationConstant.REQ_ENACH_MANDATE){
                 boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
                 if(enachMandateStatus){
                     Intent intent =new Intent();

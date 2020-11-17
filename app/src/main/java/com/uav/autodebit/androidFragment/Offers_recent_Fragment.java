@@ -8,37 +8,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.uav.autodebit.Activity.Mobile_Prepaid_Recharge_Service;
 import com.uav.autodebit.R;
-import com.uav.autodebit.adpater.BrowsePlanAdapter;
 import com.uav.autodebit.adpater.ExpandableListViewAdapter;
-import com.uav.autodebit.permission.Session;
-import com.uav.autodebit.vo.DataAdapterVO;
-import com.uav.autodebit.vo.OxigenPlanVO;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 public class Offers_recent_Fragment {

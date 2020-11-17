@@ -7,12 +7,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.text.TextUtils;
@@ -26,18 +21,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.squareup.picasso.Picasso;
 import com.uav.autodebit.Activity.Base_Activity;
 import com.uav.autodebit.Activity.BillPayRequest;
-import com.uav.autodebit.Activity.Dmrc_Card_Request;
 import com.uav.autodebit.Activity.Enach_Mandate;
-import com.uav.autodebit.Activity.ListViewSingleText;
-import com.uav.autodebit.Activity.Profile_Activity;
 import com.uav.autodebit.Activity.SI_First_Data;
 import com.uav.autodebit.Activity.UPI_Mandate;
-import com.uav.autodebit.BO.CustomerBO;
 import com.uav.autodebit.CustomDialog.BeforeRecharge;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
@@ -52,14 +41,9 @@ import com.uav.autodebit.usersservices.repo.MandateRevokeServiceWiseRepository;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AuthServiceProviderVO;
-import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerServiceOperatorVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 import com.uav.autodebit.vo.OxigenTransactionVO;
-import com.uav.autodebit.vo.ServiceTypeVO;
-import com.uav.autodebit.volley.VolleyResponseListener;
-import com.uav.autodebit.volley.VolleyUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,8 +52,6 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import static android.view.View.GONE;
 
@@ -173,6 +155,7 @@ public class MandateDetailActivity extends Base_Activity {
                                 CustomerVO customerVO  = (CustomerVO) s;
                                 CustomerServiceOperatorVO customerServiceOperatorVO = new CustomerServiceOperatorVO();
                                 customerServiceOperatorVO.setAnonymousString(customerVO.getAnonymousString());
+                                customerServiceOperatorVO.setDialogTitle(customerVO.getDialogTitle());
                                 Intent intent = new Intent();
                                 intent.putExtra("objectResult",(Serializable)customerServiceOperatorVO);
                                 setResult(RESULT_OK,intent);

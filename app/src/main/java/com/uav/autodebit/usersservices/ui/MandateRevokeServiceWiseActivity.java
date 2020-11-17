@@ -1,50 +1,32 @@
 package com.uav.autodebit.usersservices.ui;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.uav.autodebit.Activity.Base_Activity;
-import com.uav.autodebit.Activity.Home;
-import com.uav.autodebit.Activity.Profile_Activity;
-import com.uav.autodebit.BO.CustomerBO;
-import com.uav.autodebit.Interface.ServiceClick;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
-import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.usersservices.repo.MandateRevokeServiceWiseRepository;
 import com.uav.autodebit.usersservices.viewmodel.MandateRevokeServiceWiseViewModel;
-import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
-import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerServiceOperatorVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.volley.VolleyResponseListener;
-import com.uav.autodebit.volley.VolleyUtils;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MandateRevokeServiceWiseActivity extends Base_Activity {

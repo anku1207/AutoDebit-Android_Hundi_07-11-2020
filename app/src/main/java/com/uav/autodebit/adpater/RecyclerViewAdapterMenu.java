@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.uav.autodebit.Activity.Dmrc_NewAndExist_Card_Dialog;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.usersservices.ui.MandateRevokeServiceWiseActivity;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ServiceTypeVO;

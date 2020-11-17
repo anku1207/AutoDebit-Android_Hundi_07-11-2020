@@ -14,13 +14,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.uav.autodebit.Activity.Dmrc_Card_Request;
 import com.uav.autodebit.Activity.Track_Dmrc_Card;
@@ -30,12 +28,11 @@ import com.uav.autodebit.Interface.ConfirmationGetObjet;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.Content_Message;
-import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
-import com.uav.autodebit.vo.DmrcCardStatusVO;
+import com.uav.autodebit.vo.RefundVO;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -138,21 +135,36 @@ public class CustomPagerAdapter extends PagerAdapter {
                     if((pro.isTrackCard() && !pro.isCancelAndRefund()) || (pro.isTrackCard() && pro.isCancelAndRefund()) ) {
                         ((Activity)context).startActivity(new Intent(context, Track_Dmrc_Card.class).putExtra("cardId",pro.getDmrcid()+""));
                     }else if(!pro.isTrackCard() && pro.isCancelAndRefund()){
-                        Utility.confirmationChargesAmountDialog(new DialogInterface() {
+                        Utility.confirmationDialogTextType(new DialogInterface() {
                             @Override
                             public void confirm(Dialog dialog) {
                                 Utility.dismissDialog(context,dialog);
                                 DMRCApi.dmrcCardCancelAndRefund(context,pro.getDmrcid(), Integer.parseInt(Session.getCustomerId(context)),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
                                     DMRC_Customer_CardVO dmrc_customer_cardVO = (DMRC_Customer_CardVO) success;
                                     Activity activity = (Activity) context;
-                                    if(activity.getClass().getSimpleName().equals("Dmrc_Card_Request")){
-                                        MyDialog.showWebviewConditionalAlertDialog(context,dmrc_customer_cardVO.getHtmlString(),false,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
+                                    if(dmrc_customer_cardVO.isEventIs()){
+                                        MyDialog.addBankDetails(context,"Refund Details :- ",false,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
                                             HashMap<String, Object> objectsHashMap = (HashMap<String, Object>) ok;
                                             Dialog dialog1 = (Dialog) objectsHashMap.get("dialog");
                                             Utility.dismissDialog(context,dialog1);
+
+                                            RefundVO refundVO = (RefundVO) objectsHashMap.get("data");
+                                            refundVO.setAnonymousInteger(pro.getDmrcid());
+                                            DMRCApi.saveNFTDetailsForDmrc(context,refundVO,new VolleyResponse((VolleyResponse.OnSuccess)(successNft)->{
+                                                DMRC_Customer_CardVO  successNft1 = (DMRC_Customer_CardVO) successNft;
+                                                if(activity.getClass().getSimpleName().equals("Dmrc_Card_Request")){
+                                                    Utility.showSingleButtonDialog(context,successNft1.getDialogTitle(),successNft1.getDialogMessage(),false);
+                                                    ((Dmrc_Card_Request)context).dmrc_customer_cardVO= successNft1;
+                                                    ((Dmrc_Card_Request)context).addRequestDmrcCardBanner(successNft1);
+                                                }
+                                            }));
                                         }));
-                                        ((Dmrc_Card_Request)context).dmrc_customer_cardVO= dmrc_customer_cardVO;
-                                        ((Dmrc_Card_Request)context).addRequestDmrcCardBanner(dmrc_customer_cardVO);
+                                    }else {
+                                        if(activity.getClass().getSimpleName().equals("Dmrc_Card_Request")){
+                                            Utility.showSingleButtonDialog(context,dmrc_customer_cardVO.getDialogTitle(),dmrc_customer_cardVO.getDialogMessage(),false);
+                                            ((Dmrc_Card_Request)context).dmrc_customer_cardVO= dmrc_customer_cardVO;
+                                            ((Dmrc_Card_Request)context).addRequestDmrcCardBanner(dmrc_customer_cardVO);
+                                        }
                                     }
                                 }));
                             }

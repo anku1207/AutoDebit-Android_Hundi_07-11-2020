@@ -19,9 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.OTP.helper.AppSignatureHelper;
 import com.uav.autodebit.R;
@@ -32,11 +30,9 @@ import com.uav.autodebit.fingerprint.IFingerPrint;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
-import com.uav.autodebit.vo.BannerVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerStatusVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.LocalCacheVO;
 import com.uav.autodebit.vo.OTPVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -46,7 +42,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Login extends Base_Activity implements View.OnClickListener, View.OnTouchListener {
     EditText password,userid;

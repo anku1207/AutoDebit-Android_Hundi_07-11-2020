@@ -362,7 +362,7 @@ public class Credit_Score_Report extends Base_Activity implements FileDownloadIn
 
     @Override
     public void PermissionGranted(int request_code) {
-        if(request_code==ApplicationConstant.REQ_DOWNLOAD_PERMISSION){
+        if(request_code== ApplicationConstant.REQ_DOWNLOAD_PERMISSION){
             new DownloadTask(Credit_Score_Report.this,Credit_Score_Report.this, creditScoreFileUrl);
         }
     }

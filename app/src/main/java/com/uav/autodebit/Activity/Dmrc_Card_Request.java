@@ -593,7 +593,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                        String [] btnNames={"Proceed"};
 
                        JSONArray cardChargesJson = new JSONArray(dmrc_customer_cardVO.getDmrcFeeCharges());
-                       Utility.confirmationChargesAmountDialog(new com.uav.autodebit.util.DialogInterface() {
+                       Utility.confirmationDialogPaymentModify(new com.uav.autodebit.util.DialogInterface() {
                            @Override
                            public void confirm(Dialog dialog) {
                                Utility.dismissDialog(Dmrc_Card_Request.this, dialog);
@@ -677,7 +677,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             }else if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
                 startBankMandateActivity(context,dmrc_customer_cardVO);
             }else if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG_UPI){
-                startUPIActivity(context,dmrc_customer_cardVO,ApplicationConstant.PG_MANDATE);
+                startUPIActivity(context,dmrc_customer_cardVO, ApplicationConstant.PG_MANDATE);
             }
         }));
     }

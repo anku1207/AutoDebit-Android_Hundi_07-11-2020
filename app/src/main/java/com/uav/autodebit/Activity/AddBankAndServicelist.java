@@ -250,7 +250,7 @@ public class AddBankAndServicelist extends Base_Activity implements View.OnClick
                    intent.putExtra("accountNumber", acno.getText().toString());
                    intent.putExtra("accountHolderName",acholdername.getText().toString());
 
-                   startActivityForResult(intent,ApplicationConstant.REQ_ENACH_MANDATE);
+                   startActivityForResult(intent, ApplicationConstant.REQ_ENACH_MANDATE);
                }));
             }else {
                 scrollview.fullScroll(ScrollView.FOCUS_UP);

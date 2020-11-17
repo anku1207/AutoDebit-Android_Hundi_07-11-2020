@@ -122,7 +122,7 @@ public class Credit_Score extends Base_Activity {
                           return;
                       }
                       if(!mobileno.getText().toString().equals("") && Utility.validatePattern(mobileno.getText().toString().trim(), ApplicationConstant.MOBILENO_VALIDATION)!=null){
-                          mobileno.setError(Utility.validatePattern(mobileno.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION));
+                          mobileno.setError(Utility.validatePattern(mobileno.getText().toString().trim(), ApplicationConstant.MOBILENO_VALIDATION));
                           return;
                       }
 

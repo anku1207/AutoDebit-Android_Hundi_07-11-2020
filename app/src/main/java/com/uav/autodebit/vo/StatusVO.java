@@ -22,8 +22,9 @@ public class StatusVO extends BaseVO {
         return statusId;
     }
 
-    public void setStatusId(Integer statusId) {
+    public StatusVO setStatusId(Integer statusId) {
         this.statusId = statusId;
+        return null;
     }
 
     public String getStatusName() {

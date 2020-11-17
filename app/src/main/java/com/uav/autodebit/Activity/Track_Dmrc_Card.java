@@ -1,7 +1,5 @@
 package com.uav.autodebit.Activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
@@ -21,16 +19,12 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
-import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
-import com.uav.autodebit.vo.BannerVO;
 
 import org.json.JSONObject;
 

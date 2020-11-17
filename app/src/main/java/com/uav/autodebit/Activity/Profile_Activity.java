@@ -24,6 +24,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -58,11 +59,9 @@ import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.DownloadTask;
 import com.uav.autodebit.util.FileDownloadInterface;
 import com.uav.autodebit.util.Utility;
-import com.uav.autodebit.vo.CardTypeVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -108,6 +107,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
 
     PermissionUtils permissionUtils;
     CustomerVO changeAddressCustomerVOObject;
+    LinearLayout edit_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +140,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         addressverify=findViewById(R.id.addressverify);
         downloadreport=findViewById(R.id.downloadreport);
         profileedit=findViewById(R.id.profileedit);
+        edit_layout=findViewById(R.id.edit_layout);
 
         permissionUtils=new PermissionUtils(Profile_Activity.this);
 
@@ -148,7 +149,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         more_service.setOnClickListener(this);
         changepass.setOnClickListener(this);
         more_bankadd.setOnClickListener(this);
-        profileedit.setOnClickListener(this);
+        edit_layout.setOnClickListener(this);
 
         downloadreport.setVisibility(View.GONE);
 
@@ -265,7 +266,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             case R.id.more_bankadd:
                 startActivityForResult(new Intent(Profile_Activity.this,AddBankAndServicelist.class),REQ_ADDBANK_ANDSERVICE);
                 break;
-            case R.id.profileedit :
+            case R.id.edit_layout :
                 MyDialog.changeCustomerAddressDialog(Profile_Activity.this,new Gson().fromJson
                         (Session.getSessionByKey(Profile_Activity.this,Session.CACHE_CUSTOMER),CustomerVO.class),
                         true,new CallBackInterface((CallBackInterface.OnSuccess)(ok)->{
@@ -857,7 +858,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
     public void PermissionGranted(int request_code) {
         if(request_code==ApplicationConstant.REQ_CAMERA_PERMISSION){
             startCamera();
-        }else if(request_code==ApplicationConstant.REQ_DOWNLOAD_PERMISSION){
+        }else if(request_code== ApplicationConstant.REQ_DOWNLOAD_PERMISSION){
             new DownloadTask(Profile_Activity.this,Profile_Activity.this, cir_report);
         }
 

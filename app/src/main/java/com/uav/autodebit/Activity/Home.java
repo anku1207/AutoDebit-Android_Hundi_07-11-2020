@@ -158,7 +158,11 @@ public class Home extends Base_Activity
         activityhasmap.put("4",Mum_Metro.class);
         activityhasmap.put("5",Mobile_Prepaid_Recharge_Service.class);
         activityhasmap.put("6",PNG.class);
+
         activityhasmap.put("7", AddBeneficiaryActivity.class);
+       // activityhasmap.put("7", LandlineBill.class);
+
+
         activityhasmap.put("8",Broadband.class);
         activityhasmap.put("9",CreditCardBill.class);
         activityhasmap.put("10",Electricity_Bill.class);
@@ -431,7 +435,7 @@ public class Home extends Base_Activity
             List<ServiceTypeVO> utilityServices = localCacheVO.getUtilityBills();
 
             List<String> showDialogListServiceIds = new ArrayList<>();
-            if(Integer.parseInt(serviceid)==ApplicationConstant.PreAndPost){
+            if(Integer.parseInt(serviceid)== ApplicationConstant.PreAndPost){
                 showDialogListServiceIds =new ArrayList<>();
                 showDialogListServiceIds.add(String.valueOf(ApplicationConstant.MobilePrepaid));
                 showDialogListServiceIds.add(String.valueOf(ApplicationConstant.MobilePostpaid));

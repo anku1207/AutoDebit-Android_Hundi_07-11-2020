@@ -50,13 +50,13 @@
 
             />
             <LinearLayout
-                android:id="@+id/saveshipmenticonintop"
-                android:layout_width="30dp"
+                android:id="@+id/edit_layout"
+                android:layout_width="40dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:layout_gravity="end|center_horizontal"
                 android:gravity="center"
-                android:layout_marginRight="10dp">
+                >
 
 
                 <ImageView
@@ -67,6 +67,13 @@
                     android:gravity="center"
                     android:src="@drawable/edit"
                     android:tint="@color/white" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Edit"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/poppinsbold"/>
 
             </LinearLayout>
             <TextView

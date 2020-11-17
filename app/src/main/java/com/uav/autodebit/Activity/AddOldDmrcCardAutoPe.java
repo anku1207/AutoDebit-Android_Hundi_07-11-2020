@@ -418,7 +418,7 @@ public class AddOldDmrcCardAutoPe extends Base_Activity implements View.OnClickL
                         String [] btnNames={"Proceed"};
 
                         JSONArray cardChargesJson = new JSONArray(dmrc_customer_cardVO.getDmrcFeeCharges());
-                        Utility.confirmationChargesAmountDialog(new DialogInterface() {
+                        Utility.confirmationDialogPaymentModify(new DialogInterface() {
                             @Override
                             public void confirm(Dialog dialog) {
                                 Utility.dismissDialog(AddOldDmrcCardAutoPe.this, dialog);

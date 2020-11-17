@@ -180,7 +180,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 DataAdapterVO dataAdapterVO = new DataAdapterVO();
                 JSONObject object =jsonArray.getJSONObject(i);
                 dataAdapterVO.setText(object.getString("OperatorName"));
-                dataAdapterVO.setImagename(object.getString("OperatorAlias").toLowerCase());
+                dataAdapterVO.setImageUrl(object.has("imageUrl") ?object.getString("imageUrl"):null);
                 dataAdapterVO.setAssociatedValue(object.getString("OperatorAlias"));
                 datalist.add(dataAdapterVO);
             }
@@ -204,7 +204,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 operatorcode=data.getStringExtra("operator");
 
                 ConnectionVO connectionVO = new ConnectionVO();
-                connectionVO.setTitle("Select State");
+                connectionVO.setTitle("Select Circles");
                 connectionVO.setSharedPreferenceKey(Session.MOBILE_STATE_LIST);
                 connectionVO.setEntityIdKey("RegionAlias");
                 connectionVO.setEntityTextKey("RegionName");
@@ -552,7 +552,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
         intent.putExtra("amount",ApplicationConstant.SI_UPI_MANDATE_AMOUNT);
         intent.putExtra("serviceId",oxigenTransactionVO.getServiceId()+"");
         intent.putExtra("paymentType",paymentType);
-        ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_UPI_FOR_MANDATE);
+        ((Activity) context).startActivityForResult(intent, ApplicationConstant.REQ_UPI_FOR_MANDATE);
     }
    /* public void beforeRechargeAddMandate(Context context , OxigenTransactionVO oxigenTransactionVOresp){
         CheckMandateAndShowDialog.oxiServiceMandateCheck(context,oxigenTransactionVOresp.getServiceId(),oxigenTransactionVOresp.getProvider().getProviderId(),new VolleyResponse((VolleyResponse.OnSuccess)(mandatecheckresp)->{

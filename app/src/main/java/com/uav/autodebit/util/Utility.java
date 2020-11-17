@@ -527,7 +527,8 @@ public class Utility {
 
 
 
-    public static void showSingleButtonDialog(Context context, String title, String msg , boolean activityfinish ,String... buttons){
+    public static void showSingleButtonDialog(Context context, String title, String msg , boolean activityfinish ,
+                                              String... buttons){
 
         String leftButton= (buttons.length==0 ?"OK":buttons[0]);//(leftButton ==null?"Modify": leftButton);
         final Dialog var3 = new Dialog(context);
@@ -1023,7 +1024,7 @@ public class Utility {
 
 
 
-    public static void confirmationChargesAmountDialog(com.uav.autodebit.util.DialogInterface mcxtinter, Context context , JSONArray jsonArray , String Msg , String title,  String... buttons){
+    public static void confirmationDialogPaymentModify(com.uav.autodebit.util.DialogInterface mcxtinter, Context context , JSONArray jsonArray , String Msg , String title, String... buttons){
         String leftButton= (buttons.length==0 ?"Next":buttons[0]);//(leftButton ==null?"Modify": leftButton);
         String rightButton=(buttons.length<=1 ?"Modify":buttons[1]);//(rightButton==null?"Next":rightButton);
         try{
@@ -1123,7 +1124,112 @@ public class Utility {
                     dialogInterface.confirm(var3);
                 }
             });
+            if(!((Activity)context).isFinishing() && !var3.isShowing())  var3.show();
+            var3.getWindow().setAttributes(lp);
+        }catch (Exception e){
+            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+        }
+    }
+    public static void confirmationDialogTextType(com.uav.autodebit.util.DialogInterface mcxtinter, Context context , JSONArray jsonArray , String Msg , String title, String... buttons){
+        String leftButton= (buttons.length==0 ?"Next":buttons[0]);//(leftButton ==null?"Modify": leftButton);
+        String rightButton=(buttons.length<=1 ?"Modify":buttons[1]);//(rightButton==null?"Next":rightButton);
+        try{
+            com.uav.autodebit.util.DialogInterface dialogInterface =mcxtinter;
+            Dialog var3 = new Dialog(context);
+            var3.requestWindowFeature(1);
+            var3.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            var3.setContentView(R.layout.confirmation_charges_amount_dialog);
+            var3.setCanceledOnTouchOutside(false);
+            var3.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
+
+            LinearLayout mainlayout =var3.findViewById(R.id.mainlayout);
+            TextView dialog_title=var3.findViewById(R.id.dialog_title);
+            Button modify=var3.findViewById(R.id.modify);
+            Button next=var3.findViewById(R.id.next);
+
+            modify.setText(rightButton);
+            next.setText(leftButton);
+
+            if(buttons.length==0 || buttons.length==1){
+                modify.setVisibility(View.GONE);
+            }
+
+            if(title==null || title.equals("")){
+                dialog_title.setVisibility(View.GONE);
+            }else {
+                dialog_title.setVisibility(View.VISIBLE);
+                dialog_title.setText(title);
+            }
+
+            Typeface typeface = ResourcesCompat.getFont(context, R.font.poppinssemibold);
+
+            if(Msg==null){
+                for(int i=0;i<jsonArray.length();i++){
+
+                    JSONObject jsonObject =jsonArray.getJSONObject(i);
+                    LinearLayout et = new LinearLayout(new ContextThemeWrapper(context,R.style.confirmation_dialog_layout));
+
+                    TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
+                    text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                    text.setTextColor(context.getResources().getColor(R.color.defaultTextColor));
+                    text.setText(jsonObject.getString("key"));
+                    //text.setMaxLines(1);
+                    //text.setEllipsize(TextUtils.TruncateAt.END);
+                    text.setTypeface(typeface);
+                    text.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                    text.setLineSpacing(0, 1.1f);
+
+                    TextView text1 = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
+                    text1.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,0));
+                    text1.setTextColor(context.getResources().getColor(R.color.defaultTextColor));
+                    text1.setText(" : ");
+                    text1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    text1.setLineSpacing(0, 1.1f);
+
+                    TextView value = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_value));
+                    value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                    value.setTextColor(context.getResources().getColor(R.color.defaultTextColor));
+                    value.setText(jsonObject.getString("value"));
+                    value.setTypeface(typeface);
+                    value.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                    value.setLineSpacing(0, 1.1f);
+
+                    et.addView(text);
+                    et.addView(text1);
+                    et.addView(value);
+                    mainlayout.addView(et);
+                }
+            }else {
+                LinearLayout et = new LinearLayout(new ContextThemeWrapper(context,R.style.confirmation_dialog_layout));
+
+                TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_text_flied));
+                text.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                text.setTextColor(context.getResources().getColor(R.color.defaultTextColor));
+                text.setText(Msg);
+                text.setTypeface(typeface);
+
+                et.addView(text);
+                mainlayout.addView(et);
+            }
+
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(var3.getWindow().getAttributes());
+            lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+            modify.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialogInterface.modify(var3);
+                }
+            });
+            next.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialogInterface.confirm(var3);
+                }
+            });
             if(!((Activity)context).isFinishing() && !var3.isShowing())  var3.show();
             var3.getWindow().setAttributes(lp);
         }catch (Exception e){
@@ -2058,13 +2164,9 @@ public class Utility {
     public static  String getConvertedIntoDateFroms(long timeInMilliSeconds){
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(timeInMilliSeconds);
-        String s=c.get(Calendar.DAY_OF_MONTH)+"/"+c.get(Calendar.MONTH)+"/"+ c.get(Calendar.YEAR);
-        return s;
-       /* try {
-            date = (Date) dateFormat.parseObject(timeInMilliSeconds + "");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }*/
+        SimpleDateFormat df1 = new SimpleDateFormat("dd/MM/yyyy");
+        return df1.format(c.getTime());
+
     }
 
 
