@@ -184,7 +184,7 @@ public class AddOldDmrcCardAutoPe extends Base_Activity implements View.OnClickL
                     }else{
                         confirm_Card_Number.setError(null);
                         if(!card_Number.getText().toString().trim().equals(confirm_Card_Number.getText().toString().trim())){
-                            confirm_Card_Number.setError("confirm card number is mismatch");
+                            confirm_Card_Number.setError("card number does not match");
                         }
                     }
                 }
@@ -968,7 +968,7 @@ public class AddOldDmrcCardAutoPe extends Base_Activity implements View.OnClickL
     public void PermissionGranted(int request_code) {
         if(request_code==ApplicationConstant.REQ_CAMERA_PERMISSION){
             if(!card_Number.getText().toString().trim().equals(confirm_Card_Number.getText().toString().trim())){
-                confirm_Card_Number.setError("confirm card number is mismatch");
+                confirm_Card_Number.setError("card number does not match");
             }else {
                 openCamera(AddOldDmrcCardAutoPe.this);
             }

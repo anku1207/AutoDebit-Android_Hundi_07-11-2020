@@ -18,4 +18,12 @@ public class BeneficiaryBO implements Serializable {
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }
+
+
+    public static ConnectionVO getCustomerBeneficiaryList() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("fetchBeneficiaryToCustomer");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
 }

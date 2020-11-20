@@ -10,6 +10,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Editable;
 import android.text.InputType;
@@ -882,7 +883,7 @@ public class MyDialog {
 
 
 
-    public static void sendPaymentDialog(Context context, boolean backBtnCloseDialog, BeneAccVO beneAccVO, ConfirmationGetObjet confirmationGetObjet) {
+    public static void sendPaymentDialog(Context context, boolean backBtnCloseDialog, View view,BeneAccVO beneAccVO, ConfirmationGetObjet confirmationGetObjet) {
         final Dialog cusdialog = new Dialog(context);
         cusdialog.requestWindowFeature(1);
         Objects.requireNonNull(cusdialog.getWindow()).setBackgroundDrawable(new ColorDrawable(0));
@@ -962,7 +963,7 @@ public class MyDialog {
                 accVO.setBeneNameRespose(fullName.getText().toString().trim());
                 accVO.setBeneficialIFSCcode(ifscCode.getText().toString().trim());
                 accVO.setBeneficialAccountNum(accountNumber.getText().toString().trim());
-                accVO.setAnonymousString(amount.getText().toString().trim());
+                accVO.setAnonymousAmount(Double.parseDouble(amount.getText().toString().trim()));
                 accVO.setBeneficialAccountId(beneAccVO.getBeneficialAccountId());
 
                 HashMap<String,Object> objectHashMap = new HashMap<>();
@@ -975,6 +976,8 @@ public class MyDialog {
         });
         if (!((Activity) context).isFinishing() && !cusdialog.isShowing()){
             cusdialog.show();
+            if(view !=null)Utility.enableDisableView(view,true);
+
             // focus set and open keyboard
             amount.requestFocus();
             cusdialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
@@ -982,4 +985,63 @@ public class MyDialog {
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         }
       }
+
+
+
+
+    public static void txnDialogAutope(Context context, String headingText, String messageText, boolean backBtnCloseDialog, Drawable background , Drawable icon, ConfirmationGetObjet confirmationGetObjet, String ... btn) {
+
+        String btnName= (btn.length==0 ?"Ok":btn[0]);//(leftButton ==null?"Modify": leftButton);
+        final Dialog cusdialog = new Dialog(context);
+        cusdialog.requestWindowFeature(1);
+        Objects.requireNonNull(cusdialog.getWindow()).setBackgroundDrawable(new ColorDrawable(0));
+        cusdialog.setContentView(R.layout.txn_dialog_design);
+        cusdialog.setCanceledOnTouchOutside(false);
+        cusdialog.setCancelable(backBtnCloseDialog);
+        cusdialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
+        Button buttonOk;
+        TextView textHeading,message;
+        LinearLayout iconHeadingLayout;
+        ImageView imageView;
+
+        textHeading=cusdialog.findViewById(R.id.textHeading);
+        message=cusdialog.findViewById(R.id.message);
+        buttonOk=cusdialog.findViewById(R.id.buttonOk);
+        iconHeadingLayout=cusdialog.findViewById(R.id.iconHeadingLayout);
+        imageView=cusdialog.findViewById(R.id.imageView);
+
+        iconHeadingLayout.setBackground(background);
+        imageView.setImageDrawable(icon);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(cusdialog.getWindow().getAttributes());
+        lp.width = (WindowManager.LayoutParams.MATCH_PARENT);
+        lp.height = (WindowManager.LayoutParams.WRAP_CONTENT);
+
+        if(headingText==null || headingText.isEmpty()){
+            textHeading.setVisibility(View.GONE);
+        }else {
+            textHeading.setVisibility(View.VISIBLE);
+            textHeading.setText(headingText);
+        }
+        if(messageText==null || messageText.isEmpty()){
+            message.setVisibility(View.GONE);
+        }else {
+            message.setVisibility(View.VISIBLE);
+            message.setText(messageText);
+        }
+        buttonOk.setText(btnName);
+        buttonOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmationGetObjet.onOk(cusdialog);
+            }
+        });
+
+        if (!((Activity) context).isFinishing() && !cusdialog.isShowing()) cusdialog.show();
+        cusdialog.getWindow().setAttributes(lp);
+    }
+
+
 }

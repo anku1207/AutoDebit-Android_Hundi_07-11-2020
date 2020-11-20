@@ -218,7 +218,6 @@
                         android:singleLine="true"
                         android:id="@+id/ifscCode"
                         android:maxLength="75"
-                        android:inputType="textCapCharacters"
                         android:text=""
                         android:maxLines="1"
                         style="@style/commonEdittextStyle"

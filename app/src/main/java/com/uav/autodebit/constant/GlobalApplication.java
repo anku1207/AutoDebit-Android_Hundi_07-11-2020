@@ -3,8 +3,8 @@ package com.uav.autodebit.constant;
 import android.app.Application;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.view.View;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,7 @@ public class GlobalApplication extends Application {
     public static int notificationCount=0;
     public static List<Dialog> dialog_List =  new ArrayList<>();
     public static String updateMsg =" Kindly update the app now ";
+    public View view=null;
 
     @Override
     public void onCreate() {

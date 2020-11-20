@@ -449,7 +449,7 @@
                         android:layout_gravity="center_vertical"
                         android:fontFamily="@font/poppinslight"
 
-                        android:textColor="@drawable/text_change_color_black"
+                        android:textColor="@drawable/text_change_color_app_color_black"
                         />
 
                     <ImageView

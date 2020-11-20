@@ -20,7 +20,6 @@ import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.DownloadListener;
 import android.webkit.JsResult;
-import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -31,14 +30,25 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.uav.autodebit.BO.BannerBO;
 import com.uav.autodebit.R;
-import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.UAVProgressDialog;
+import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.ConnectionVO;
+import com.uav.autodebit.vo.CustomerVO;
+import com.uav.autodebit.volley.VolleyResponseListener;
+import com.uav.autodebit.volley.VolleyUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AutopePayment extends AppCompatActivity implements View.OnClickListener , MyJavaScriptInterface.javascriptinterface {
 
@@ -46,8 +56,9 @@ public class AutopePayment extends AppCompatActivity implements View.OnClickList
     public static final String EXTRAS_URL = "url";
     public static final String EXTRAS_FAIL_URL = "fail_url";
     public static final String EXTRAS_SUCCESS_URL = "success_url";
+    public static final String EXTRAS_P2P_TXN_ID = "p2p_txn_id";
 
-    String fail_url,success_url,url=null;
+    String fail_url,success_url,url,customer_beneficiary_id=null;
 
     TextView title;
     ImageView back_activity_button;
@@ -69,15 +80,13 @@ public class AutopePayment extends AppCompatActivity implements View.OnClickList
         progressBar = new UAVProgressDialog(this);
 
 
-        title.setText(getIntent().getStringExtra("title"));
+        title.setText(getIntent().getStringExtra(EXTRAS_TITLE));
         url=getIntent().getStringExtra(EXTRAS_URL);
+        customer_beneficiary_id=getIntent().getStringExtra(EXTRAS_P2P_TXN_ID);
+        fail_url=getIntent().getStringExtra(EXTRAS_FAIL_URL)+ "app/";
+        success_url=getIntent().getStringExtra(EXTRAS_SUCCESS_URL)+ "app/";
 
-        fail_url=getIntent().getStringExtra(EXTRAS_FAIL_URL);
-        success_url=getIntent().getStringExtra(EXTRAS_SUCCESS_URL);
-
-        openWebView(url);
-
-
+        openWebView(url+"&app=1");
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -178,7 +187,6 @@ public class AutopePayment extends AppCompatActivity implements View.OnClickList
                 resultMsg.sendToTarget();
 
                 newWebView.setWebViewClient(new WebViewClient() {
-
                     @Override
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
                         try {
@@ -208,17 +216,10 @@ public class AutopePayment extends AppCompatActivity implements View.OnClickList
                     public void onPageStarted(WebView view, String url, Bitmap favicon) {
                         super.onPageStarted(view, url, favicon);
                         Log.w("pagestart", url);
-                        if (!AutopePayment.this.isFinishing() && progressBar != null && !progressBar.isShowing()) {
-                            try {
-                                progressBar.show();
-                            } catch (Exception e) {
-                            }
-                        }
                     }
                     @Override
                     public void onPageFinished(WebView view, String url) {
                         Log.w("newWebcie", url);
-                        Utility.dismissDialog(AutopePayment.this, progressBar);
                         try {
                             if (webView != null) {
                                 webView.scrollTo(0, 0);
@@ -244,7 +245,6 @@ public class AutopePayment extends AppCompatActivity implements View.OnClickList
                     public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
                         showError(errorResponse.getReasonPhrase().toString(), progressBar);
                     }
-
                 });
                 return true;
             }
@@ -271,7 +271,56 @@ public class AutopePayment extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void htmlresult(String result) {
-        Log.w("Html_Result",result);
+        try {
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            ConnectionVO connectionVO = BannerBO.setAddCampaignResponse();
+
+            CustomerVO customerVO=new CustomerVO();
+            customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(AutopePayment.this)));
+            //autope pg response
+            customerVO.setAnonymousString(result);
+            //customer beneficiary id
+            customerVO.setAnonymousString1(customer_beneficiary_id);
+            Gson gson =new Gson();
+            String json = gson.toJson(customerVO);
+            params.put("volley", json);
+
+            Log.w("htmlresultRequest", json);
+            connectionVO.setParams(params);
+
+            VolleyUtils.makeJsonObjectRequest(AutopePayment.this, connectionVO, new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                }
+                @Override
+                public void onResponse(Object resp) throws JSONException {
+                    JSONObject response = (JSONObject) resp;
+                    Gson gson = new Gson();
+                    CustomerVO customerVOresp = gson.fromJson(response.toString(), CustomerVO.class);
+                    if(customerVOresp.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) customerVOresp.getErrorMsgs();
+                        StringBuilder sb = new StringBuilder();
+                        for(int i=0; i<error.size(); i++){
+                            sb.append(error.get(i)).append("\n");
+                        }
+                        Utility.showSingleButtonDialog(AutopePayment.this,customerVOresp.getDialogTitle(),customerVOresp.getErrorMsgs().get(0),true);
+                    }else {
+                        try {
+                            Intent intent =new Intent();
+                            setResult(RESULT_OK,intent);
+                            intent.putExtra(EXTRAS_P2P_TXN_ID,customer_beneficiary_id);
+                            intent.putExtra("data",response.toString());
+                            finish();
+                        }catch (Exception e){
+                            ExceptionsNotification.ExceptionHandling(AutopePayment.this , Utility.getStackTrace(e));
+                        }
+                    }
+                }
+            });
+        } catch (Exception e) {
+            ExceptionsNotification.ExceptionHandling(AutopePayment.this , Utility.getStackTrace(e));
+        }
+
     }
 
     private class MyBrowser extends WebViewClient {
@@ -310,10 +359,10 @@ public class AutopePayment extends AppCompatActivity implements View.OnClickList
         public void onPageFinished(WebView view, String url) {
             Utility.dismissDialog(AutopePayment.this, progressBar);
             try {
-                if (url.equalsIgnoreCase(EXTRAS_SUCCESS_URL) || url.equalsIgnoreCase(EXTRAS_FAIL_URL)) {
+                if (url.equalsIgnoreCase(success_url) || url.equalsIgnoreCase(fail_url)) {
                     webView.setVisibility(View.GONE);
-                    webView.loadUrl("javascript:HTMLOUT.showHTML(document.getElementById('addresp').innerHTML);");
-                    webView.loadUrl("javascript:console.log('MAGIC'+document.getElementById('addresp').innerHTML);");
+                    webView.loadUrl("javascript:HTMLOUT.showHTML(document.getElementById('resp').innerHTML);");
+                    webView.loadUrl("javascript:console.log('MAGIC'+document.getElementById('resp').innerHTML);");
                 }
             } catch (Exception e) {
                 ExceptionsNotification.ExceptionHandling(AutopePayment.this, Utility.getStackTrace(e));

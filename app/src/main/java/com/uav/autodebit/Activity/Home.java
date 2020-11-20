@@ -35,7 +35,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.ServiceBO;
@@ -93,7 +92,6 @@ public class Home extends Base_Activity
     BottomNavigationView navigation;
     /////19-10-2019
     //ViewPager viewPager;
-    FirebaseAnalytics mFirebaseAnalytics;
     ClickableViewPager viewPager;
 
     TabLayout bannerIndicator;
@@ -148,8 +146,6 @@ public class Home extends Base_Activity
 
         selectedService=null;
         level=null;
-
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         activityhasmap=new HashMap<>();
         activityhasmap.put("1",IRCTC.class);
