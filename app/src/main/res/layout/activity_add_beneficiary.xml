@@ -81,7 +81,7 @@
             </LinearLayout>
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/indicator"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerInParent="true"
@@ -96,7 +96,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fillViewport="true"
-        android:id="@+id/scrollView">
+        android:id="@+id/scrollView"
+        android:visibility="gone">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -153,7 +154,6 @@
                         android:digits="@string/NumberDigits"
                         android:hint="Account Number"
                         style="@style/commonEdittextStyle"
-                        android:textIsSelectable="true"
                         android:layout_marginLeft="0dp"
                         />
                 </androidx.cardview.widget.CardView>
@@ -187,7 +187,6 @@
                         android:maxLines="1"
                         android:digits="@string/NumberDigits"
                         style="@style/commonEdittextStyle"
-                        android:textIsSelectable="true"
                         android:layout_marginLeft="0dp"/>
                 </androidx.cardview.widget.CardView>
 
@@ -221,7 +220,6 @@
                         android:text=""
                         android:maxLines="1"
                         style="@style/commonEdittextStyle"
-                        android:textIsSelectable="true"
                         android:layout_marginLeft="0dp"/>
                 </androidx.cardview.widget.CardView>
                 <TextView
@@ -252,7 +250,6 @@
                         android:maxLines="1"
                         android:digits="@string/NameDigits"
                         style="@style/commonEdittextStyle"
-                        android:textIsSelectable="true"
                         android:layout_marginLeft="0dp"/>
                 </androidx.cardview.widget.CardView>
                 <TextView
@@ -284,7 +281,6 @@
                         android:maxLines="1"
                         android:digits="@string/NumberDigits"
                         style="@style/commonEdittextStyle"
-                        android:textIsSelectable="true"
                         android:layout_marginLeft="0dp"/>
                 </androidx.cardview.widget.CardView>
 

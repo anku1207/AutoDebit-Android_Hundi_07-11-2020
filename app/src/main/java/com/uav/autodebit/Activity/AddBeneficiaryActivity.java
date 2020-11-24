@@ -39,6 +39,7 @@ import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.BaseVO;
 import com.uav.autodebit.vo.BeneAccVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
@@ -51,6 +52,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class AddBeneficiaryActivity extends Base_Activity {
 
@@ -175,6 +177,7 @@ public class AddBeneficiaryActivity extends Base_Activity {
                             });
                     cardView.addView(imageView);
                     addcardlistlayout.addView(cardView);
+                    scrollviewAnimationAndVisibility();
                 }
             }catch (Exception e){
                 ExceptionsNotification.ExceptionHandling(AddBeneficiaryActivity.this, Utility.getStackTrace(e));
@@ -330,7 +333,7 @@ public class AddBeneficiaryActivity extends Base_Activity {
                                dialog.dismiss();
                                sendConfirmationMessageToServer(AddBeneficiaryActivity.this,accVO,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
                                    BeneAccVO accVO = (BeneAccVO) success;
-                                   openPaymentDialog(accVO,null);
+                                   openPaymentDialog(accVO,null,true,true);
                                }));
                            }
                            @Override
@@ -344,8 +347,9 @@ public class AddBeneficiaryActivity extends Base_Activity {
         });
     }
 
-    public void openPaymentDialog(BeneAccVO accVO , View view){
-        MyDialog.sendPaymentDialog(AddBeneficiaryActivity.this,true,view,accVO,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
+    public void openPaymentDialog(BeneAccVO accVO , View view ,boolean backBtnDismiss,boolean refreshPage){
+        if(refreshPage)addBeneficiaryBanner();
+        MyDialog.sendPaymentDialog(AddBeneficiaryActivity.this,backBtnDismiss,view,accVO,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
             HashMap<String,Object> objectHashMap = (HashMap<String, Object>) ok;
             ((Dialog)objectHashMap.get("dialog")).dismiss();
             BeneAccVO beneAccVO1 = (BeneAccVO) objectHashMap.get("data");
@@ -357,8 +361,10 @@ public class AddBeneficiaryActivity extends Base_Activity {
                     intent.putExtra(AutopePayment.EXTRAS_URL,jsonObject.getString("url"));
                     intent.putExtra(AutopePayment.EXTRAS_FAIL_URL,jsonObject.getString("fail"));
                     intent.putExtra(AutopePayment.EXTRAS_SUCCESS_URL,jsonObject.getString("success"));
-                    intent.putExtra(AutopePayment.EXTRAS_P2P_TXN_ID,jsonObject.getInt("p2pTxnId"));
+                    intent.putExtra(AutopePayment.EXTRAS_P2P_TXN_ID,jsonObject.getInt("p2pTxnId")+"");
                     intent.putExtra(AutopePayment.EXTRAS_TITLE,"Payment");
+                    intent.putExtra(AutopePayment.EXTRAS_REFRESH_PAGE,refreshPage);
+
                     startActivityForResult(intent,ApplicationConstant.REQ_AUTOPE_PAYMENT_RESULT);
                 }catch (Exception e){
                     ExceptionsNotification.ExceptionHandling(AddBeneficiaryActivity.this, Utility.getStackTrace(e));
@@ -370,13 +376,22 @@ public class AddBeneficiaryActivity extends Base_Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==RESULT_OK){
-            if(resultCode==ApplicationConstant.REQ_AUTOPE_PAYMENT_RESULT){
+        if(resultCode==RESULT_OK){
+            if(requestCode==ApplicationConstant.REQ_AUTOPE_PAYMENT_RESULT){
                 if(data!=null){
-                    CustomerVO customerVO  =new Gson().fromJson(data.getStringExtra("data"),CustomerVO.class);
-                    MyDialog.txnDialogAutope(AddBeneficiaryActivity.this,customerVO.getDialogTitle(),customerVO.getDialogMessage(),false,Utility.getDrawableResources(AddBeneficiaryActivity.this,R.drawable.round_border_bg_appbarcolor),Utility.getDrawableResources(AddBeneficiaryActivity.this,R.drawable.ic_success),new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
-                        ((Dialog)ok).dismiss();
-                    }));
+
+                    if(data.getBooleanExtra(AutopePayment.EXTRAS_REFRESH_PAGE,false))addBeneficiaryBanner();
+                    BaseVO baseVO  =new Gson().fromJson(data.getStringExtra("data"),BaseVO.class);
+                    if(!baseVO.getStatusCode().equals("200")){
+                        MyDialog.txnDialogAutope(AddBeneficiaryActivity.this,baseVO.getDialogTitle(),baseVO.getErrorMsgs().get(0),false,Utility.getTransactionWishStyleForTxnDialog(AddBeneficiaryActivity.this,false),new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
+                            ((Dialog)ok).dismiss();
+                        }));
+                    }else {
+                        MyDialog.txnDialogAutope(AddBeneficiaryActivity.this,baseVO.getDialogTitle(),baseVO.getDialogMessage(),false,Utility.getTransactionWishStyleForTxnDialog(AddBeneficiaryActivity.this,true),new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
+                            ((Dialog)ok).dismiss();
+                        }));
+                    }
+
                 }
             }
         }

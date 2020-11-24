@@ -3,7 +3,10 @@ package com.uav.autodebit.Activity;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.MailTo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +24,7 @@ import android.widget.ImageView;
 
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 
 public class TermAndCondition_Webview extends Base_Activity implements View.OnClickListener {
@@ -111,7 +115,18 @@ public class TermAndCondition_Webview extends Base_Activity implements View.OnCl
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.w("URL",url);
-            view.loadUrl(url);
+
+            if(url.contains("mailto:")){
+                if (!TermAndCondition_Webview.this.isFinishing()) {
+                    MailTo mt = MailTo.parse(url);
+                    Intent i = Utility.newEmailIntent(TermAndCondition_Webview.this, mt.getTo(), mt.getSubject(), mt.getBody(), mt.getCc());
+                    startActivity(i);
+                    view.reload();
+                    return true;
+                }
+            }else{
+                view.loadUrl(url);
+            }
             return true;
         }
 

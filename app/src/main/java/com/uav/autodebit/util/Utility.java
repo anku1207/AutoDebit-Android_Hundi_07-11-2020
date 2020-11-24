@@ -138,8 +138,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -2166,7 +2168,36 @@ public class Utility {
         c.setTimeInMillis(timeInMilliSeconds);
         SimpleDateFormat df1 = new SimpleDateFormat("dd/MM/yyyy");
         return df1.format(c.getTime());
+    }
 
+
+    public static Map<String,Integer> getTransactionWishStyleForTxnDialog(Context context , boolean txnType){
+        Map<String, Integer> stringIntegerMap = new HashMap<>();
+        if(!txnType){
+            stringIntegerMap = new HashMap<String, Integer>();
+            stringIntegerMap.put("background",R.drawable.round_border_bg_redcolor);
+            stringIntegerMap.put("icon", R.drawable.ic_success);
+            stringIntegerMap.put("btn_background", R.drawable.edittext_round_border_redcolor);
+            stringIntegerMap.put("btn_color", R.color.actions_bg_orange);
+        }else {
+            stringIntegerMap = new HashMap<String, Integer>();
+            stringIntegerMap.put("background",R.drawable.round_border_bg_appbarcolor);
+            stringIntegerMap.put("icon", R.drawable.ic_success);
+            stringIntegerMap.put("btn_background", R.drawable.edittext_round_border);
+            stringIntegerMap.put("btn_color", R.color.appbar);
+        }
+
+       return stringIntegerMap;
+    }
+
+    public static Intent newEmailIntent(Context context, String address, String subject, String body, String cc) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { address });
+        intent.putExtra(Intent.EXTRA_TEXT, body);
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_CC, cc);
+        intent.setType("message/rfc822");
+        return intent;
     }
 
 

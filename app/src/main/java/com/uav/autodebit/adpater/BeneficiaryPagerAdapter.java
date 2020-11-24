@@ -5,11 +5,14 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.uav.autodebit.Activity.AddBeneficiaryActivity;
@@ -57,6 +60,7 @@ public class BeneficiaryPagerAdapter extends PagerAdapter {
                 .inflate(R.layout.design_beneficiary_card_list, container, false);
         LinearLayout main_container = itemView.findViewById(R.id.main_container);
         TextView beneficiary_desc=itemView.findViewById(R.id.beneficiary_desc);
+        Button payBtn = itemView.findViewById(R.id.payBtn);
 
         BeneAccVO accVO = models.get(position);
 
@@ -65,11 +69,14 @@ public class BeneficiaryPagerAdapter extends PagerAdapter {
                 "\n"+"IFSC Code : "+accVO.getBeneficialIFSCcode()+
                 "\n"+"Account No. : "+accVO.getBeneficialAccountNum();
         beneficiary_desc.setText(detail);
-        main_container.setOnClickListener(new View.OnClickListener() {
+        payBtn.setText(accVO.getAnonymousString1());
+
+
+        payBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Utility.enableDisableView(v,false);
-                ((AddBeneficiaryActivity)context).openPaymentDialog(accVO,v);
+                ((AddBeneficiaryActivity)context).openPaymentDialog(accVO,v,true,false);
             }
         });
         container.addView(itemView);

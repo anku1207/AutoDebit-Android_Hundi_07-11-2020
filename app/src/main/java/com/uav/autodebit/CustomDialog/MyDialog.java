@@ -18,7 +18,10 @@ import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
@@ -35,6 +38,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
+
+import com.airbnb.lottie.LottieAnimationView;
 import com.uav.autodebit.DMRC.DMRCApi;
 import com.uav.autodebit.Interface.BigContentDialogIntetface;
 import com.uav.autodebit.Interface.CallBackInterface;
@@ -59,7 +65,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 public class MyDialog {
@@ -518,8 +526,14 @@ public class MyDialog {
             EditText  city=customDialog.findViewById(R.id.city);
             EditText state=customDialog.findViewById(R.id.state);
             EditText permanentaddress=customDialog.findViewById(R.id.permanentaddress);
-            Button verify=customDialog.findViewById(R.id.verify);
+            EditText email = customDialog.findViewById(R.id.email);
 
+            ViewGroup parent = (ViewGroup) email.getParent();
+            if (parent != null) {
+                parent.setVisibility(View.GONE);
+            }
+
+            Button verify=customDialog.findViewById(R.id.verify);
             pin.setInputType(InputType.TYPE_CLASS_NUMBER);
             city.setKeyListener(null);
             state.setKeyListener(null);
@@ -989,58 +1003,76 @@ public class MyDialog {
 
 
 
-    public static void txnDialogAutope(Context context, String headingText, String messageText, boolean backBtnCloseDialog, Drawable background , Drawable icon, ConfirmationGetObjet confirmationGetObjet, String ... btn) {
+    public static void txnDialogAutope(Context context, String headingText, String messageText, boolean backBtnCloseDialog, Map<String, Integer> stringIntegerMap, ConfirmationGetObjet confirmationGetObjet, String ... btn) {
 
-        String btnName= (btn.length==0 ?"Ok":btn[0]);//(leftButton ==null?"Modify": leftButton);
-        final Dialog cusdialog = new Dialog(context);
-        cusdialog.requestWindowFeature(1);
-        Objects.requireNonNull(cusdialog.getWindow()).setBackgroundDrawable(new ColorDrawable(0));
-        cusdialog.setContentView(R.layout.txn_dialog_design);
-        cusdialog.setCanceledOnTouchOutside(false);
-        cusdialog.setCancelable(backBtnCloseDialog);
-        cusdialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        try {
+            String btnName= (btn.length==0 ?"Ok":btn[0]);//(leftButton ==null?"Modify": leftButton);
 
-        Button buttonOk;
-        TextView textHeading,message;
-        LinearLayout iconHeadingLayout;
-        ImageView imageView;
+            Drawable background = Utility.getDrawableResources(context,stringIntegerMap.get("background"));
+            Drawable icon = Utility.getDrawableResources(context,stringIntegerMap.get("icon"));
+            Drawable btn_background = Utility.getDrawableResources(context,stringIntegerMap.get("btn_background"));
+            int btn_color = stringIntegerMap.get("btn_color");
 
-        textHeading=cusdialog.findViewById(R.id.textHeading);
-        message=cusdialog.findViewById(R.id.message);
-        buttonOk=cusdialog.findViewById(R.id.buttonOk);
-        iconHeadingLayout=cusdialog.findViewById(R.id.iconHeadingLayout);
-        imageView=cusdialog.findViewById(R.id.imageView);
+            final Dialog cusdialog = new Dialog(context);
+            cusdialog.requestWindowFeature(1);
+            Objects.requireNonNull(cusdialog.getWindow()).setBackgroundDrawable(new ColorDrawable(0));
+            cusdialog.setContentView(R.layout.txn_dialog_design);
+            cusdialog.setCanceledOnTouchOutside(false);
+            cusdialog.setCancelable(backBtnCloseDialog);
+            cusdialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
-        iconHeadingLayout.setBackground(background);
-        imageView.setImageDrawable(icon);
+            Button buttonOk;
+            TextView textHeading,message;
+            LinearLayout iconHeadingLayout;
+            ImageView imageView;
 
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(cusdialog.getWindow().getAttributes());
-        lp.width = (WindowManager.LayoutParams.MATCH_PARENT);
-        lp.height = (WindowManager.LayoutParams.WRAP_CONTENT);
 
-        if(headingText==null || headingText.isEmpty()){
-            textHeading.setVisibility(View.GONE);
-        }else {
-            textHeading.setVisibility(View.VISIBLE);
-            textHeading.setText(headingText);
-        }
-        if(messageText==null || messageText.isEmpty()){
-            message.setVisibility(View.GONE);
-        }else {
-            message.setVisibility(View.VISIBLE);
-            message.setText(messageText);
-        }
-        buttonOk.setText(btnName);
-        buttonOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                confirmationGetObjet.onOk(cusdialog);
+            final Animation animation = AnimationUtils.loadAnimation(context,R.anim.bounce);
+
+            textHeading=cusdialog.findViewById(R.id.textHeading);
+            message=cusdialog.findViewById(R.id.message);
+            buttonOk=cusdialog.findViewById(R.id.buttonOk);
+            iconHeadingLayout=cusdialog.findViewById(R.id.iconHeadingLayout);
+            imageView=cusdialog.findViewById(R.id.imageView);
+
+            iconHeadingLayout.setBackground(background);
+            //imageView.setAnimation(R.raw.success);
+            imageView.setImageDrawable(icon);
+
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(cusdialog.getWindow().getAttributes());
+            lp.width = (WindowManager.LayoutParams.MATCH_PARENT);
+            lp.height = (WindowManager.LayoutParams.WRAP_CONTENT);
+
+            if(headingText==null || headingText.isEmpty()){
+                textHeading.setVisibility(View.GONE);
+            }else {
+                textHeading.setVisibility(View.VISIBLE);
+                textHeading.setText(headingText);
+                textHeading.setAnimation(animation);
             }
-        });
+            if(messageText==null || messageText.isEmpty()){
+                message.setVisibility(View.GONE);
+            }else {
+                message.setVisibility(View.VISIBLE);
+                message.setText(messageText);
+            }
+            buttonOk.setText(btnName);
+            buttonOk.setBackground(btn_background);
+            buttonOk.setTextColor(btn_color);
+            buttonOk.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    confirmationGetObjet.onOk(cusdialog);
+                }
+            });
 
-        if (!((Activity) context).isFinishing() && !cusdialog.isShowing()) cusdialog.show();
-        cusdialog.getWindow().setAttributes(lp);
+            if (!((Activity) context).isFinishing() && !cusdialog.isShowing()) cusdialog.show();
+            cusdialog.getWindow().setAttributes(lp);
+        }catch (Exception e){
+            ExceptionsNotification.ExceptionHandling(context, Utility.getStackTrace(e));
+        }
+
     }
 
 

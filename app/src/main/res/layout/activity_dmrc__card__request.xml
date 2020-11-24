@@ -242,7 +242,7 @@
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/pin"
                     android:backgroundTint="@color/white"
-                    android:hint="PIN"
+                    android:hint="PIN Code"
                     android:drawablePadding="10dp"
                     android:singleLine="true"
                     android:layout_marginLeft="10dp"

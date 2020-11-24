@@ -154,11 +154,8 @@ public class Home extends Base_Activity
         activityhasmap.put("4",Mum_Metro.class);
         activityhasmap.put("5",Mobile_Prepaid_Recharge_Service.class);
         activityhasmap.put("6",PNG.class);
-
-        activityhasmap.put("7", AddBeneficiaryActivity.class);
-       // activityhasmap.put("7", LandlineBill.class);
-
-
+        activityhasmap.put("25", AddBeneficiaryActivity.class);
+        activityhasmap.put("7", LandlineBill.class);
         activityhasmap.put("8",Broadband.class);
         activityhasmap.put("9",CreditCardBill.class);
         activityhasmap.put("10",Electricity_Bill.class);

@@ -20,4 +20,11 @@ public class PaymentGateWayBO implements Serializable {
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }
+
+    public static ConnectionVO proceedAutoPePayment4AllResponse() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("proceedAutoPePayment4AllResponse");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
 }

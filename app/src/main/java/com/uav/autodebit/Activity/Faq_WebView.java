@@ -3,7 +3,9 @@ package com.uav.autodebit.Activity;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.MailTo;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -110,7 +112,17 @@ public class Faq_WebView extends Base_Activity implements View.OnClickListener {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.w("URL",url);
-            view.loadUrl(url);
+            if(url.contains("mailto:")){
+                if (!Faq_WebView.this.isFinishing()) {
+                    MailTo mt = MailTo.parse(url);
+                    Intent i = Utility.newEmailIntent(Faq_WebView.this, mt.getTo(), mt.getSubject(), mt.getBody(), mt.getCc());
+                    startActivity(i);
+                    view.reload();
+                    return true;
+                }
+            }else{
+                view.loadUrl(url);
+            }
             return true;
         }
 

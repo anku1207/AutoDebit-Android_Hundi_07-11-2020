@@ -33,12 +33,14 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.BannerBO;
+import com.uav.autodebit.BO.PaymentGateWayBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.BaseVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
@@ -57,6 +59,8 @@ public class AutopePayment extends AppCompatActivity implements View.OnClickList
     public static final String EXTRAS_FAIL_URL = "fail_url";
     public static final String EXTRAS_SUCCESS_URL = "success_url";
     public static final String EXTRAS_P2P_TXN_ID = "p2p_txn_id";
+    public static final String EXTRAS_REFRESH_PAGE = "refreshPage";
+
 
     String fail_url,success_url,url,customer_beneficiary_id=null;
 
@@ -273,7 +277,7 @@ public class AutopePayment extends AppCompatActivity implements View.OnClickList
     public void htmlresult(String result) {
         try {
             HashMap<String, Object> params = new HashMap<String, Object>();
-            ConnectionVO connectionVO = BannerBO.setAddCampaignResponse();
+            ConnectionVO connectionVO = PaymentGateWayBO.proceedAutoPePayment4AllResponse();
 
             CustomerVO customerVO=new CustomerVO();
             customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(AutopePayment.this)));
@@ -295,26 +299,13 @@ public class AutopePayment extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onResponse(Object resp) throws JSONException {
                     JSONObject response = (JSONObject) resp;
-                    Gson gson = new Gson();
-                    CustomerVO customerVOresp = gson.fromJson(response.toString(), CustomerVO.class);
-                    if(customerVOresp.getStatusCode().equals("400")){
-                        ArrayList error = (ArrayList) customerVOresp.getErrorMsgs();
-                        StringBuilder sb = new StringBuilder();
-                        for(int i=0; i<error.size(); i++){
-                            sb.append(error.get(i)).append("\n");
-                        }
-                        Utility.showSingleButtonDialog(AutopePayment.this,customerVOresp.getDialogTitle(),customerVOresp.getErrorMsgs().get(0),true);
-                    }else {
-                        try {
-                            Intent intent =new Intent();
-                            setResult(RESULT_OK,intent);
-                            intent.putExtra(EXTRAS_P2P_TXN_ID,customer_beneficiary_id);
-                            intent.putExtra("data",response.toString());
-                            finish();
-                        }catch (Exception e){
-                            ExceptionsNotification.ExceptionHandling(AutopePayment.this , Utility.getStackTrace(e));
-                        }
-                    }
+                    Intent intent =new Intent();
+                    setResult(RESULT_OK,intent);
+                    intent.putExtra(EXTRAS_P2P_TXN_ID,customer_beneficiary_id);
+                    intent.putExtra("data",response.toString());
+                    intent.putExtra(EXTRAS_REFRESH_PAGE,getIntent().getBooleanExtra(EXTRAS_REFRESH_PAGE,true));
+                    finish();
+
                 }
             });
         } catch (Exception e) {

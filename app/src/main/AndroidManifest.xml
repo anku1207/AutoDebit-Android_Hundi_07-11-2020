@@ -46,11 +46,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".Activity.Credit_Card_Webview"></activity>
         <activity
             android:name=".Activity.AutopePayment"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
-            tools:ignore="LockedOrientationActivity"/>
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activity.AddBeneficiaryActivity"
             android:screenOrientation="portrait"
