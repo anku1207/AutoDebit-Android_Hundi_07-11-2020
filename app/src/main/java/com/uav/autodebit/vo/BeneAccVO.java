@@ -14,6 +14,8 @@ public class BeneAccVO extends  BaseVO{
     private String beneNameRespose;
     private String createdBy;
     private long  createdAt;
+    private BankAccountTypeVO bankAccountTypeVO;
+
 
 
     public BeneAccVO() {
@@ -115,5 +117,11 @@ public class BeneAccVO extends  BaseVO{
         this.createdBy = createdBy;
     }
 
+    public BankAccountTypeVO getBankAccountTypeVO() {
+        return bankAccountTypeVO;
+    }
 
+    public void setBankAccountTypeVO(BankAccountTypeVO bankAccountTypeVO) {
+        this.bankAccountTypeVO = bankAccountTypeVO;
+    }
 }

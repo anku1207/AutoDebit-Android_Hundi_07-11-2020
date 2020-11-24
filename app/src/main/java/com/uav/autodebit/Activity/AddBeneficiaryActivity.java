@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -17,12 +18,16 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
@@ -39,9 +44,11 @@ import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.BankAccountTypeVO;
 import com.uav.autodebit.vo.BaseVO;
 import com.uav.autodebit.vo.BeneAccVO;
 import com.uav.autodebit.vo.ConnectionVO;
+import com.uav.autodebit.vo.CustomerServiceOperatorVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -50,21 +57,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AddBeneficiaryActivity extends Base_Activity {
 
     EditText fullName,accountNumber,confirmAC,beneficiaryPhone,ifscCode;
     Button add;
-
     LinearLayout addcardlistlayout,layoutmainBanner;
 
     EditText [] editTexts;
     ViewPager viewPager;
     TabLayout tabLayout;
     ScrollView scrollView;
+    Spinner account_type;
+
+    List<BankAccountTypeVO> bankAccountTypeVOList;
+    int accountTypeId;
 
 
     @Override
@@ -84,8 +96,9 @@ public class AddBeneficiaryActivity extends Base_Activity {
         tabLayout =findViewById(R.id.indicator);
         scrollView=findViewById(R.id.scrollView);
         layoutmainBanner=findViewById(R.id.layoutmainBanner);
+        account_type=findViewById(R.id.account_type);
 
-
+        bankAccountTypeVOList=new ArrayList<>();
 
         ifscCode.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
 
@@ -94,6 +107,21 @@ public class AddBeneficiaryActivity extends Base_Activity {
 
         // add existing beneficiary on banner
         addBeneficiaryBanner();
+
+        account_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                try{
+                    BankAccountTypeVO bankAccountTypeVO =bankAccountTypeVOList.get(i);
+                    accountTypeId=bankAccountTypeVO.getAccountTypeId();
+                }catch (Exception e){
+                    ExceptionsNotification.ExceptionHandling(AddBeneficiaryActivity.this , Utility.getStackTrace(e));
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,10 +147,10 @@ public class AddBeneficiaryActivity extends Base_Activity {
                     ifscCode.setError("IFSC Code cannot be left blank");
                     return;
                 }
-                /*if(ifscCode.length()!=11) {
+                if(ifscCode.length()!=11) {
                     ifscCode.setError("IFSC Code should be of 11 digits");
                     return;
-                }*/
+                }
                 if(fullName.getText().toString().isEmpty()){
                     fullName.setError("Full Name cannot be left blank");
                     return;
@@ -137,6 +165,10 @@ public class AddBeneficiaryActivity extends Base_Activity {
                 }
                 if (!beneficiaryPhone.getText().toString().trim().equals("") &&  Utility.validatePattern(beneficiaryPhone.getText().toString().trim(), ApplicationConstant.MOBILENO_VALIDATION)!=null){
                     beneficiaryPhone.setError(Utility.validatePattern(beneficiaryPhone.getText().toString().trim(), ApplicationConstant.MOBILENO_VALIDATION));
+                    return;
+                }
+                if(accountTypeId==0){
+                    Toast.makeText(AddBeneficiaryActivity.this, "Please select account Type", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 addBeneficiary();
@@ -156,6 +188,20 @@ public class AddBeneficiaryActivity extends Base_Activity {
         getCustomerBeneficiaryList(AddBeneficiaryActivity.this,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
             CustomerVO customerVO = (CustomerVO) success;
             try {
+
+                Type collectionType = new TypeToken<List<BankAccountTypeVO>>() {}.getType();
+                bankAccountTypeVOList =new Gson().fromJson(customerVO.getAnonymousString1(), collectionType);
+
+                ArrayList<String> accountList=new ArrayList<>();
+                for(int i=0;i< bankAccountTypeVOList.size();i++){
+                    BankAccountTypeVO bankAccountTypeVO=(bankAccountTypeVOList.get(i));
+                    accountList.add(bankAccountTypeVO.getAccountName());
+                }
+
+                ArrayAdapter adapter = new ArrayAdapter<String>(AddBeneficiaryActivity.this,R.layout.spinner_item,accountList);
+                adapter.setDropDownViewResource(R.layout.spinner_item);
+                account_type.setAdapter(adapter);
+
                 ArrayList<BeneAccVO> beneAccVOS= (ArrayList<BeneAccVO>) new Gson().fromJson(customerVO.getAnonymousString(), new TypeToken<ArrayList<BeneAccVO>>() { }.getType());
                 if(beneAccVOS!=null && beneAccVOS.size()>0){
                     showAddCardBtn();
@@ -180,6 +226,7 @@ public class AddBeneficiaryActivity extends Base_Activity {
                     scrollviewAnimationAndVisibility();
                 }
             }catch (Exception e){
+                e.printStackTrace();
                 ExceptionsNotification.ExceptionHandling(AddBeneficiaryActivity.this, Utility.getStackTrace(e));
             }
         }));
@@ -293,26 +340,26 @@ public class AddBeneficiaryActivity extends Base_Activity {
         connectionVO.setMethodName("penyDropOnAccount");
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
 
+        BankAccountTypeVO bankAccountTypeVO = new BankAccountTypeVO();
+        bankAccountTypeVO.setAccountTypeId(accountTypeId);
+
         BeneAccVO beneAccVO =new BeneAccVO();
         beneAccVO.setBeneNameRespose(fullName.getText().toString().trim());
         beneAccVO.setBeneficialAccountNum(confirmAC.getText().toString().trim());
         beneAccVO.setBeneficialPhone(beneficiaryPhone.getText().toString().trim());
         beneAccVO.setBeneficialIFSCcode(ifscCode.getText().toString().trim());
         beneAccVO.setAnonymousInteger(Integer.parseInt(Session.getCustomerId(AddBeneficiaryActivity.this)));
+        beneAccVO.setBankAccountTypeVO(bankAccountTypeVO);
         String json = new Gson().toJson(beneAccVO);
 
         Log.w("request",json);
-
         params.put("volley", json);
         connectionVO.setParams(params);
 
         VolleyUtils.makeJsonObjectRequest(this,connectionVO, new VolleyResponseListener() {
-
             @Override
             public void onError(String message) {
-
             }
-
             @Override
             public void onResponse(Object response) throws JSONException {
                 JSONObject jresponse = (JSONObject) response;
