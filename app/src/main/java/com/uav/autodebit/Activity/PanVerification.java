@@ -471,8 +471,8 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
 
                 }else {
 
-                    state.setText(Utility.capitalize( cityVO.getCityName()));
-                    city.setText(Utility.capitalize(cityVO.getStateRegion().getStateRegionName()));
+                    state.setText(Utility.capitalize(cityVO.getStateRegion().getStateRegionName()));
+                    city.setText(Utility.capitalize( cityVO.getCityName()));
                     city.setError(null);
                     state.setError(null);
 

@@ -52,7 +52,7 @@ public class UPI_Mandate extends Base_Activity  implements MyJavaScriptInterface
     LinearLayout main_layout;
     WebView webview;
 
-    int actionId;
+    int actionId,defaultMandate;
     double amount;
     String redirectUrl, cancelUrl,paymentType,serviceId;
     CustomerVO htmlRequestResp;
@@ -78,9 +78,11 @@ public class UPI_Mandate extends Base_Activity  implements MyJavaScriptInterface
         amount=getIntent().getDoubleExtra("amount",1.00);
         serviceId=getIntent().getStringExtra("serviceId");
         paymentType=getIntent().getStringExtra("paymentType");
+        defaultMandate=getIntent().getIntExtra("defaultMandate",0);
 
-        Log.w("getIntentResult","="+actionId+"="+amount+"="+serviceId+"="+paymentType);
-
+        Log.w("getIntentResult",actionId+"="+amount+"="+serviceId+"="+paymentType);
+        
+        
         htmlRequestResp=new CustomerVO();
         text1 = findViewById(R.id.text1);
         text2 = findViewById(R.id.text2);
@@ -97,14 +99,21 @@ public class UPI_Mandate extends Base_Activity  implements MyJavaScriptInterface
 
         getServiceURL(UPI_Mandate.this, new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
             try {
-                Log.w("resp",success+"");
+                Log.w("resp_getServiceURL",success+"");
                 JSONObject respjson = (JSONObject) success;
 
                 redirectUrl = respjson.getString("redirectUrl");
                 cancelUrl = respjson.getString("cancelUrl");
-                String url = respjson.getString("url") + "?customerId=" + Session.getCustomerId(UPI_Mandate.this) + "&entityTypeId=2" + "&versioncode="+ Utility.getVersioncode(UPI_Mandate.this)+ "&Amount="+amount + "&serviceId="+serviceId + "&paymentType="+paymentType;
+                String url;
+
+                if(actionId!=0){
+                    url = respjson.getString("url") + "?customerId=" + Session.getCustomerId(UPI_Mandate.this) + "&entityTransactionId="+actionId + "&versioncode="+ Utility.getVersioncode(UPI_Mandate.this)+ "&Amount="+amount + "&serviceId="+serviceId + "&paymentType="+paymentType;
+                }else {
+                    url = respjson.getString("url") + "?customerId=" + Session.getCustomerId(UPI_Mandate.this) + "&versioncode="+ Utility.getVersioncode(UPI_Mandate.this)+ "&Amount="+amount + "&serviceId="+serviceId + "&paymentType="+paymentType;
+                }
                 openWebView(url);
             }catch (Exception e){
+                ExceptionsNotification.ExceptionHandling(UPI_Mandate.this , Utility.getStackTrace(e),"0");
             }
         }));
         continuebtn.setOnClickListener(new View.OnClickListener() {
@@ -260,6 +269,7 @@ public class UPI_Mandate extends Base_Activity  implements MyJavaScriptInterface
             customerAuthServiceVO.setCustomer(customerVO);
             customerAuthServiceVO.setAnonymousString(anonymousString);
             customerAuthServiceVO.setAnonymousInteger(Integer.parseInt(anonymousInteger));
+            customerAuthServiceVO.setDefaultMandate(defaultMandate);
 
             Gson gson = new Gson();
             String json = gson.toJson(customerAuthServiceVO);
@@ -354,9 +364,8 @@ public class UPI_Mandate extends Base_Activity  implements MyJavaScriptInterface
                     //use a log message
                 }
             }
-
-
             if (url.equals(redirectUrl + "app/") || url.equals(cancelUrl + "app/")) {
+                webview.setVisibility(View.GONE);
                 webview.loadUrl("javascript:HTMLOUT.showHTML(document.getElementById('siresp').innerHTML);");
                 webview.loadUrl("javascript:console.log('MAGIC'+document.getElementById('siresp').innerHTML);");
             }

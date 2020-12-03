@@ -40,6 +40,7 @@ public class CustomerVO extends BaseVO implements Serializable {
         private Double highestMandateAmount;
         private String installApps;
         private String cirPdfPath;
+        private CustomerAuthServiceVO defaultCustometAuth4IRCTC;
 
 
 
@@ -280,5 +281,13 @@ public class CustomerVO extends BaseVO implements Serializable {
 
         public void setCirPdfPath(String cirPdfPath) {
                 this.cirPdfPath = cirPdfPath;
+        }
+
+        public CustomerAuthServiceVO getDefaultCustometAuth4IRCTC() {
+                return defaultCustometAuth4IRCTC;
+        }
+
+        public void setDefaultCustometAuth4IRCTC(CustomerAuthServiceVO defaultCustometAuth4IRCTC) {
+                this.defaultCustometAuth4IRCTC = defaultCustometAuth4IRCTC;
         }
 }

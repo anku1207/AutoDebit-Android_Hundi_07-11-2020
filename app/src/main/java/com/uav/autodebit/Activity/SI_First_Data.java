@@ -74,6 +74,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
     double amount;
     CustomerVO htmlRequestResp;
     ProgressDialog progressBar;
+    int defaultMandate;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -99,6 +100,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         amount=getIntent().getDoubleExtra("amount",1.00);
         serviceId=getIntent().getStringExtra("serviceId");
         paymentType=getIntent().getStringExtra("paymentType");
+        defaultMandate=getIntent().getIntExtra("defaultMandate",0);
 
         Log.w("getIntentResult",foractivity+"="+actionId+"="+amount+"="+serviceId+"="+paymentType);
 
@@ -418,6 +420,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                 customerAuthServiceVO.setCustomer(customerVO);
                 customerAuthServiceVO.setAnonymousString(anonymousString);
                 customerAuthServiceVO.setAnonymousInteger(Integer.parseInt(anonymousInteger));
+                customerAuthServiceVO.setDefaultMandate(defaultMandate);
 
                 Gson gson = new Gson();
                 String json = gson.toJson(customerAuthServiceVO);

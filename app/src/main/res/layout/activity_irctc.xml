@@ -78,7 +78,6 @@
         android:id="@+id/layoutmainBanner"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp">
-
             <androidx.cardview.widget.CardView
                 android:layout_height="220dp"
                 style="@style/cardview">
@@ -91,7 +90,6 @@
                     >
                 </ImageView>
             </androidx.cardview.widget.CardView>
-
     </LinearLayout>
 
     <ScrollView
@@ -104,8 +102,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/main_layout"
             android:orientation="vertical"/>
-
-
     </ScrollView>
 
 

@@ -61,7 +61,7 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
     String errormsz;
 
     ImageView back_activity_button1;
-    int minamt=0,actionId;
+    int minamt=0,actionId,defaultMandate;
 
     Integer customerAuthId;
 
@@ -96,8 +96,9 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
         selectServiceIds=getIntent().getIntegerArrayListExtra("selectservice"); // get select service list for get mandate amount and set bank id again serviceid
         disAmountEdittext=getIntent().getBooleanExtra("disAmountEdittext",false); //disable mandate amount edittext filed
         actionId=getIntent().getIntExtra("id",0);
+        defaultMandate=getIntent().getIntExtra("defaultMandate",0);
 
-        Log.w("getIntentResult",foractivity+"="+actionId+"="+selectServiceIds+"="+disAmountEdittext);
+        Log.w("getIntentResult","foractivity "+ foractivity+"actionId ="+actionId+" selectServiceIds ="+selectServiceIds+"disAmountEdittext ="+disAmountEdittext+"defaultMandate ="+defaultMandate);
 
         if(disAmountEdittext)maxamount.setEnabled(false);
 
@@ -528,15 +529,14 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
         customerAuthServiceVO.setCustomer(customerVO);
         customerAuthServiceVO.setCustomerAuthId(customerAuthId);
         customerAuthServiceVO.setAnonymousString(selectServiceIds!=null?selectServiceIds.toString():null);
+        customerAuthServiceVO.setDefaultMandate(defaultMandate);
         Gson gson = new Gson();
         String json = gson.toJson(customerAuthServiceVO);
 
-        Log.w("resp",json);
+        Log.w("setEnachMandateId",json);
         params.put("volley", json);
 
         connectionVO.setParams(params);
-
-
 
         VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
             @Override

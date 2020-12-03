@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: :paynimo_hdfc:@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f9faa7340557aaca11a3a85bc01bff7e/jetified-paynimo_hdfc/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f9faa7340557aaca11a3a85bc01bff7e/jetified-paynimo_hdfc/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f9faa7340557aaca11a3a85bc01bff7e/jetified-paynimo_hdfc/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f9faa7340557aaca11a3a85bc01bff7e/jetified-paynimo_hdfc/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f9faa7340557aaca11a3a85bc01bff7e/jetified-paynimo_hdfc/jars/libs/paynimo_v3.8_uat.jar!/" />
     </CLASSES>
     <JAVADOC />

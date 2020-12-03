@@ -125,10 +125,7 @@ public class AddOldDmrcCardAutoPe extends Base_Activity implements View.OnClickL
     ProgressBar imageProgressBar;
 
     CardTypeVO intent_cardTypeVO;
-
-
-
-
+    String dialogTitle;
 
 
     @Override
@@ -160,6 +157,7 @@ public class AddOldDmrcCardAutoPe extends Base_Activity implements View.OnClickL
         customerId = Session.getCustomerId(this);
         dmrc_customer_cardVO = gson.fromJson(getIntent().getStringExtra("dmrccard"), DMRC_Customer_CardVO.class);
         intent_cardTypeVO = (CardTypeVO) getIntent().getSerializableExtra("cardTypeVO");
+        dialogTitle=dmrc_customer_cardVO.getDialogTitle();
 
 
         card_Number.setInputType (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
@@ -377,7 +375,7 @@ public class AddOldDmrcCardAutoPe extends Base_Activity implements View.OnClickL
                             cardTypeVO.setCardTypeId(intent_cardTypeVO.getCardTypeId());
                             dmrc_customer_cardVO.setCardTypeVO(cardTypeVO);
                             saveDmrcCardInServer(dmrc_customer_cardVO);
-                        }),"AutoPe Sticker will be delivered to :");
+                        }),dialogTitle);
                     }
 
                 }

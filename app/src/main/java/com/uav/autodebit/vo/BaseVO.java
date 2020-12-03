@@ -46,6 +46,7 @@ public class BaseVO implements Serializable {
     private String upiMandateHtml;
     private Integer anonymousInteger1;
     private String dmrcFeeCharges;
+    private Integer defaultMandate;
 
 
     public String getStatusCode() {
@@ -340,5 +341,11 @@ public class BaseVO implements Serializable {
         this.dmrcFeeCharges = dmrcFeeCharges;
     }
 
+    public Integer getDefaultMandate() {
+        return defaultMandate;
+    }
 
+    public void setDefaultMandate(Integer defaultMandate) {
+        this.defaultMandate = defaultMandate;
+    }
 }

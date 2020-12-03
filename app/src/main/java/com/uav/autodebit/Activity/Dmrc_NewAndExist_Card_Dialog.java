@@ -63,7 +63,6 @@ public class Dmrc_NewAndExist_Card_Dialog extends Base_Activity implements View.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dmrc__new_and_exist__card__dialog);
 
-
         main_layout=findViewById(R.id.main_layout);
         proceed=findViewById(R.id.proceed);
         dialog_title=findViewById(R.id.dialog_title);

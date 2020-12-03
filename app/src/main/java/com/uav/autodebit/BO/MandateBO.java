@@ -78,5 +78,24 @@ public class MandateBO implements Serializable {
 
 
 
+    public static ConnectionVO setDefaultMandate(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("setDefaultMandate");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+
+    }
+
+    public static ConnectionVO generateOTP(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("generateOTP");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+
+    }
+
+
+
+
 
 }

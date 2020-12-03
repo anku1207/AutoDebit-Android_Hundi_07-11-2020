@@ -426,7 +426,6 @@ public class AddBeneficiaryActivity extends Base_Activity {
         if(resultCode==RESULT_OK){
             if(requestCode==ApplicationConstant.REQ_AUTOPE_PAYMENT_RESULT){
                 if(data!=null){
-
                     if(data.getBooleanExtra(AutopePayment.EXTRAS_REFRESH_PAGE,false))addBeneficiaryBanner();
                     BaseVO baseVO  =new Gson().fromJson(data.getStringExtra("data"),BaseVO.class);
                     if(!baseVO.getStatusCode().equals("200")){

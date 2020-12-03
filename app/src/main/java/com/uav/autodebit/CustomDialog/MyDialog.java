@@ -33,6 +33,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -1059,7 +1060,7 @@ public class MyDialog {
             }
             buttonOk.setText(btnName);
             buttonOk.setBackground(btn_background);
-            buttonOk.setTextColor(btn_color);
+            buttonOk.setTextColor(context.getResources().getColor(btn_color));
             buttonOk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -1072,8 +1073,53 @@ public class MyDialog {
         }catch (Exception e){
             ExceptionsNotification.ExceptionHandling(context, Utility.getStackTrace(e));
         }
-
     }
+
+
+
+    public static void showCheckBoxSingleButtonDialog(Context context, String title, String msg , ConfirmationGetObjet confirmationGetObjet , String... buttons){
+
+        String btnName= (buttons.length==0 ?"OK":buttons[0]);//(leftButton ==null?"Modify": leftButton);
+
+        Dialog customDialog = new Dialog(context);
+        customDialog.requestWindowFeature(1);
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        customDialog.setContentView(R.layout.design_check_box_dialog);
+        customDialog.setCanceledOnTouchOutside(false);
+        customDialog.setCancelable(true);
+        customDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        TextView dialog_title = (TextView)customDialog.findViewById(R.id.title);
+        CheckBox dialog_checkbox = customDialog.findViewById(R.id.condition_checkbox);
+        TextView dialog_checkbox_text = (TextView)customDialog.findViewById(R.id.condition_text);
+        Button dialog_btn = (Button)customDialog.findViewById(R.id.btn);
+
+        if(title==null){
+            dialog_title.setVisibility(View.GONE);
+        }else {
+            dialog_title.setText(title);
+            dialog_title.setVisibility(View.VISIBLE);
+        }
+
+        dialog_checkbox_text.setText(msg);
+        dialog_btn.setText(btnName);
+        dialog_btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View var) {
+                Utility.dismissDialog(context,customDialog);
+                if(dialog_checkbox.isChecked()){
+                    confirmationGetObjet.onOk(1);
+                }else {
+                    confirmationGetObjet.onOk(0);
+                }
+            }
+        });
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(customDialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        customDialog.getWindow().setAttributes(lp);
+        if(!((Activity)context).isFinishing() && !customDialog.isShowing())  customDialog.show();
+    }
+
 
 
 }
