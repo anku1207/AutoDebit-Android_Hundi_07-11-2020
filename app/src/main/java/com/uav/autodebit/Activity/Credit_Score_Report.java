@@ -165,6 +165,20 @@ public class Credit_Score_Report extends Base_Activity implements FileDownloadIn
 
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                if(!Credit_Score_Report.this.isFinishing() &&  progressBar!=null && !progressBar.isShowing()){
+                    try {
+                        progressBar.show();
+                    }catch (Exception e){
+                    }
+                }
+                if(newProgress==100){
+                    Utility.dismissDialog(Credit_Score_Report.this, progressBar);
+                }
+            }
+
+            @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
                 android.util.Log.d("WebView", consoleMessage.message());
                 return true;
