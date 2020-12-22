@@ -27,4 +27,13 @@ public class PaymentGateWayBO implements Serializable {
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }
+
+    public static ConnectionVO getDirectpaymentURLs() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("getDirectpaymentURLs");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
 }

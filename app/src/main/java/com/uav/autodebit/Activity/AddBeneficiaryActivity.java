@@ -408,7 +408,7 @@ public class AddBeneficiaryActivity extends Base_Activity {
                     intent.putExtra(AutopePayment.EXTRAS_URL,jsonObject.getString("url"));
                     intent.putExtra(AutopePayment.EXTRAS_FAIL_URL,jsonObject.getString("fail"));
                     intent.putExtra(AutopePayment.EXTRAS_SUCCESS_URL,jsonObject.getString("success"));
-                    intent.putExtra(AutopePayment.EXTRAS_P2P_TXN_ID,jsonObject.getInt("p2pTxnId")+"");
+                    intent.putExtra(AutopePayment.EXTRAS_TXN_ID,jsonObject.getInt("p2pTxnId")+"");
                     intent.putExtra(AutopePayment.EXTRAS_TITLE,"Payment");
                     intent.putExtra(AutopePayment.EXTRAS_REFRESH_PAGE,refreshPage);
 

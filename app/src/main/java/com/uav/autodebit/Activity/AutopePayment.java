@@ -58,11 +58,11 @@ public class AutopePayment extends AppCompatActivity implements View.OnClickList
     public static final String EXTRAS_URL = "url";
     public static final String EXTRAS_FAIL_URL = "fail_url";
     public static final String EXTRAS_SUCCESS_URL = "success_url";
-    public static final String EXTRAS_P2P_TXN_ID = "p2p_txn_id";
+    public static final String EXTRAS_TXN_ID = "txn_id";
     public static final String EXTRAS_REFRESH_PAGE = "refreshPage";
 
 
-    String fail_url,success_url,url,customer_beneficiary_id=null;
+    String fail_url,success_url,url,txn_id=null;
 
     TextView title;
     ImageView back_activity_button;
@@ -86,7 +86,7 @@ public class AutopePayment extends AppCompatActivity implements View.OnClickList
 
         title.setText(getIntent().getStringExtra(EXTRAS_TITLE));
         url=getIntent().getStringExtra(EXTRAS_URL);
-        customer_beneficiary_id=getIntent().getStringExtra(EXTRAS_P2P_TXN_ID);
+        txn_id=getIntent().getStringExtra(EXTRAS_TXN_ID);
         fail_url=getIntent().getStringExtra(EXTRAS_FAIL_URL)+ "app/";
         success_url=getIntent().getStringExtra(EXTRAS_SUCCESS_URL)+ "app/";
 
@@ -284,7 +284,7 @@ public class AutopePayment extends AppCompatActivity implements View.OnClickList
             //autope pg response
             customerVO.setAnonymousString(result);
             //customer beneficiary id
-            customerVO.setAnonymousString1(customer_beneficiary_id);
+            customerVO.setAnonymousString1(txn_id);
             Gson gson =new Gson();
             String json = gson.toJson(customerVO);
             params.put("volley", json);
@@ -301,7 +301,7 @@ public class AutopePayment extends AppCompatActivity implements View.OnClickList
                     JSONObject response = (JSONObject) resp;
                     Intent intent =new Intent();
                     setResult(RESULT_OK,intent);
-                    intent.putExtra(EXTRAS_P2P_TXN_ID,customer_beneficiary_id);
+                    intent.putExtra(EXTRAS_TXN_ID,txn_id);
                     intent.putExtra("data",response.toString());
                     intent.putExtra(EXTRAS_REFRESH_PAGE,getIntent().getBooleanExtra(EXTRAS_REFRESH_PAGE,true));
                     finish();

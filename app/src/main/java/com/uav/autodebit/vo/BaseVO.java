@@ -47,6 +47,7 @@ public class BaseVO implements Serializable {
     private Integer anonymousInteger1;
     private String dmrcFeeCharges;
     private Integer defaultMandate;
+    private String encryptedValue;
 
 
     public String getStatusCode() {
@@ -347,5 +348,14 @@ public class BaseVO implements Serializable {
 
     public void setDefaultMandate(Integer defaultMandate) {
         this.defaultMandate = defaultMandate;
+    }
+
+
+    public String getEncryptedValue() {
+        return encryptedValue;
+    }
+
+    public void setEncryptedValue(String encryptedValue) {
+        this.encryptedValue = encryptedValue;
     }
 }

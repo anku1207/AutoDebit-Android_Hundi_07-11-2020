@@ -341,7 +341,11 @@ public class BillPayRequest {
         }else {
            BillPayRequest.oxiBillPaymentValdated(context,oxigenTransactionVO,new PaymentGatewayResponse((PaymentGatewayResponse.OnPg)(pg)->{
                OxigenTransactionVO oxigenPGResp=(OxigenTransactionVO) pg;
-               startSIActivity(context,oxigenPGResp,ApplicationConstant.PG_PAYMENT);
+               if(oxigenPGResp.getServiceType().getDirectPayment()!=null && oxigenPGResp.getServiceType().getDirectPayment()==1){
+                   startDirectPaymentActivity(context,oxigenPGResp,ApplicationConstant.PG_PAYMENT);
+               }else{
+                   startSIActivity(context,oxigenPGResp,ApplicationConstant.PG_PAYMENT);
+               }
            },(PaymentGatewayResponse.OnEnach)(onEnach)->{
                OxigenTransactionVO oxigenPlanresp=(OxigenTransactionVO) onEnach;
                if(oxigenPlanresp.isEventIs()){
@@ -408,6 +412,20 @@ public class BillPayRequest {
             intent.putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenTransactionVO.getServiceId())));
             ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
         }catch (Exception e){
+            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+        }
+
+    }
+
+
+    public static void startDirectPaymentActivity(Context context , OxigenTransactionVO  oxigenTransactionVO , String paymentType){
+        try {
+            Intent intent = new Intent(context,DirectPaymentActivity.class);
+            intent.putExtra(DirectPaymentActivity.EXTRAS_ID,oxigenTransactionVO.getTypeId());
+            intent.putExtra(DirectPaymentActivity.EXTRAS_ENCRYPTED_VALUE,oxigenTransactionVO.getEncryptedValue());
+            ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_DIRECT_PAYMENT_RESULT);
+        }catch (Exception e ){
             e.printStackTrace();
             ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
         }

@@ -24,6 +24,8 @@ public class ServiceTypeVO  extends BaseVO implements Serializable {
     private String operatorRegionList;
     private String message;
     private Integer mandateRequired;
+    private Integer directPayment;
+
 
     public ServiceTypeVO(){
 
@@ -164,5 +166,13 @@ public class ServiceTypeVO  extends BaseVO implements Serializable {
 
     public void setMandateRequired(Integer mandateRequired) {
         this.mandateRequired = mandateRequired;
+    }
+
+    public Integer getDirectPayment() {
+        return directPayment;
+    }
+
+    public void setDirectPayment(Integer directPayment) {
+        this.directPayment = directPayment;
     }
 }

@@ -2,82 +2,78 @@ package com.uav.autodebit.Activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.Html;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.airbnb.lottie.animation.content.Content;
 import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
+import com.google.gson.reflect.TypeToken;
 import com.uav.autodebit.BO.IRCTCBO;
 import com.uav.autodebit.BO.MandateBO;
-import com.uav.autodebit.BO.ServiceBO;
-import com.uav.autodebit.CustomDialog.MyDialog;
-import com.uav.autodebit.Interface.ConfirmationGetObjet;
+import com.uav.autodebit.IRCTC.IRCTCApi;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
+import com.uav.autodebit.adpater.IRCTC_Image_With_Text_RecyclerViewAdapter;
+import com.uav.autodebit.adpater.OTM_With_Text_RecyclerViewAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
-import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
-import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
-import com.uav.autodebit.vo.BeneAccVO;
 import com.uav.autodebit.vo.ConnectionVO;
-import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerServicesVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.OxigenTransactionVO;
+import com.uav.autodebit.vo.DataAdapterVO;
+import com.uav.autodebit.vo.PreMandateRequestVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
-public class IRCTC extends Base_Activity {
-    ImageView imageview,back_activity_button;
+public class IRCTC extends Base_Activity implements  SwipeRefreshLayout.OnRefreshListener {
+    ImageView back_activity_button;
     LinearLayout main_layout;
     int activeMandateCount;
     CustomerVO customerResponse;
 
     String customerServiceId;
+    LinearLayout append_layout;
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    DataAdapterVO selectMandateDataAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_irctc);
         getSupportActionBar().hide();
 
-        imageview=findViewById(R.id.imageview);
         main_layout=findViewById(R.id.main_layout);
         back_activity_button=findViewById(R.id.back_activity_button);
-
+        mSwipeRefreshLayout=findViewById(R.id.swipe_container);
         back_activity_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,241 +81,292 @@ public class IRCTC extends Base_Activity {
             }
         });
 
-        getDetails();
+
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
+        /**
+         * Showing Swipe Refresh animation on activity create
+         * As animation won't start on onCreate, post runnable is used
+         */
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                // Fetching data from server
+                // loadRecyclerViewData();
+                getDetails();
+            }
+        });
+
+
 
     }
+
+    @Override
+    public void onRefresh() {
+        // Fetching data from server
+        setAppendLayout(IRCTC.this,selectMandateDataAdapter);
+    }
+
     @SuppressLint("ResourceType")
     public void getDetails(){
-        getPaymentOpationForService(IRCTC.this,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+        IRCTCApi.getIRCTCPGURLs(IRCTC.this,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
             try {
+                if(main_layout.getChildCount()>0)main_layout.removeAllViews();
                 customerResponse = (CustomerVO) success;
-                JSONObject anonymousString1Data=new JSONObject(customerResponse.getAnonymousString1());
-                Picasso.with(this).load(anonymousString1Data.getString("imageURL")).into(imageview, new com.squareup.picasso.Callback() {
-                    @Override
-                    public void onSuccess() {
-                        //do smth when picture is loaded successfully
-                    }
-                    @Override
-                    public void onError() {
-                    }
-                });
-                Typeface typeface = ResourcesCompat.getFont(this, R.font.poppinssemibold);
-                TextView tv = new TextView(this);
-                tv.setText(anonymousString1Data.getString("dialogTitle"));
-                tv.setTypeface(typeface);
-                tv.setLayoutParams(Utility.getLayoutparams(this,20,20,20,20));
-                main_layout.addView(tv);
 
+                if(customerResponse.isEventIs()){
+                    JSONArray jsonArrayMandateTypes=new JSONArray(customerResponse.getAnonymousString1());
+                    RecyclerView recyclerView = new RecyclerView(this);
+                    recyclerView.setNestedScrollingEnabled(true);
+                    recyclerView.setHasFixedSize(true);
+                    LinearLayout.LayoutParams layoutparamsRecyclerView = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    );
+                    recyclerView.setLayoutParams(layoutparamsRecyclerView);
 
-                JSONArray anonymousStringData=new JSONArray(customerResponse.getAnonymousString());
-                RadioGroup radiogroup = new RadioGroup(this);
-                for(int i=0;i<anonymousStringData.length();i++){
-                    JSONObject jsonObject = anonymousStringData.getJSONObject(i);
-                    if(jsonObject.getBoolean("active") && jsonObject.has("authId")){
-                        tv = new TextView(this);
-                        tv.setText(jsonObject.getString("bankName"));
-                        tv.setTypeface(typeface);
-                        tv.setLayoutParams(Utility.getLayoutparams(this,20,0,20,0));
-                        tv.setTextColor(!jsonObject.getBoolean("default")?Utility.getColorWrapper(this,R.color.defaultTextColor):
-                                Utility.getColorWrapper(this,R.color.green));
-                        main_layout.addView(tv);
-                        if(customerServiceId==null)customerServiceId= String.valueOf(jsonObject.getInt("csId"));
-                        activeMandateCount +=1;
-                    }else {
-                        String text = jsonObject.getString("key");
-                        RadioButton rdbtn = new RadioButton(this);
-                        rdbtn.setId(jsonObject.getInt("value"));
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            rdbtn.setText(Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT));
-                        } else {
-                            rdbtn.setText(Html.fromHtml(text));
-                        }
-                        rdbtn.setChecked(false);
-                        rdbtn.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorPrimary)));
-                        RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(15, 15, 15, 15);
-                        rdbtn.setLayoutParams(params);
-                        rdbtn.setPadding(10,0,0,0);
-                        rdbtn.setTag(jsonObject);
-                        // rdbtn.setGravity(Gravity.TOP);
-                        rdbtn.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorPrimary)));
-                        radiogroup.addView(rdbtn);
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+                    linearLayoutManager.setReverseLayout(false);
+                    linearLayoutManager.setStackFromEnd(false);
+                    linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+
+                    recyclerView.setLayoutManager(linearLayoutManager);
+                    recyclerView.setItemAnimator(new DefaultItemAnimator());
+                    // recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
+                    List<DataAdapterVO>  dataAdapterVOS =  new ArrayList<>();
+                    for(int i=0;i<jsonArrayMandateTypes.length();i++){
+                        JSONObject jsonObject = jsonArrayMandateTypes.getJSONObject(i);
+                        DataAdapterVO dataAdapterVO  = new DataAdapterVO();
+                        dataAdapterVO.setImagename(jsonObject.getString("icon"));
+                        dataAdapterVO.setText(jsonObject.getString("name"));
+                        dataAdapterVO.setId(jsonObject.getInt("id"));
+                        dataAdapterVO.setNumber(jsonObject.getInt("mandatecount")+"");
+                        dataAdapterVO.setDefaultMandate(jsonObject.getBoolean("defaultMandate"));
+                        dataAdapterVO.setServiceName(jsonObject.getString("pay_mode"));
+                        dataAdapterVOS.add(dataAdapterVO);
                     }
+                    main_layout.addView(recyclerView);
+                    //add divider
+                    View dividerHorizontal  = new View(this);
+                    LinearLayout.LayoutParams layoutparams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            15
+                    );
+                    layoutparams.topMargin =Utility.dpToPx(IRCTC.this,10);
+                    layoutparams.bottomMargin =Utility.dpToPx(IRCTC.this,10);
+                    dividerHorizontal.setLayoutParams(layoutparams);
+                    dividerHorizontal.setBackground(Utility.getDrawableResources(IRCTC.this,R.drawable.border_top_and_bottom));
+                    dividerHorizontal.setPadding(1,1,1,1);
+                    main_layout.addView(dividerHorizontal);
+
+                    append_layout = new LinearLayout(this);
+                    append_layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+                    append_layout.setOrientation(LinearLayout.VERTICAL);
+                    main_layout.addView(append_layout);
+
+                    IRCTC_Image_With_Text_RecyclerViewAdapter irctc_image_with_text_recyclerViewAdapter=new IRCTC_Image_With_Text_RecyclerViewAdapter(IRCTC.this, dataAdapterVOS,R.layout.irctc_mandate_card_type_style);
+                    recyclerView.setAdapter(irctc_image_with_text_recyclerViewAdapter);
+                    recyclerView.getAdapter().notifyDataSetChanged();
+
+                }else{
+                    openIRCTCWebviewActivity(customerResponse,ApplicationConstant.REQ_IRCTC_MANDATE_FIRST_RESULT,customerResponse.getPaymentTypeObject());
                 }
-                main_layout.addView(radiogroup);
-                Button proceed=Utility.getButton(this);
-                proceed.setText("Proceed");
-                proceed.setVisibility(View.GONE);
-                main_layout.addView(proceed);
-
-                if(anonymousString1Data.has("setDefaultMandateLink")){
-                    tv = new TextView(this);
-                    tv.setText(anonymousString1Data.getString("setDefaultMandateLink"));
-                    tv.setTypeface(typeface);
-                    tv.setLayoutParams(Utility.getLayoutparams(this,20,20,20,20));
-                    tv.setTextColor(Utility.getColorWrapper(this,R.color.defaultTextColor));
-                    tv.setGravity(Gravity.CENTER);
-                    tv.setTextColor(getApplication().getResources().getColorStateList(R.drawable.text_change_color_black));
-                    //track text view set underline
-                    tv.setPaintFlags(tv.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                    main_layout.addView(tv);
-
-                    tv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            try {
-                                startActivityForResult(new Intent(IRCTC.this, Change_Default_Mandate_Dialog.class).putExtra("data", anonymousStringData.toString()).putExtra("title",anonymousString1Data.getString("defaultMandatePopupTitle")),ApplicationConstant.REQ_DEFAULT_MANDATE_CHANGE);
-                            }catch (Exception e ){
-                                e.printStackTrace();
-                                ExceptionsNotification.ExceptionHandling(IRCTC.this , Utility.getStackTrace(e));
-                            }
-                        }
-                    });
-                }
-
-                if(anonymousString1Data.has("easyOTPExp") && anonymousString1Data.has("easyOTP") && anonymousString1Data.has("easyOTPMessage")){
-                    tv = new TextView(this);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        tv.setText(Html.fromHtml(anonymousString1Data.getString("easyOTPMessage"), Html.FROM_HTML_MODE_COMPACT));
-                    } else {
-                        tv.setText(Html.fromHtml(anonymousString1Data.getString("easyOTPMessage")));
-                    }tv.setTypeface(typeface);
-                    tv.setLayoutParams(Utility.getLayoutparams(this,20,0,20,0));
-                    tv.setTextColor(Utility.getColorWrapper(this,R.color.defaultTextColor));
-                    tv.setGravity(Gravity.CENTER);
-                    //track text view set underline
-                    //tv.setPaintFlags(tv.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                    main_layout.addView(tv);
-
-                }else if(anonymousString1Data.has("OTP")){
-                    JSONObject otpObject = anonymousString1Data.getJSONObject("OTP");
-
-                    tv = new TextView(this);
-                    tv.setText(otpObject.getString("link"));
-                    tv.setTypeface(typeface);
-                    tv.setLayoutParams(Utility.getLayoutparams(this,20,0,20,0));
-                    tv.setTextColor(Utility.getColorWrapper(this,R.color.defaultTextColor));
-                    tv.setGravity(Gravity.CENTER);
-                    tv.setTextColor(getApplication().getResources().getColorStateList(R.drawable.text_change_color_black));
-                    //track text view set underline
-                    tv.setPaintFlags(tv.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                    main_layout.addView(tv);
-
-                    tv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            try {
-                                Utility.confirmationDialogTextType(new DialogInterface() {
-                                    @Override
-                                    public void confirm(Dialog dialog) {
-                                        dialog.dismiss();
-
-                                        if(customerServiceId!=null){
-                                            generateOTP(IRCTC.this,customerServiceId,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
-                                                CustomerServicesVO customerServicesVO  = (CustomerServicesVO) s;
-                                                main_layout.removeAllViews();
-                                                getDetails();
-
-                                            }));
-                                        }else {
-                                            Toast.makeText(IRCTC.this, Content_Message.error_message, Toast.LENGTH_SHORT).show();
-                                        }
-
-                                    }
-                                    @Override
-                                    public void modify(Dialog dialog) {
-                                        dialog.dismiss();
-                                    }
-                                },IRCTC.this,null,otpObject.getString("message"),otpObject.getString("popupTitle"),new String[]{"Yes","No"});
-                            }catch (Exception e ){
-                                e.printStackTrace();
-                                ExceptionsNotification.ExceptionHandling(IRCTC.this , Utility.getStackTrace(e));
-                            }
-                        }
-                    });
-                }
-                radiogroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                        proceed.setVisibility(View.VISIBLE);
-                    }
-                });
-
-                proceed.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        try {
-                            int selectedId = radiogroup.getCheckedRadioButtonId();
-                            if(selectedId!=-1){
-                                if(activeMandateCount>=1){
-                                    JSONObject anonymousString1Data=new JSONObject(customerResponse.getAnonymousString1());
-                                    JSONObject defaultMandateConcent = anonymousString1Data.getJSONObject("defaultMandateConcent");
-
-                                    MyDialog.showCheckBoxSingleButtonDialog(IRCTC.this,defaultMandateConcent.getString("title"),defaultMandateConcent.getString("text"),new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
-                                        int checkboxValue= (int) ok;
-                                        Log.w("checkBox",checkboxValue+"");
-                                        startActivityBySelectRadioButtonId(selectedId,checkboxValue);
-                                    }));
-                                }else {
-                                    startActivityBySelectRadioButtonId(selectedId,1);
-                                }
-                            }else {
-                                Toast.makeText(IRCTC.this, "Please select Mandate Type ", Toast.LENGTH_SHORT).show();
-                            }
-                        }catch (Exception e){
-                            e.printStackTrace();
-                            ExceptionsNotification.ExceptionHandling(IRCTC.this , Utility.getStackTrace(e));
-                        }
-                    }
-                });
             }catch (Exception e){
                 e.printStackTrace();
                 ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
             }
+        },(VolleyResponse.OnError)(error)->{
         }));
     }
 
-    private void generateOTP(Context  context, String customerServiceId, VolleyResponse volleyResponse) {
-        try {
-            HashMap<String, Object> params = new HashMap<String, Object>();
-            ConnectionVO connectionVO = MandateBO.generateOTP();
 
-            CustomerServicesVO customerServicesVO =new CustomerServicesVO();
-            customerServicesVO.setCsId(Integer.parseInt(customerServiceId));
+    @SuppressLint("ResourceType")
+    public  void setAppendLayout(Context context , DataAdapterVO adapterVO){
+       /* //create a view to inflate the layout_item (the xml with the textView created before)
+        View view =getLayoutInflater().inflate(layout, append_layout,false);
+        //add the view to the main layout
+        append_layout.addView(view);*/
+        selectMandateDataAdapter=adapterVO;
+        if(Integer.parseInt(adapterVO.getNumber())>0){
 
-            Gson gson = new Gson();
-            String json = gson.toJson(customerServicesVO);
-            params.put("volley", json);
-            connectionVO.setParams(params);
-            Log.w("generateOTP",gson.toJson(customerServicesVO));
-            VolleyUtils.makeJsonObjectRequest(context,connectionVO, new VolleyResponseListener() {
-                @Override
-                public void onError(String message) {
-                }
-                @Override
-                public void onResponse(Object resp) {
-                    JSONObject response = (JSONObject) resp;
-                    CustomerServicesVO resp_CustomerServicesVO = gson.fromJson(response.toString(), CustomerServicesVO.class);
-                    Log.w("Server_Resp",response.toString());
+            RecyclerView recyclerView = new RecyclerView(this);
 
-                    if(resp_CustomerServicesVO.getStatusCode().equals("400")){
-                        ArrayList error = (ArrayList) resp_CustomerServicesVO.getErrorMsgs();
-                        StringBuilder sb = new StringBuilder();
-                        for(int i=0; i<error.size(); i++){
-                            sb.append(error.get(i)).append("\n");
+            recyclerView.setNestedScrollingEnabled(true);
+            recyclerView.setHasFixedSize(true);
+
+            LinearLayout.LayoutParams layoutparamsRecyclerView = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT);
+            layoutparamsRecyclerView.setMargins(5,5,5,5);
+
+            recyclerView.setLayoutParams(layoutparamsRecyclerView);
+
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+            linearLayoutManager.setReverseLayout(false);
+            linearLayoutManager.setStackFromEnd(false);
+            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+           // recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
+            if(adapterVO.getId()==1){
+                mSwipeRefreshLayout.setRefreshing(true);
+                IRCTCApi.getMandateListByPaymentOption(IRCTC.this,adapterVO.getId(),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    PreMandateRequestVO preMandateRequestVO  = (PreMandateRequestVO) success;
+                    Type collectionType = new TypeToken<List<PreMandateRequestVO>>() {}.getType();
+                    ArrayList<PreMandateRequestVO>preMandateRequestVOS =new Gson().fromJson(preMandateRequestVO.getAnonymousString(), collectionType);
+                    OTM_With_Text_RecyclerViewAdapter otm_with_text_recyclerViewAdapter=new OTM_With_Text_RecyclerViewAdapter(IRCTC.this, preMandateRequestVOS,R.layout.upi_mandate_list);
+                    recyclerView.setAdapter(otm_with_text_recyclerViewAdapter);
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                },(VolleyResponse.OnError)(error)->{
+                    mSwipeRefreshLayout.setRefreshing(false);
+
+                }));
+
+            }else if(adapterVO.getId()==2){
+                mSwipeRefreshLayout.setRefreshing(true);
+                IRCTCApi.getMandateListByPaymentOption(IRCTC.this,adapterVO.getId(),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    PreMandateRequestVO preMandateRequestVO  = (PreMandateRequestVO) success;
+                    Type collectionType = new TypeToken<List<PreMandateRequestVO>>() {}.getType();
+                    ArrayList<PreMandateRequestVO>preMandateRequestVOS =new Gson().fromJson(preMandateRequestVO.getAnonymousString(), collectionType);
+                    OTM_With_Text_RecyclerViewAdapter otm_with_text_recyclerViewAdapter=new OTM_With_Text_RecyclerViewAdapter(IRCTC.this, preMandateRequestVOS,R.layout.upi_mandate_list);
+                    recyclerView.setAdapter(otm_with_text_recyclerViewAdapter);
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                },(VolleyResponse.OnError)(error)->{
+                    mSwipeRefreshLayout.setRefreshing(false);
+
+                }));
+            }else if(adapterVO.getId()==3){
+                mSwipeRefreshLayout.setRefreshing(true);
+                IRCTCApi.getMandateListByPaymentOption(IRCTC.this,adapterVO.getId(),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    PreMandateRequestVO preMandateRequestVO  = (PreMandateRequestVO) success;
+                    Type collectionType = new TypeToken<List<PreMandateRequestVO>>() {}.getType();
+                    ArrayList<PreMandateRequestVO>preMandateRequestVOS =new Gson().fromJson(preMandateRequestVO.getAnonymousString(), collectionType);
+                    OTM_With_Text_RecyclerViewAdapter otm_with_text_recyclerViewAdapter=new OTM_With_Text_RecyclerViewAdapter(IRCTC.this, preMandateRequestVOS,R.layout.upi_mandate_list);
+                    recyclerView.setAdapter(otm_with_text_recyclerViewAdapter);
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                },(VolleyResponse.OnError)(error)->{
+                    mSwipeRefreshLayout.setRefreshing(false);
+
+                }));
+            }
+
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    // Update UI elements
+                    if(append_layout.getChildCount()>0)append_layout.removeAllViews();
+                    TextView  tv = new TextView(IRCTC.this);
+                    tv.setText("+ Add New Mandate");
+                    tv.setLayoutParams(Utility.getLayoutparams(IRCTC.this,15,10,15,10));
+                    tv.setTextColor(Utility.getColorWrapper(IRCTC.this,R.color.defaultTextColor));
+                    tv.setGravity(Gravity.LEFT);
+                    tv.setTextColor(getApplication().getResources().getColorStateList(R.drawable.text_change_color_black));
+                    //track text view set underline
+                    tv.setPaintFlags(tv.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    append_layout.addView(tv);
+
+                    tv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(adapterVO.getId()==1){
+                                openEnachActivity(IRCTC.this);
+                            }else {
+                                openIRCTCWebviewActivity(customerResponse,ApplicationConstant.REQ_IRCTC_MANDATE_RESULT,adapterVO.getServiceName());
+                            }
                         }
-                        Utility.showSingleButtonDialog(context,"Error !",sb.toString(),false);
-                    }else {
-                        volleyResponse.onSuccess(resp_CustomerServicesVO);
-                    }
+                    });
+                    append_layout.addView(recyclerView);
                 }
             });
-        }catch (Exception e){
-            e.printStackTrace();
-            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+        }else {
+            if(adapterVO.getId()==1){
+                openEnachActivity(IRCTC.this);
+            }else {
+                openIRCTCWebviewActivity(customerResponse,ApplicationConstant.REQ_IRCTC_MANDATE_RESULT,adapterVO.getServiceName());
+            }
         }
     }
+
+    private void openEnachActivity(Context context){
+        IRCTCApi.createIRCTCBankMandateRequest(context,Integer.parseInt(Session.getCustomerId(context)),ApplicationConstant.IRCTC,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+            PreMandateRequestVO preMandateRequestVO = (PreMandateRequestVO) success;
+            Intent intent = new Intent(context,Enach_Mandate.class);
+            intent.putExtra("forresutl",true);
+            intent.putExtra("selectservice",new ArrayList<Integer>(Arrays.asList(ApplicationConstant.IRCTC)));
+            intent.putExtra("id",preMandateRequestVO.getRequestId());
+            startActivityForResult(intent, ApplicationConstant.REQ_ENACH_MANDATE);
+        }));
+    }
+
+    private void openIRCTCWebviewActivity(CustomerVO customerVO,int requestCode,String payMode){
+        try {
+            JSONObject webViewURLJson = new JSONObject(customerVO.getAnonymousString());
+            Intent intent = new Intent(IRCTC.this,IRCTC_Webview.class);
+            intent.putExtra(IRCTC_Webview.EXTRAS_URL,webViewURLJson.getString("url"));
+            intent.putExtra(IRCTC_Webview.EXTRAS_FAIL_URL,webViewURLJson.getString("fail"));
+            intent.putExtra(IRCTC_Webview.EXTRAS_SUCCESS_URL,webViewURLJson.getString("success"));
+            intent.putExtra(IRCTC_Webview.EXTRAS_ENACH_MANDATE,webViewURLJson.getString("enach"));
+            intent.putExtra(IRCTC_Webview.EXTRAS_TITLE,"Payments");
+            intent.putExtra(IRCTC_Webview.EXTRAS_PAY_MODE,payMode);
+            startActivityForResult(intent,requestCode);
+        }catch (Exception e){
+            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(IRCTC.this, Utility.getStackTrace(e));
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try{
+            if(resultCode==RESULT_OK){
+                if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
+                    boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
+                    String mandateId=data.getStringExtra("bankMandateId");
+                    int actionId=data.getIntExtra("actionId",0);
+                    if(enachMandateStatus && actionId!=0 && mandateId!=null){
+                        IRCTCApi.updateIRCTCBankMandateStatus(IRCTC.this,Integer.parseInt(mandateId),actionId,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+                            getDetails();
+                        }));
+                    }else{
+                        Utility.showSingleButtonDialog(IRCTC.this,"Alert",data.getStringExtra("msg"),false);
+                    }
+                }else if(requestCode==ApplicationConstant.REQ_IRCTC_MANDATE_RESULT || requestCode==ApplicationConstant.REQ_IRCTC_MANDATE_FIRST_RESULT){
+                    getDetails();
+                }
+            }else {
+                if(requestCode==ApplicationConstant.REQ_IRCTC_MANDATE_FIRST_RESULT){
+                    finish();
+                }else if(requestCode==ApplicationConstant.REQ_IRCTC_MANDATE_RESULT){
+                    getDetails();
+                }
+            }
+        }catch (Exception e){
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     public  void startActivityBySelectRadioButtonId(int radioBtnId ,int defaultMandate ){
         try {
@@ -366,81 +413,4 @@ public class IRCTC extends Base_Activity {
         ((Activity) context).startActivityForResult(intent, ApplicationConstant.REQ_UPI_FOR_MANDATE);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        try{
-            if(resultCode==RESULT_OK){
-                 if(requestCode== ApplicationConstant.REQ_SI_MANDATE){
-                    if(data !=null && data.getIntExtra("mandateId",0)!=0){
-                        main_layout.removeAllViews();
-                        getDetails();
-                    }else {
-                        Utility.showSingleButtonDialog(this,"Error !","Something went wrong, Please try again!",false);
-                    }
-                }else if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
-                     if(data !=null && data.getBooleanExtra("mandate_status",false)){
-                         main_layout.removeAllViews();
-                         getDetails();
-                     }else {
-                         Utility.showSingleButtonDialog(this,"Error !",data !=null?data.getStringExtra("msg"):Content_Message.error_message,false);
-                     }
-                 }else if(requestCode==ApplicationConstant.REQ_UPI_FOR_MANDATE){
-                     if(data !=null && data.getIntExtra("mandateId",0)!=0){
-                         main_layout.removeAllViews();
-                         getDetails();
-                     }else {
-                         Utility.showSingleButtonDialog(this,"Error !","Something went wrong, Please try again!",false);
-                     }
-                 }else if(requestCode==ApplicationConstant.REQ_DEFAULT_MANDATE_CHANGE){
-                     main_layout.removeAllViews();
-                     getDetails();
-                 }
-            }
-        }catch (Exception e){
-            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
-        }
-    }
-
-
-    private void getPaymentOpationForService(Context context, VolleyResponse volleyResponse) {
-        try {
-            HashMap<String, Object> params = new HashMap<String, Object>();
-            ConnectionVO connectionVO = IRCTCBO.getPaymentOpationForService();
-            CustomerVO customerVO = new CustomerVO();
-            customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(context)));
-            customerVO.setServiceId(ApplicationConstant.IRCTC);
-
-            Gson gson = new Gson();
-            String json = gson.toJson(customerVO);
-            params.put("volley", json);
-            connectionVO.setParams(params);
-            Log.w("OpationForService",gson.toJson(customerVO));
-            VolleyUtils.makeJsonObjectRequest(context,connectionVO, new VolleyResponseListener() {
-                @Override
-                public void onError(String message) {
-                }
-                @Override
-                public void onResponse(Object resp) {
-                    JSONObject response = (JSONObject) resp;
-                    CustomerVO resp_CustomerVO = gson.fromJson(response.toString(), CustomerVO.class);
-                    Log.w("Server_Resp",response.toString());
-
-                    if(resp_CustomerVO.getStatusCode().equals("400")){
-                        ArrayList error = (ArrayList) resp_CustomerVO.getErrorMsgs();
-                        StringBuilder sb = new StringBuilder();
-                        for(int i=0; i<error.size(); i++){
-                            sb.append(error.get(i)).append("\n");
-                        }
-                        Utility.showSingleButtonDialog(context,"Error !",sb.toString(),false);
-                    }else {
-                        volleyResponse.onSuccess(resp_CustomerVO);
-                    }
-                }
-            });
-        }catch (Exception e){
-            e.printStackTrace();
-            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
-        }
-    }
 }

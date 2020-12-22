@@ -46,18 +46,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".Activity.DirectPaymentActivity"></activity>
+        <activity android:name=".Activity.Skip_Mandate_Payment_Notification" />
+        <activity
+            android:name=".Activity.IRCTC_Webview"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Activity.Change_Default_Mandate_Dialog"
-            android:theme="@style/AppTheme.pop"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            >
-        </activity>
+            android:theme="@style/AppTheme.pop"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Activity.Credit_Card_Webview"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            />
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Activity.AutopePayment"
             android:screenOrientation="portrait"

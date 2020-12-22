@@ -1209,7 +1209,7 @@ public class Utility {
                 text.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1));
                 text.setTextColor(context.getResources().getColor(R.color.defaultTextColor));
                 text.setText(Msg);
-                text.setTypeface(typeface);
+             // text.setTypeface(typeface);
 
                 et.addView(text);
                 mainlayout.addView(et);

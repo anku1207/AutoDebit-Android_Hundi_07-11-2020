@@ -26,7 +26,7 @@ public class ApplicationConstant {
     public static int  REQ_ENACH_MANDATE=1003,REQ_ALLSERVICE=1004,REQ_SI_MANDATE=1005,REQ_MANDATE_FOR_FIRSTTIME_RECHARGE=1006,REQ_POPAPACTIVITYRESULT=1007,
             REQ_MANDATE_FOR_BILL_FETCH_ERROR=1008,REQ_SI_FOR_BILL_FETCH_ERROR=1009,REQ_UPI_FOR_MANDATE=1010,REQ_DMRC_MANDATE_SI_BUCKET=1011,
             REQ_MANDATE_DETAIL_ACTIVITY_RESULT=1012,REQ_CHANGE_ADDRESS_OTP_VERIFY_RESULT=1013,REQ_MANDATE_REVOKE_SERVICE_WISE_RESULT=1014,
-            REQ_AUTOPE_PAYMENT_RESULT=1015,REQ_DEFAULT_MANDATE_CHANGE=1016;
+            REQ_AUTOPE_PAYMENT_RESULT=1015,REQ_DEFAULT_MANDATE_CHANGE=1016,REQ_IRCTC_MANDATE_RESULT=1017,REQ_IRCTC_MANDATE_FIRST_RESULT=1018,REQ_DIRECT_PAYMENT_RESULT=1019;
     public static int  REQ_CAMERA_PERMISSION=2001, REQ_DOWNLOAD_PERMISSION=2002,REQ_READ_SMS_PERMISSION=2003,REQ_READ_CONTACT_PERMISSION=2004;
     public static int  REQ_Code_D2H=3001;
     public static int  REQ_MAKE_CALL_PERMISSION=2005;
@@ -76,8 +76,8 @@ public class ApplicationConstant {
             return "http://app.autope.in/hundi/rest/stateless";
             //return "http://164.52.192.45";
         }else{
-            return  "http://205.147.103.18:8080/hundi/rest/stateless" ;
-          //  return "http://192.168.1.12:8080/hundi/rest/stateless";
+          //  return  "http://205.147.103.18:8080/hundi/rest/stateless" ;
+             return "http://192.168.1.12:8080/hundi/rest/stateless";
           // return  "http://192.168.1.54:8080/hundi/rest/stateless" ;
           //   return  "http://192.168.1.103:8080/hundi/rest/stateless" ;
           //return "http://192.168.1.25:8080/hundi/rest/stateless";

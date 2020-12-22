@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView style="@style/cardview"
+    android:minHeight="100dp"
+    app:cardCornerRadius="5dp"
+    android:layout_margin="7dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:id="@+id/mail_Layout"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        >
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/radio_Button"
+            android:gravity="center|center_horizontal"
+            android:clickable="false"
+            >
+        </RadioButton>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/debit_card"
+                android:id="@+id/text_View"
+                android:text=""
+                android:gravity="center_vertical"
+                android:paddingHorizontal="10dp"
+                android:textColor="@color/black"
+                >
+            </TextView>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight=".2">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/rupay_card"
+                android:id="@+id/image_mandate"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                >
+            </ImageView>
+
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

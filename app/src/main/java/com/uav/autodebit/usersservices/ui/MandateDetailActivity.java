@@ -143,13 +143,9 @@ public class MandateDetailActivity extends Base_Activity {
         revokeMandate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
+                    Utility.confirmationDialogTextType(new DialogInterface() {
                         @Override
                         public void confirm(Dialog dialog) {
-                            Utility.dismissDialog(MandateDetailActivity.this,dialog);
-                        }
-                        @Override
-                        public void modify(Dialog dialog) {
                             Utility.dismissDialog(MandateDetailActivity.this,dialog);
                             mandateRevokeServiceWiseRepository.getIsmandateRevoked(getIntent().getIntExtra("csoid",0),MandateDetailActivity.this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
                                 CustomerVO customerVO  = (CustomerVO) s;
@@ -163,7 +159,11 @@ public class MandateDetailActivity extends Base_Activity {
 
                             }));
                         }
-                    }, MandateDetailActivity.this,dialogMessage,"", "Yes","No");
+                        @Override
+                        public void modify(Dialog dialog) {
+                            Utility.dismissDialog(MandateDetailActivity.this,dialog);
+                        }
+                    }, MandateDetailActivity.this,null,dialogMessage, "",new String[]{"Yes","No"});
 
                 }
             });

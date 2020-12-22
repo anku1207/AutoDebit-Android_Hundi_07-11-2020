@@ -527,7 +527,7 @@ public class Home extends Base_Activity
                         },(ConfirmationDialogInterface.OnCancel)(cancelbtn)->{
                             Utility.dismissDialog(Home.this, cancelbtn);
                         }));
-                     }
+                    }
 
                  /*  if(serviceTypeVO.getServiceTypeId()==ApplicationConstant.Dmrc && Session.getSessionByKey_BoolenValue(Home.this,Session.CACHE_IS_DMRC_CARD_ALLOT)){
                        Utility.enableDisableView(view,false);

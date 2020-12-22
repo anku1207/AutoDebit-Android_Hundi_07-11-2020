@@ -14,6 +14,8 @@ public class DataAdapterVO  implements Serializable {
     private String imagename;
     private String associatedValue;
     private Class activityname;
+    private Integer id;
+    private boolean defaultMandate;
 
     private String validity;
     private String imageUrl;
@@ -352,5 +354,21 @@ public class DataAdapterVO  implements Serializable {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public boolean isDefaultMandate() {
+        return defaultMandate;
+    }
+
+    public void setDefaultMandate(boolean defaultMandate) {
+        this.defaultMandate = defaultMandate;
     }
 }
