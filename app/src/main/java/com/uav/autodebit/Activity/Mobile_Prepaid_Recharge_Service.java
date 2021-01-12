@@ -184,7 +184,6 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 dataAdapterVO.setAssociatedValue(object.getString("OperatorAlias"));
                 datalist.add(dataAdapterVO);
             }
-
         } catch (JSONException e) {
             Utility.showToast(this,Content_Message.error_message);
         }

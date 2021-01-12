@@ -46,7 +46,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.DirectPaymentActivity"></activity>
+        <activity android:name=".Activity.Dmrc_Card_Topup_BillPay"></activity>
+        <activity android:name=".Activity.DirectPaymentActivity" />
         <activity android:name=".Activity.Skip_Mandate_Payment_Notification" />
         <activity
             android:name=".Activity.IRCTC_Webview"

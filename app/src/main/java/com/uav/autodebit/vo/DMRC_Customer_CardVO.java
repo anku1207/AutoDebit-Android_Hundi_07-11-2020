@@ -21,8 +21,10 @@ public class DMRC_Customer_CardVO extends BaseVO implements Serializable {
     private boolean trackCard;
     private CardTypeVO cardTypeVO;
     private boolean cancelAndRefund;
-
     private Long issueDate;
+    private CustomerAuthServiceVO  dmrcBankMandate;
+    private CustomerAuthServiceVO dmrcSiMandate;
+    private CustomerAuthServiceVO dmrcUpiMandate;
 
     public DMRC_Customer_CardVO() {
     }
@@ -145,5 +147,29 @@ public class DMRC_Customer_CardVO extends BaseVO implements Serializable {
 
     public void setCancelAndRefund(boolean cancelAndRefund) {
         this.cancelAndRefund = cancelAndRefund;
+    }
+
+    public CustomerAuthServiceVO getDmrcBankMandate() {
+        return dmrcBankMandate;
+    }
+
+    public void setDmrcBankMandate(CustomerAuthServiceVO dmrcBankMandate) {
+        this.dmrcBankMandate = dmrcBankMandate;
+    }
+
+    public CustomerAuthServiceVO getDmrcSiMandate() {
+        return dmrcSiMandate;
+    }
+
+    public void setDmrcSiMandate(CustomerAuthServiceVO dmrcSiMandate) {
+        this.dmrcSiMandate = dmrcSiMandate;
+    }
+
+    public CustomerAuthServiceVO getDmrcUpiMandate() {
+        return dmrcUpiMandate;
+    }
+
+    public void setDmrcUpiMandate(CustomerAuthServiceVO dmrcUpiMandate) {
+        this.dmrcUpiMandate = dmrcUpiMandate;
     }
 }

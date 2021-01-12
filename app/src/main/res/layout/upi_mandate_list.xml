@@ -1,44 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView style="@style/cardview"
-    android:minHeight="100dp"
-    app:cardCornerRadius="5dp"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/cardview"
     android:layout_margin="7dp"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:minHeight="100dp"
+    app:cardCornerRadius="5dp">
+
     <LinearLayout
+        android:id="@+id/mail_Layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:id="@+id/mail_Layout"
         android:layout_gravity="center"
-        android:padding="10dp"
-        >
+        android:orientation="horizontal"
+        android:padding="10dp">
+
         <RadioButton
+            android:id="@+id/radio_Button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/radio_Button"
-            android:gravity="center|center_horizontal"
             android:clickable="false"
-            >
-        </RadioButton>
+            android:gravity="center|center_horizontal"/>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:gravity="center">
 
             <TextView
+                android:id="@+id/text_View"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/debit_card"
-                android:id="@+id/text_View"
-                android:text=""
                 android:gravity="center_vertical"
                 android:paddingHorizontal="10dp"
-                android:textColor="@color/black"
-                >
-            </TextView>
+                android:src="@drawable/debit_card"
+                android:text=""
+                android:textColor="@color/black"/>
 
         </LinearLayout>
 
@@ -47,18 +45,16 @@
             android:layout_width="0dp"
             android:layout_height="70dp"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:layout_weight=".2">
+            android:layout_weight=".2"
+            android:gravity="center">
 
             <ImageView
+                android:id="@+id/image_mandate"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/rupay_card"
-                android:id="@+id/image_mandate"
-                android:scaleType="fitXY"
                 android:adjustViewBounds="true"
-                >
-            </ImageView>
+                android:scaleType="fitXY"
+                android:src="@drawable/rupay_card"/>
 
         </LinearLayout>
     </LinearLayout>

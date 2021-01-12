@@ -48,6 +48,7 @@ public class BaseVO implements Serializable {
     private String dmrcFeeCharges;
     private Integer defaultMandate;
     private String encryptedValue;
+    private Boolean hasDirectPayment;
 
 
     public String getStatusCode() {
@@ -357,5 +358,13 @@ public class BaseVO implements Serializable {
 
     public void setEncryptedValue(String encryptedValue) {
         this.encryptedValue = encryptedValue;
+    }
+
+    public Boolean getHasDirectPayment() {
+        return hasDirectPayment;
+    }
+
+    public void setHasDirectPayment(Boolean hasDirectPayment) {
+        this.hasDirectPayment = hasDirectPayment;
     }
 }

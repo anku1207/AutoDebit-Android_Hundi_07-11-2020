@@ -34,9 +34,9 @@
 
 
     <style name="AppTheme.pop" parent="Theme.AppCompat.Light.NoActionBar">
-       <!-- <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowCloseOnTouchOutside">true</item>
-        <item name="android:backgroundDimEnabled">true</item>-->
+        <!-- <item name="android:windowIsTranslucent">true</item>
+         <item name="android:windowCloseOnTouchOutside">true</item>
+         <item name="android:backgroundDimEnabled">true</item>-->
 
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -133,7 +133,7 @@
     </style>
 
 
-    <style name="edittext" parent= "">
+    <style name="edittext" parent="">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <!--<item name="android:drawableLeft">@drawable/mobile</item>
@@ -148,12 +148,12 @@
         <item name="android:textSize">12dp</item>
         <item name="android:textStyle">bold</item>
 
-       <!-- <item name="colorControlNormal">@color/white</item>
-        <item name="colorControlActivated">@color/appbar</item>
-        <item name="colorControlHighlight">@color/black</item>-->
+        <!-- <item name="colorControlNormal">@color/white</item>
+         <item name="colorControlActivated">@color/appbar</item>
+         <item name="colorControlHighlight">@color/black</item>-->
     </style>
-    
-    
+
+
     <style name="commonEdittextStyle">
         <item name="android:drawablePadding">4dp</item>
         <item name="android:layout_marginLeft">10dp</item>
@@ -177,27 +177,28 @@
         <item name="android:fontFamily">@font/poppinsmedium</item>
     </style>
 
-    <style name="ActionBarTitleTextStyle" >
+    <style name="ActionBarTitleTextStyle">
 
-    <item name="android:layout_centerInParent">true</item>
-    <item name="android:layout_gravity">center</item>
-    <item name="android:fontFamily">@font/poppinsbold</item>
-    <item name="android:gravity">center</item>
-    <item name="android:textAlignment">center</item>
-    <item name="android:textColor">@color/white</item>
-    <item name="android:textSize">20sp</item>
-    <item name="android:textStyle">bold</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:fontFamily">@font/poppinsbold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <!--confirmation dialog-->
     <style name="confirmation_dialog_layout">
         <item name="android:layout_width">match_parent</item>
-         <item name="android:layout_height">wrap_content</item>
-         <item name="android:orientation">horizontal</item>
-         <item name="android:layout_gravity">center</item>
-            <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginTop">10dp</item>
 
     </style>
+
     <style name="confirmation_dialog_layout_image">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -230,7 +231,7 @@
     <style name="confirmation_dialog_value_image">
         <item name="android:textAlignment">viewStart</item>
         <item name="android:gravity">bottom</item>
-       <item name="font">@font/poppinslight</item>
+        <item name="font">@font/poppinslight</item>
     </style>
 
 
@@ -241,10 +242,6 @@
         <item name="cardCornerRadius">15dp</item>
         <item name="android:layout_margin">10dp</item>
     </style>
-
-
-
-
 
 
     <!--  Transparent dialog -->
@@ -259,7 +256,6 @@
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
-
 
 
     <!--history charges-->
@@ -288,10 +284,11 @@
     </style>
 
 
-
     <style name="MyCheckBox" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorControlNormal">@color/colorPrimary</item>   <!-- normal border color change as you wish -->
-        <item name="colorControlActivated">@color/colorPrimary</item> <!-- activated color change as you wish -->
+        <item name="colorControlNormal">@color/colorPrimary
+        </item>   <!-- normal border color change as you wish -->
+        <item name="colorControlActivated">@color/colorPrimary
+        </item> <!-- activated color change as you wish -->
         <item name="android:textColor">#CF221E</item> <!-- checkbox text color -->
     </style>
 

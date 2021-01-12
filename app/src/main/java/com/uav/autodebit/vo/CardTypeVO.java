@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 public class CardTypeVO extends  BaseVO implements Serializable {
 
-
     private Integer cardTypeId;
     private String cardTypeName;
     private Integer sortNo ;

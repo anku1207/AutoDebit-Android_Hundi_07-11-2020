@@ -7,7 +7,6 @@ import java.io.Serializable;
 public class DataAdapterVO  implements Serializable {
     private static final long serialVersionUID = 1L;
 
-
     private String text;
     private String text2;
     private Integer image;
@@ -20,9 +19,6 @@ public class DataAdapterVO  implements Serializable {
     private String validity;
     private String imageUrl;
 
-
-
-
     private String quantity;
     private  String mop;
     private  String total;
@@ -33,12 +29,10 @@ public class DataAdapterVO  implements Serializable {
     private  String producttype;
     private  Integer associativeCombo;
 
-
     private String passengerName;
     private String invoiceDate;
     private String posSaleId;
     private String questionsData;
-
 
     private String txnId;
     private String discAmt;
@@ -58,16 +52,12 @@ public class DataAdapterVO  implements Serializable {
 
 
     public DataAdapterVO(){
-
     }
 
     public DataAdapterVO(String text, String text2){
         this.text=text;
         this.text2=text2;
     }
-
-
-
 
     public String getText() {
         return text;
@@ -76,8 +66,6 @@ public class DataAdapterVO  implements Serializable {
     public void setText(String text) {
         this.text = text;
     }
-
-
 
     public String getAssociatedValue() {
         return associatedValue;
@@ -95,7 +83,6 @@ public class DataAdapterVO  implements Serializable {
         this.text2 = text2;
     }
 
-
     public Class getActivityname() {
         return activityname;
     }
@@ -103,7 +90,6 @@ public class DataAdapterVO  implements Serializable {
     public void setActivityname(Class activityname) {
         this.activityname = activityname;
     }
-
 
     public String getQuantity() {
         return quantity;
@@ -145,7 +131,6 @@ public class DataAdapterVO  implements Serializable {
         this.productname = productname;
     }
 
-
     public String getPcsid() {
         return pcsid;
     }
@@ -161,7 +146,6 @@ public class DataAdapterVO  implements Serializable {
     public void setResponse(JSONObject response) {
         this.response = response;
     }
-
 
     public Integer getImage() {
         return image;
@@ -242,7 +226,6 @@ public class DataAdapterVO  implements Serializable {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-
 
     public String getTxnId() {
         return txnId;

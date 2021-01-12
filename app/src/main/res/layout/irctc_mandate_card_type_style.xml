@@ -1,48 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mail_Layout"
     android:layout_width="wrap_content"
     android:layout_height="100dp"
-    android:orientation="horizontal"
-    android:id="@+id/mail_Layout"
-    >
+    android:orientation="horizontal">
+
     <LinearLayout
         android:layout_width="70dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:padding="4dp"
-        android:orientation="vertical"
         android:layout_margin="10dp"
-        >
+        android:orientation="vertical"
+        android:padding="4dp">
+
         <ImageView
+            android:id="@+id/image_View"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/debit_card"
-            android:id="@+id/image_View"
-            android:scaleType="fitXY"
-            android:visibility="visible"
             android:layout_gravity="center"
             android:adjustViewBounds="true"
-            >
-        </ImageView>
+            android:scaleType="fitXY"
+            android:src="@drawable/debit_card"
+            android:visibility="visible"></ImageView>
+
         <TextView
+            android:id="@+id/type_Text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/type_Text"
+            android:fontFamily="@font/poppinsmedium"
+            android:text=""
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:text=""
-            android:textSize="12dp"
-            android:fontFamily="@font/poppinsmedium"
-            >
-        </TextView>
+            android:textSize="12dp"></TextView>
     </LinearLayout>
+
     <RadioButton
+        android:id="@+id/radio_Button"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/radio_Button"
-        android:gravity="center|center_horizontal"
         android:clickable="false"
-        >
-    </RadioButton>
+        android:gravity="center|center_horizontal"></RadioButton>
 </LinearLayout>

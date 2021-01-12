@@ -55,7 +55,7 @@ public class Dmrc_NewAndExist_Card_Dialog extends Base_Activity implements View.
     TextView dialog_title;
     Gson gson;
     LinearLayout main_layout;
-    RadioGroup radiogroup ;
+    RadioGroup radiogroup;
 
 
     @Override
@@ -63,14 +63,14 @@ public class Dmrc_NewAndExist_Card_Dialog extends Base_Activity implements View.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dmrc__new_and_exist__card__dialog);
 
-        main_layout=findViewById(R.id.main_layout);
-        proceed=findViewById(R.id.proceed);
-        dialog_title=findViewById(R.id.dialog_title);
-        radiogroup =findViewById(R.id.radiogroup);
+        main_layout = findViewById(R.id.main_layout);
+        proceed = findViewById(R.id.proceed);
+        dialog_title = findViewById(R.id.dialog_title);
+        radiogroup = findViewById(R.id.radiogroup);
 
-        gson=new Gson();
+        gson = new Gson();
 
-        getDmrcCardTypes(Dmrc_NewAndExist_Card_Dialog.this,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+        getDmrcCardTypes(Dmrc_NewAndExist_Card_Dialog.this, new VolleyResponse((VolleyResponse.OnSuccess) (success) -> {
             try {
                 BaseVO baseVO = (BaseVO) success;
                 main_layout.setVisibility(View.VISIBLE);
@@ -79,7 +79,7 @@ public class Dmrc_NewAndExist_Card_Dialog extends Base_Activity implements View.
 
                 JSONArray jsonArray = new JSONArray(baseVO.getAnonymousString());
 
-                for(int i=0;i<jsonArray.length();i++){
+                for (int i = 0; i < jsonArray.length(); i++) {
                     CardTypeVO cardTypeVO1 = gson.fromJson(jsonArray.getJSONObject(i).toString(), CardTypeVO.class);
                     RadioButton rdbtn = new RadioButton(this);
                     rdbtn.setId(cardTypeVO1.getCardTypeId());
@@ -93,78 +93,78 @@ public class Dmrc_NewAndExist_Card_Dialog extends Base_Activity implements View.
                     RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     params.setMargins(15, 15, 15, 15);
                     rdbtn.setLayoutParams(params);
-                    rdbtn.setPadding(10,0,0,0);
+                    rdbtn.setPadding(10, 0, 0, 0);
                     rdbtn.setGravity(Gravity.TOP);
                     rdbtn.setTag(cardTypeVO1);
                     radiogroup.addView(rdbtn);
                 }
-                ((RadioButton)radiogroup.getChildAt(0)).setChecked(true);
-            }catch ( Exception e){
-                ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
+                ((RadioButton) radiogroup.getChildAt(0)).setChecked(true);
+            } catch (Exception e) {
+                ExceptionsNotification.ExceptionHandling(this, Utility.getStackTrace(e));
             }
         }));
 
-       //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        DisplayMetrics displayMetrics =new DisplayMetrics();
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width=displayMetrics.widthPixels;
-        int height=displayMetrics.heightPixels;
+        int width = displayMetrics.widthPixels;
+        int height = displayMetrics.heightPixels;
 
-        getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
+        getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        WindowManager.LayoutParams params =getWindow().getAttributes();
+        WindowManager.LayoutParams params = getWindow().getAttributes();
         params.gravity = Gravity.CENTER_VERTICAL;
         getWindow().setAttributes(params);
 
         proceed.setOnClickListener(this);
     }
+
     @Override
     public void onClick(View v) {
         try {
             Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.imageviewclickeffect);
-            switch (v.getId()){
+            switch (v.getId()) {
                 case R.id.proceed:
                     int selectedId = radiogroup.getCheckedRadioButtonId();
-                    if(selectedId!=-1){
+                    if (selectedId != -1) {
                         // find the radiobutton by returned id
                         RadioButton radioButton = (RadioButton) findViewById(selectedId);
                         CardTypeVO cardTypeVO = (CardTypeVO) radioButton.getTag();
                         proceed.startAnimation(animation);
-                        getDmrcCardListByCardType(Dmrc_NewAndExist_Card_Dialog.this , new VolleyResponse((VolleyResponse.OnSuccess)(newCardSuccess)->{
+                        getDmrcCardListByCardType(Dmrc_NewAndExist_Card_Dialog.this, new VolleyResponse((VolleyResponse.OnSuccess) (newCardSuccess) -> {
                             DMRC_Customer_CardVO dmrc_customer_cardVO = (DMRC_Customer_CardVO) newCardSuccess;
                             finish();
                             try {
                                 Class<?> clazz = Class.forName(getApplicationContext().getPackageName() + ".Activity." + cardTypeVO.getActivityName());
-                                Intent intent =new Intent(this,clazz);
-                                intent.putExtra("onetimecharges",dmrc_customer_cardVO.getAnonymousString());
-                                intent.putExtra("isdisable",false);
-                                intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));
-                                intent.putExtra("cardTypeVO",cardTypeVO);
+                                Intent intent = new Intent(this, clazz);
+                                intent.putExtra("onetimecharges", dmrc_customer_cardVO.getAnonymousString());
+                                intent.putExtra("isdisable", false);
+                                intent.putExtra("dmrccard", gson.toJson(dmrc_customer_cardVO));
+                                intent.putExtra("cardTypeVO", cardTypeVO);
                                 startActivity(intent);
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
-                                ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
+                                ExceptionsNotification.ExceptionHandling(this, Utility.getStackTrace(e));
                             }
-                        }),cardTypeVO.getCardTypeId());
-                    }else {
+                        }), cardTypeVO.getCardTypeId());
+                    } else {
                         Toast.makeText(this, "Please pick the type of card you want to buy ", Toast.LENGTH_SHORT).show();
                     }
                     break;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(this, Utility.getStackTrace(e));
         }
-
     }
 
 
-    private void getDmrcCardTypes(Context context , VolleyResponse volleyResponse){
+    private void getDmrcCardTypes(Context context, VolleyResponse volleyResponse) {
         try {
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = MetroBO.getCardTypeList();
 
-            CardTypeVO cardTypeVO=new CardTypeVO();
+            CardTypeVO cardTypeVO = new CardTypeVO();
 
             ServiceTypeVO serviceTypeVO = new ServiceTypeVO();
             serviceTypeVO.setServiceTypeId(ApplicationConstant.Dmrc);
@@ -175,80 +175,82 @@ public class Dmrc_NewAndExist_Card_Dialog extends Base_Activity implements View.
             cardTypeVO.setServiceTypeVO(serviceTypeVO);
             cardTypeVO.setStatusVO(statusVO);
             cardTypeVO.setAnonymousInteger(Integer.parseInt(Session.getCustomerId(Dmrc_NewAndExist_Card_Dialog.this)));
-            Gson gson =new Gson();
+            Gson gson = new Gson();
             String json = gson.toJson(cardTypeVO);
             params.put("volley", json);
-            Log.w("getDmrcCardTypes",json);
+            Log.w("getDmrcCardTypes", json);
             connectionVO.setParams(params);
 
-            VolleyUtils.makeJsonObjectRequest(context,connectionVO, new VolleyResponseListener() {
+            VolleyUtils.makeJsonObjectRequest(context, connectionVO, new VolleyResponseListener() {
                 @Override
                 public void onError(String message) {
                 }
+
                 @Override
                 public void onResponse(Object resp) throws JSONException {
                     JSONObject response = (JSONObject) resp;
                     BaseVO baseVO = gson.fromJson(response.toString(), BaseVO.class);
 
-                    if(baseVO.getStatusCode().equals("400")){
+                    if (baseVO.getStatusCode().equals("400")) {
                         ArrayList error = (ArrayList) baseVO.getErrorMsgs();
                         StringBuilder sb = new StringBuilder();
-                        for(int i=0; i<error.size(); i++){
+                        for (int i = 0; i < error.size(); i++) {
                             sb.append(error.get(i)).append("\n");
                         }
                         //pd.dismiss();
-                        Utility.showSingleButtonDialog(context,baseVO.getDialogTitle(),sb.toString(),false);
-                    }else {
+                        Utility.showSingleButtonDialog(context, baseVO.getDialogTitle(), sb.toString(), false);
+                    } else {
                         volleyResponse.onSuccess(baseVO);
                     }
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
-            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(context, Utility.getStackTrace(e));
         }
     }
 
-    private void getDmrcCardListByCardType(Context context , VolleyResponse volleyResponse ,Integer cardTypeId) {
+    private void getDmrcCardListByCardType(Context context, VolleyResponse volleyResponse, Integer cardTypeId) {
         try {
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = MetroBO.getDmrcCustomerList();
 
-            CustomerVO customerVO=new CustomerVO();
+            CustomerVO customerVO = new CustomerVO();
             customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(context)));
             customerVO.setAnonymousInteger(cardTypeId);
-            Gson gson =new Gson();
+            Gson gson = new Gson();
             String json = gson.toJson(customerVO);
             params.put("volley", json);
 
             System.out.println(json);
             connectionVO.setParams(params);
 
-            VolleyUtils.makeJsonObjectRequest(context,connectionVO, new VolleyResponseListener() {
+            VolleyUtils.makeJsonObjectRequest(context, connectionVO, new VolleyResponseListener() {
                 @Override
                 public void onError(String message) {
                 }
+
                 @Override
                 public void onResponse(Object resp) throws JSONException {
                     JSONObject response = (JSONObject) resp;
                     DMRC_Customer_CardVO dmrc_customer_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
 
-                    if(dmrc_customer_cardVO.getStatusCode().equals("400")){
+                    if (dmrc_customer_cardVO.getStatusCode().equals("400")) {
                         ArrayList error = (ArrayList) dmrc_customer_cardVO.getErrorMsgs();
                         StringBuilder sb = new StringBuilder();
-                        for(int i=0; i<error.size(); i++){
+                        for (int i = 0; i < error.size(); i++) {
                             sb.append(error.get(i)).append("\n");
                         }
                         //pd.dismiss();
-                        Utility.showSingleButtonDialog(context,dmrc_customer_cardVO.getDialogTitle(),sb.toString(),false);
-                    }else {
+                        Utility.showSingleButtonDialog(context, dmrc_customer_cardVO.getDialogTitle(), sb.toString(), false);
+                    } else {
                         volleyResponse.onSuccess(dmrc_customer_cardVO);
                     }
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
-            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(context, Utility.getStackTrace(e));
             //   Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
 
         }

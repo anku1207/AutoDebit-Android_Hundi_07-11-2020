@@ -44,7 +44,6 @@ import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.OxigenTransactionVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
@@ -54,12 +53,18 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DirectPaymentActivity extends AppCompatActivity implements View.OnClickListener {
+public class DirectPaymentActivity extends AppCompatActivity implements View.OnClickListener, MyJavaScriptInterface.javascriptinterface {
     public static final String EXTRAS_ENCRYPTED_VALUE = "encryptedValue";
     public static final String EXTRAS_ID = "action_id";
+    public static final String EXTRAS_DIRECT_PAYMENT = "is_direct_payment";
+    public static final String EXTRAS_TITLE = "title_activity";
+    public static final String EXTRAS_SERVICE_TYPE_ID = "service_type_id";
+
+
     String encryptedValue,action_Id=null;
 
-    String fail_url,success_url,url=null;
+    String cancel_url, redirect_url,url=null;
+    int isDirectPayment,service_type_id;
 
     TextView title;
     ImageView back_activity_button;
@@ -78,22 +83,23 @@ public class DirectPaymentActivity extends AppCompatActivity implements View.OnC
         back_activity_button.setOnClickListener(this);
         progressBar = new UAVProgressDialog(this);
 
-
+        title.setText(getIntent().getStringExtra(EXTRAS_TITLE));
         encryptedValue=getIntent().getStringExtra(EXTRAS_ENCRYPTED_VALUE);
         action_Id=getIntent().getStringExtra(EXTRAS_ID);
+        isDirectPayment=getIntent().getIntExtra(EXTRAS_DIRECT_PAYMENT,0);
+        service_type_id=getIntent().getIntExtra(EXTRAS_SERVICE_TYPE_ID,0);
 
-        getDirectPaymentURL(DirectPaymentActivity.this,encryptedValue,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+        getDirectPaymentURL(DirectPaymentActivity.this,Session.getCustomerId(this),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
             try {
                 JSONObject jsonObject = (JSONObject) success;
-                url=jsonObject.getString("url");
-                fail_url=jsonObject.getString("fail")+ "app/";
-                success_url=jsonObject.getString("success")+ "app/";
-
+                url=jsonObject.getString("url")+"?app=1&value="+encryptedValue+"&hasDirectPayment="+(isDirectPayment==1);
+                Log.w("url_run",url);
+                cancel_url =jsonObject.getString("cancelUrl")+ "app/";
+                redirect_url =jsonObject.getString("redirectUrl")+ "app/";
+                openWebView(url);
             }catch (Exception e){
                 ExceptionsNotification.ExceptionHandling(this, Utility.getStackTrace(e));
             }
-
-
         }));
     }
 
@@ -306,6 +312,49 @@ public class DirectPaymentActivity extends AppCompatActivity implements View.OnC
         }
     }
 
+    @Override
+    public void htmlresult(String result) {
+        try {
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            ConnectionVO connectionVO = PaymentGateWayBO.proceedAutoPePayment4AllResponse();
+
+            CustomerVO customerVO=new CustomerVO();
+            customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(DirectPaymentActivity.this)));
+            //autope pg response
+            customerVO.setAnonymousString(result);
+            //customer beneficiary id
+            customerVO.setAnonymousString1(action_Id);
+            //set service type id
+            customerVO.setServiceId(service_type_id);
+            Gson gson =new Gson();
+            String json = gson.toJson(customerVO);
+            params.put("volley", json);
+
+            Log.w("htmlresultRequest", json);
+            connectionVO.setParams(params);
+
+            VolleyUtils.makeJsonObjectRequest(DirectPaymentActivity.this, connectionVO, new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                }
+                @Override
+                public void onResponse(Object resp) throws JSONException {
+                    JSONObject response = (JSONObject) resp;
+                    Intent intent =new Intent();
+                    setResult(RESULT_OK,intent);
+                    intent.putExtra(EXTRAS_ID,action_Id);
+                    intent.putExtra("data",response.toString());
+                    finish();
+
+                }
+            });
+        } catch (Exception e) {
+            ExceptionsNotification.ExceptionHandling(DirectPaymentActivity.this , Utility.getStackTrace(e));
+        }
+
+
+    }
+
 
     private class MyBrowser extends WebViewClient {
         @Override
@@ -343,7 +392,7 @@ public class DirectPaymentActivity extends AppCompatActivity implements View.OnC
         public void onPageFinished(WebView view, String url) {
             Utility.dismissDialog(DirectPaymentActivity.this, progressBar);
             try {
-                if (url.equalsIgnoreCase(success_url) || url.equalsIgnoreCase(fail_url)) {
+                if (url.equalsIgnoreCase(redirect_url) || url.equalsIgnoreCase(cancel_url)) {
                     webView.setVisibility(View.GONE);
                     webView.loadUrl("javascript:HTMLOUT.showHTML(document.getElementById('resp').innerHTML);");
                     webView.loadUrl("javascript:console.log('MAGIC'+document.getElementById('resp').innerHTML);");
@@ -406,12 +455,10 @@ public class DirectPaymentActivity extends AppCompatActivity implements View.OnC
             ConnectionVO connectionVO = PaymentGateWayBO.getDirectpaymentURLs();
 
             CustomerVO customerVO=new CustomerVO();
-            customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(context)));
-            customerVO.setEncryptedValue(encryptedValue);
+            customerVO.setCustomerId(Integer.valueOf(encryptedValue));
             Gson gson =new Gson();
             String json = gson.toJson(customerVO);
             params.put("volley", json);
-
             Log.w("htmlresultRequest", json);
             connectionVO.setParams(params);
 
@@ -423,14 +470,9 @@ public class DirectPaymentActivity extends AppCompatActivity implements View.OnC
                 public void onResponse(Object response) throws JSONException {
                     JSONObject jsonObject = (JSONObject) response;
 
-                    if(jsonObject.getString("statusCode").equals("400")){
-                        ArrayList error = (ArrayList) jsonObject.getJSONArray("errorMsgs").get(0);
-                        StringBuilder sb = new StringBuilder();
-                        for(int i=0; i<error.size(); i++){
-                            sb.append(error.get(i)).append("\n");
-                        }
-                        Utility.alertDialog(context,jsonObject.getString("dialogTitle"),sb.toString(),"Ok");
-                    }else {
+                    if (!jsonObject.getString("status").equals("200")) {
+                        Utility.alertDialog(context, "Error !", jsonObject.getString("errorMsg"), "Ok");
+                    } else  {
                         volleyResponse.onSuccess(jsonObject);
                     }
                 }

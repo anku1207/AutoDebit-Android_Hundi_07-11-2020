@@ -105,7 +105,6 @@ public class IRCTC_Webview extends AppCompatActivity implements View.OnClickList
         openWebView(url+"&app=1&pay_mode="+pay_mode);
     }
 
-
     @SuppressLint("SetJavaScriptEnabled")
     void openWebView(final String receiptUrl) {
         Log.w("callUrl", receiptUrl);
@@ -316,10 +315,6 @@ public class IRCTC_Webview extends AppCompatActivity implements View.OnClickList
                     intent.putExtra("id",preMandateRequestVO.getRequestId());
                     startActivityForResult(intent, ApplicationConstant.REQ_ENACH_MANDATE);
                 }));
-
-
-
-
             }else{
                 view.loadUrl(url);
             }
@@ -401,7 +396,6 @@ public class IRCTC_Webview extends AppCompatActivity implements View.OnClickList
         return super.onKeyDown(keyCode, event);
     }
 
-
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.back_activity_button) {
@@ -419,8 +413,6 @@ public class IRCTC_Webview extends AppCompatActivity implements View.OnClickList
         }
     }
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -434,10 +426,12 @@ public class IRCTC_Webview extends AppCompatActivity implements View.OnClickList
                     if(enachMandateStatus && actionId!=0 && mandateId!=null){
                         IRCTCApi.updateIRCTCBankMandateStatus(IRCTC_Webview.this,Integer.parseInt(mandateId),actionId,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
                             Intent intent =new Intent();
+                            intent.putExtra("msg",data.getStringExtra("msg"));
                             setResult(RESULT_OK,intent);
                             finish();
                         }));
                     }else{
+
                         Utility.showSingleButtonDialog(IRCTC_Webview.this,"Alert",data.getStringExtra("msg"),false);
                     }
                 }
@@ -490,6 +484,8 @@ public class IRCTC_Webview extends AppCompatActivity implements View.OnClickList
                         Utility.showSingleButtonDialog(IRCTC_Webview.this,htmlRequestResp.getDialogTitle(),htmlRequestResp.getErrorMsgs().get(0),true);
                     } else {
                         Intent intent =new Intent();
+                      // intent.putExtra("msg",data.getStringExtra("msg"));
+                       intent.putExtra("msg","Irctc Sucessfully");
                         setResult(RESULT_OK,intent);
                         finish();
                     }

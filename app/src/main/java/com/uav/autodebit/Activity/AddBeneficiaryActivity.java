@@ -411,6 +411,7 @@ public class AddBeneficiaryActivity extends Base_Activity {
                     intent.putExtra(AutopePayment.EXTRAS_TXN_ID,jsonObject.getInt("p2pTxnId")+"");
                     intent.putExtra(AutopePayment.EXTRAS_TITLE,"Payment");
                     intent.putExtra(AutopePayment.EXTRAS_REFRESH_PAGE,refreshPage);
+                    intent.putExtra(AutopePayment.EXTRAS_SERVICE_TYPE_ID,ApplicationConstant.MoneyTransfer);
 
                     startActivityForResult(intent,ApplicationConstant.REQ_AUTOPE_PAYMENT_RESULT);
                 }catch (Exception e){

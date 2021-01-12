@@ -54,12 +54,12 @@ import java.util.HashMap;
 public class AddBankAndServicelist extends Base_Activity implements View.OnClickListener {
     LinearLayout mainlayout;
 
-    EditText acno,acholdername;
+    EditText acno, acholdername;
     Spinner account_type;
     ImageView back_activity_button;
-    JSONArray accountTypeJsonArray,bankJsonArray;
+    JSONArray accountTypeJsonArray, bankJsonArray;
 
-    JSONObject selectBankJson,selectBankType;
+    JSONObject selectBankJson, selectBankType;
     ExpandableHeightListView listview;
     Button nextbtn;
     ListViewItemCheckboxBaseAdapter myAdapter;
@@ -76,18 +76,18 @@ public class AddBankAndServicelist extends Base_Activity implements View.OnClick
         getSupportActionBar().hide();
 
         setElementId();
-        accountTypeJsonArray=new JSONArray();
-        bankJsonArray=new JSONArray();
+        accountTypeJsonArray = new JSONArray();
+        bankJsonArray = new JSONArray();
 
         selectBankJson = new JSONObject();
 
-        scrollview.setOnTouchListener(new View.OnTouchListener(){
+        scrollview.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event){
-                if (event != null && event.getAction() == MotionEvent.ACTION_MOVE){
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event != null && event.getAction() == MotionEvent.ACTION_MOVE) {
                     InputMethodManager imm = ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE));
                     boolean isKeyboardUp = imm.isAcceptingText();
-                    if (isKeyboardUp){
+                    if (isKeyboardUp) {
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     }
                 }
@@ -96,26 +96,25 @@ public class AddBankAndServicelist extends Base_Activity implements View.OnClick
         });
 
 
-        banklist(new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+        banklist(new VolleyResponse((VolleyResponse.OnSuccess) (success) -> {
             scrollview.setVisibility(View.VISIBLE);
-            CustomerVO customerVO =(CustomerVO) success;
-
+            CustomerVO customerVO = (CustomerVO) success;
 
 
             bankname.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
-                    if(MotionEvent.ACTION_UP == motionEvent.getAction()) {
+                    if (MotionEvent.ACTION_UP == motionEvent.getAction()) {
 
                         Layout layout = ((EditText) view).getLayout();
-                        int  x = (int) motionEvent.getX();
-                        int  y = (int) motionEvent.getY();
+                        int x = (int) motionEvent.getX();
+                        int y = (int) motionEvent.getY();
 
-                        Intent intent =new Intent(AddBankAndServicelist.this, PopapSimpleList.class);
-                        intent.putExtra("datalist", new Gson().toJson( datalist));
-                        intent.putExtra("title","Operator");
-                        intent.putExtra("x",x);
-                        intent.putExtra("y",y);
+                        Intent intent = new Intent(AddBankAndServicelist.this, PopapSimpleList.class);
+                        intent.putExtra("datalist", new Gson().toJson(datalist));
+                        intent.putExtra("title", "Operator");
+                        intent.putExtra("x", x);
+                        intent.putExtra("y", y);
                         startActivityForResult(intent, ApplicationConstant.REQ_POPAPACTIVITYRESULT);
 
                     }
@@ -126,12 +125,13 @@ public class AddBankAndServicelist extends Base_Activity implements View.OnClick
             account_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    try{
-                        selectBankType =accountTypeJsonArray.getJSONObject(i);
-                    }catch (Exception e){
+                    try {
+                        selectBankType = accountTypeJsonArray.getJSONObject(i);
+                    } catch (Exception e) {
                         Toast.makeText(AddBankAndServicelist.this, "Something went wrong, Please try again!", Toast.LENGTH_SHORT).show();
                     }
                 }
+
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
                 }
@@ -140,14 +140,14 @@ public class AddBankAndServicelist extends Base_Activity implements View.OnClick
     }
 
     private void setElementId() {
-        acno=findViewById(R.id.acno);
-        acholdername=findViewById(R.id.acholdername);
-        bankname=findViewById(R.id.bankname);
-        account_type=findViewById(R.id.account_type);
-        back_activity_button=findViewById(R.id.back_activity_button);
-        listview=findViewById(R.id.listview);
-        nextbtn=findViewById(R.id.nextbtn);
-        scrollview=findViewById(R.id.scrollview);
+        acno = findViewById(R.id.acno);
+        acholdername = findViewById(R.id.acholdername);
+        bankname = findViewById(R.id.bankname);
+        account_type = findViewById(R.id.account_type);
+        back_activity_button = findViewById(R.id.back_activity_button);
+        listview = findViewById(R.id.listview);
+        nextbtn = findViewById(R.id.nextbtn);
+        scrollview = findViewById(R.id.scrollview);
 
         nextbtn.setOnClickListener(this);
         back_activity_button.setOnClickListener(this);
@@ -157,42 +157,43 @@ public class AddBankAndServicelist extends Base_Activity implements View.OnClick
 
     }
 
-    private void banklist(VolleyResponse volleyResponse){
+    private void banklist(VolleyResponse volleyResponse) {
 
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = MandateBO.getBankListAndAccountType();
-        CustomerVO customerVO=new CustomerVO();
+        CustomerVO customerVO = new CustomerVO();
         customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(this)));
-        Gson gson =new Gson();
+        Gson gson = new Gson();
         String json = gson.toJson(customerVO);
         params.put("volley", json);
         connectionVO.setParams(params);
-        Log.w("banklist",params.toString());
-        VolleyUtils.makeJsonObjectRequest(this,connectionVO, new VolleyResponseListener() {
+        Log.w("banklist", params.toString());
+        VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
             @Override
             public void onError(String message) {
             }
+
             @Override
             public void onResponse(Object resp) throws JSONException {
                 JSONObject response = (JSONObject) resp;
-                Gson gson=new Gson();
+                Gson gson = new Gson();
                 CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
-                if(customerVO.getStatusCode().equals("400")){
+                if (customerVO.getStatusCode().equals("400")) {
                     ArrayList error = (ArrayList) customerVO.getErrorMsgs();
                     StringBuilder sb = new StringBuilder();
-                    for(int i=0; i<error.size(); i++){
+                    for (int i = 0; i < error.size(); i++) {
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(AddBankAndServicelist.this,customerVO.getDialogTitle(),sb.toString(),true);
-                }else {
+                    Utility.showSingleButtonDialog(AddBankAndServicelist.this, customerVO.getDialogTitle(), sb.toString(), true);
+                } else {
 
-                    JSONObject jsonObject =new JSONObject(customerVO.getAnonymousString());
+                    JSONObject jsonObject = new JSONObject(customerVO.getAnonymousString());
 
                     JSONObject object = new JSONObject(jsonObject.getString("result"));
-                    bankJsonArray=object.getJSONArray("data");
+                    bankJsonArray = object.getJSONArray("data");
 
-                    for(int i=0;i<bankJsonArray.length();i++){
-                        JSONObject bankjson=(bankJsonArray.getJSONObject(i));
+                    for (int i = 0; i < bankJsonArray.length(); i++) {
+                        JSONObject bankjson = (bankJsonArray.getJSONObject(i));
                         DataAdapterVO dataAdapterVO = new DataAdapterVO();
                         dataAdapterVO.setText(bankjson.getString("name"));
                         dataAdapterVO.setAssociatedValue(bankjson.getString("id"));
@@ -200,19 +201,20 @@ public class AddBankAndServicelist extends Base_Activity implements View.OnClick
                     }
 
 
-                    accountTypeJsonArray =new JSONArray(jsonObject.getString("accountType"));
-                    ArrayList accountList=new ArrayList();
-                    for(int i=0;i< accountTypeJsonArray.length();i++){
-                        JSONObject object1=(accountTypeJsonArray.getJSONObject(i));
+                    accountTypeJsonArray = new JSONArray(jsonObject.getString("accountType"));
+                    ArrayList accountList = new ArrayList();
+                    for (int i = 0; i < accountTypeJsonArray.length(); i++) {
+                        JSONObject object1 = (accountTypeJsonArray.getJSONObject(i));
                         accountList.add(object1.getString("key"));
                     }
                     ArrayAdapter adapter = new ArrayAdapter<String>(AddBankAndServicelist.this,
-                            R.layout.spinner_item,accountList);
+                            R.layout.spinner_item, accountList);
                     adapter.setDropDownViewResource(R.layout.spinner_item);
                     account_type.setAdapter(adapter);
 
-                    ArrayList<ServiceTypeVO> serviceTypeVOS= (ArrayList<ServiceTypeVO>) new Gson().fromJson(jsonObject.getString("services"), new TypeToken<ArrayList<ServiceTypeVO>>() { }.getType());
-                    myAdapter=new ListViewItemCheckboxBaseAdapter(AddBankAndServicelist.this, serviceTypeVOS, R.layout.checkbox_with_text);
+                    ArrayList<ServiceTypeVO> serviceTypeVOS = (ArrayList<ServiceTypeVO>) new Gson().fromJson(jsonObject.getString("services"), new TypeToken<ArrayList<ServiceTypeVO>>() {
+                    }.getType());
+                    myAdapter = new ListViewItemCheckboxBaseAdapter(AddBankAndServicelist.this, serviceTypeVOS, R.layout.checkbox_with_text);
                     listview.setAdapter(myAdapter);
                     listview.setExpanded(true);
 
@@ -223,152 +225,152 @@ public class AddBankAndServicelist extends Base_Activity implements View.OnClick
     }
 
 
-
     @Override
     public void onClick(View view) {
-        if(view.getId()==R.id.nextbtn){
-            ArrayList<Integer> addservice=new ArrayList<>();
+        if (view.getId() == R.id.nextbtn) {
+            ArrayList<Integer> addservice = new ArrayList<>();
             SparseBooleanArray checked = myAdapter.mCheckStates;
             int size = checked.size(); // number of name-value pairs in the array
             for (int i = 0; i < size; i++) {
                 int key = checked.keyAt(i);
                 boolean value = checked.get(key);
-                if (value){
+                if (value) {
                     addservice.add(myAdapter.mCheckStates.keyAt(i));
                 }
             }
-            if(checkEmptyFiled(addservice)) {
+            if (checkEmptyFiled(addservice)) {
 
-               checkValidateAdoptService(addservice,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
-                   Intent intent =new Intent(AddBankAndServicelist.this, Enach_Mandate.class);
-                   intent.putExtra("selectservice", addservice);
-                   intent.putExtra("forresutl", true);
+                checkValidateAdoptService(addservice, new VolleyResponse((VolleyResponse.OnSuccess) (success) -> {
+                    Intent intent = new Intent(AddBankAndServicelist.this, Enach_Mandate.class);
+                    intent.putExtra("selectservice", addservice);
+                    intent.putExtra("forresutl", true);
 
-                   intent.putExtra("addMoreServiceMandate", true);
-                   intent.putExtra("bankJson", selectBankJson.toString());
-                   intent.putExtra("accountType", selectBankType.toString());
-                   intent.putExtra("accountNumber", acno.getText().toString());
-                   intent.putExtra("accountHolderName",acholdername.getText().toString());
+                    intent.putExtra("addMoreServiceMandate", true);
+                    intent.putExtra("bankJson", selectBankJson.toString());
+                    intent.putExtra("accountType", selectBankType.toString());
+                    intent.putExtra("accountNumber", acno.getText().toString());
+                    intent.putExtra("accountHolderName", acholdername.getText().toString());
 
-                   startActivityForResult(intent, ApplicationConstant.REQ_ENACH_MANDATE);
-               }));
-            }else {
+                    startActivityForResult(intent, ApplicationConstant.REQ_ENACH_MANDATE);
+                }));
+            } else {
                 scrollview.fullScroll(ScrollView.FOCUS_UP);
             }
-        }else if(view.getId()==R.id.back_activity_button){
+        } else if (view.getId() == R.id.back_activity_button) {
             finish();
         }
     }
 
-    private boolean checkEmptyFiled(ArrayList arrayList){
-        boolean validation=true;
+    private boolean checkEmptyFiled(ArrayList arrayList) {
+        boolean validation = true;
 
-        if(acno.getText().toString().trim().equals("")){
+        if (acno.getText().toString().trim().equals("")) {
             acno.setError(ErrorMsg.Field_Required);
-            validation=false;
+            validation = false;
         }
 
-
-        if(bankname.getText().toString().trim().equals("")){
+        if (bankname.getText().toString().trim().equals("")) {
             bankname.setError(ErrorMsg.Field_Required);
-            validation=false;
+            validation = false;
         }
 
-        if(acholdername.getText().toString().trim().equals("")){
+        if (acholdername.getText().toString().trim().equals("")) {
             acholdername.setError(ErrorMsg.Field_Required);
-            validation=false;
+            validation = false;
         }
 
-        if( selectBankJson.length()==0){
-            if(!bankname.getText().toString().equals("") ){
-                Utility.alertDialog(this,"Alert","Bank is not selected","Ok");
-                validation=false;
+        if (selectBankJson.length() == 0) {
+            if (!bankname.getText().toString().equals("")) {
+                Utility.alertDialog(this, "Alert", "Bank is not selected", "Ok");
+                validation = false;
             }
-       }
+        }
 
-        if( selectBankType.length()==0){
-            Utility.alertDialog(this,"Alert","Account Type is not selected","Ok");
-            validation=false;
+        if (selectBankType.length() == 0) {
+            Utility.alertDialog(this, "Alert", "Account Type is not selected", "Ok");
+            validation = false;
         }
-        if(acno.getText().toString().trim().length()<5){
+        if (acno.getText().toString().trim().length() < 5) {
             acno.setError("Minimum length is 5");
-            validation=false;
+            validation = false;
         }
-        if(validation){
-            if(arrayList.size()==0){
+        if (validation) {
+            if (arrayList.size() == 0) {
                 Toast.makeText(this, "no any new  service selected ", Toast.LENGTH_LONG).show();
-                validation=false;
+                validation = false;
             }
         }
         return validation;
-   }
+    }
 
-   private void checkValidateAdoptService(ArrayList arrayList,VolleyResponse onSuccess){
-       HashMap<String, Object> params = new HashMap<String, Object>();
-       ConnectionVO connectionVO = MandateBO.checkValidateAdoptedServies();
-       CustomerVO customerVO=new CustomerVO();
-       customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(this)));
-       customerVO.setAnonymousString(arrayList.toString());
-       Gson gson =new Gson();
-       String json = gson.toJson(customerVO);
-       params.put("volley", json);
-       connectionVO.setParams(params);
-       Log.w("volley_request",params.toString());
-       VolleyUtils.makeJsonObjectRequest(this,connectionVO, new VolleyResponseListener() {
-           @Override
-           public void onError(String message) {
-           }
-           @Override
-           public void onResponse(Object resp) throws JSONException {
-               JSONObject response = (JSONObject) resp;
-               Gson gson=new Gson();
-               CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
-               if(customerVO.getStatusCode().equals("400")){
-                   ArrayList error = (ArrayList) customerVO.getErrorMsgs();
-                   StringBuilder sb = new StringBuilder();
-                   for(int i=0; i<error.size(); i++){
-                       sb.append(error.get(i)).append("\n");
-                   }
-                   Utility.showSingleButtonDialog(AddBankAndServicelist.this,customerVO.getDialogTitle(),sb.toString(),false);
-               }else {
-                   onSuccess.onSuccess(customerVO);
-               }
-           }
-       });
-   }
+    private void checkValidateAdoptService(ArrayList arrayList, VolleyResponse onSuccess) {
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ConnectionVO connectionVO = MandateBO.checkValidateAdoptedServies();
+        CustomerVO customerVO = new CustomerVO();
+        customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(this)));
+        customerVO.setAnonymousString(arrayList.toString());
+        Gson gson = new Gson();
+        String json = gson.toJson(customerVO);
+        params.put("volley", json);
+        connectionVO.setParams(params);
+        Log.w("volley_request", params.toString());
+        VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+                JSONObject response = (JSONObject) resp;
+                Gson gson = new Gson();
+                CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+                if (customerVO.getStatusCode().equals("400")) {
+                    ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < error.size(); i++) {
+                        sb.append(error.get(i)).append("\n");
+                    }
+                    Utility.showSingleButtonDialog(AddBankAndServicelist.this, customerVO.getDialogTitle(), sb.toString(), false);
+                } else {
+                    onSuccess.onSuccess(customerVO);
+                }
+            }
+        });
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode== RESULT_OK){
-            if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
-                if(data !=null){
-                    Utility.showSingleButtonDialogconfirmation(this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                        if(data.getBooleanExtra("mandate_status",false)){
-                            Utility.dismissDialog(AddBankAndServicelist.this,ok);
-                            Intent intent =  new Intent();
-                            setResult(RESULT_OK,intent);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == ApplicationConstant.REQ_ENACH_MANDATE) {
+                if (data != null) {
+                    Utility.showSingleButtonDialogconfirmation(this, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
+                        if (data.getBooleanExtra("mandate_status", false)) {
+                            Utility.dismissDialog(AddBankAndServicelist.this, ok);
+                            Intent intent = new Intent();
+                            setResult(RESULT_OK, intent);
                             finish();
-                        }else {
-                            Utility.dismissDialog(AddBankAndServicelist.this,ok);
+                        } else {
+                            Utility.dismissDialog(AddBankAndServicelist.this, ok);
                         }
-                    }),"", Content_Message.mandate_Success_Message);
-                }else {
+                    }), "", Content_Message.mandate_Success_Message);
+                } else {
                     Toast.makeText(this, Content_Message.error_message, Toast.LENGTH_SHORT).show();
                 }
 
-            }else if(requestCode==ApplicationConstant.REQ_POPAPACTIVITYRESULT){
-                if(data!=null){
+            } else if (requestCode == ApplicationConstant.REQ_POPAPACTIVITYRESULT) {
+                if (data != null) {
                     try {
                         bankname.setError(null);
                         bankname.setText(data.getStringExtra("operatorname"));
 
-                        selectBankJson.put("name",data.getStringExtra("operatorname"));
-                        selectBankJson.put("id",data.getStringExtra("operator"));
-                    }catch (Exception ignored){
+                        selectBankJson.put("name", data.getStringExtra("operatorname"));
+                        selectBankJson.put("id", data.getStringExtra("operator"));
+                    } catch (Exception ignored) {
 
-                    };
-                }else {
+                    }
+                    ;
+                } else {
                     Toast.makeText(this, "Bank Name Is Null Selected", Toast.LENGTH_SHORT).show();
                 }
             }

@@ -60,10 +60,11 @@ public class AutopePayment extends AppCompatActivity implements View.OnClickList
     public static final String EXTRAS_SUCCESS_URL = "success_url";
     public static final String EXTRAS_TXN_ID = "txn_id";
     public static final String EXTRAS_REFRESH_PAGE = "refreshPage";
+    public static final String EXTRAS_SERVICE_TYPE_ID = "service_type_id";
 
 
     String fail_url,success_url,url,txn_id=null;
-
+    int service_type_id;
     TextView title;
     ImageView back_activity_button;
     WebView webView, newWebView;
@@ -89,6 +90,7 @@ public class AutopePayment extends AppCompatActivity implements View.OnClickList
         txn_id=getIntent().getStringExtra(EXTRAS_TXN_ID);
         fail_url=getIntent().getStringExtra(EXTRAS_FAIL_URL)+ "app/";
         success_url=getIntent().getStringExtra(EXTRAS_SUCCESS_URL)+ "app/";
+        service_type_id=getIntent().getIntExtra(EXTRAS_SERVICE_TYPE_ID,0);
 
         openWebView(url+"&app=1");
     }
@@ -285,6 +287,9 @@ public class AutopePayment extends AppCompatActivity implements View.OnClickList
             customerVO.setAnonymousString(result);
             //customer beneficiary id
             customerVO.setAnonymousString1(txn_id);
+
+            //set service type id
+            customerVO.setServiceId(service_type_id);
             Gson gson =new Gson();
             String json = gson.toJson(customerVO);
             params.put("volley", json);

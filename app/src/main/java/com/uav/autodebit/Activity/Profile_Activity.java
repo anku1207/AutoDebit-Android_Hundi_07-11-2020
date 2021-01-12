@@ -76,25 +76,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-public class Profile_Activity extends Base_Activity implements FileDownloadInterface ,
-        View.OnClickListener , PermissionUtils.PermissionResultCallback ,ActivityCompat.OnRequestPermissionsResultCallback{
+public class Profile_Activity extends Base_Activity implements FileDownloadInterface,
+        View.OnClickListener, PermissionUtils.PermissionResultCallback, ActivityCompat.OnRequestPermissionsResultCallback {
 
     BottomNavigationView navigation;
-    TextView usename,pannumber,mobileno,email,address,citystate,pincode,creditscore,changepass;
-    ImageView mobileverify,emailverify,addressverify,downloadreport,back_activity_button,more_service,more_bankadd,profileedit;
+    TextView usename, pannumber, mobileno, email, address, citystate, pincode, creditscore, changepass;
+    ImageView mobileverify, emailverify, addressverify, downloadreport, back_activity_button, more_service, more_bankadd, profileedit;
     String cir_report;
 
-    Context context =Profile_Activity.this;
-    RecyclerView servicesrecy,bankrecycler;
+    Context context = Profile_Activity.this;
+    RecyclerView servicesrecy, bankrecycler;
     CircularImageView imageView1;
-    boolean isemailverify=false;
+    boolean isemailverify = false;
 
     UAVProgressDialog pd;
-    List<ServiceTypeVO> bankServiceList=new ArrayList<>();
-    List<ServiceTypeVO> addservice =new ArrayList<>();
+    List<ServiceTypeVO> bankServiceList = new ArrayList<>();
+    List<ServiceTypeVO> addservice = new ArrayList<>();
 
     RecyclerViewAdapterMenu recyclerViewAdapter;
-    int  REQ_IMAGE=1001,REQ_GALLERY=1002,REQ_ENACH_MANDATE=1003,PIC_CROP=1004,REQ_CHANGE_PASS=300,REQ_ADD_MORE_SERVICE=200,REQ_EMAIL_VERIFY=100,REQ_ADDBANK_ANDSERVICE=400,REQ_MOBILE_VERIFY=401;
+    int REQ_IMAGE = 1001, REQ_GALLERY = 1002, REQ_ENACH_MANDATE = 1003, PIC_CROP = 1004, REQ_CHANGE_PASS = 300, REQ_ADD_MORE_SERVICE = 200, REQ_EMAIL_VERIFY = 100, REQ_ADDBANK_ANDSERVICE = 400, REQ_MOBILE_VERIFY = 401;
 
     Bitmap bmp;
 
@@ -115,34 +115,34 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         setContentView(R.layout.activity_profile_);
         getSupportActionBar().hide();
 
-        pd=new UAVProgressDialog(Profile_Activity.this);
+        pd = new UAVProgressDialog(Profile_Activity.this);
 
-        usename=findViewById(R.id.usename);
-        pannumber=findViewById(R.id.pannumber);
+        usename = findViewById(R.id.usename);
+        pannumber = findViewById(R.id.pannumber);
 
-        mobileno=findViewById(R.id.mobileno);
-        email=findViewById(R.id.email);
-        address=findViewById(R.id.address);
-        citystate=findViewById(R.id.citystate);
-        pincode=findViewById(R.id.pincode);
-        creditscore=findViewById(R.id.creditscore);
-        back_activity_button=findViewById(R.id.back_activity_button);
-        servicesrecy=findViewById(R.id.servicerecycler);
-        more_service=findViewById(R.id.more_service);
-        bankrecycler=findViewById(R.id.bankrecycler);
-        imageView1=findViewById(R.id.imageView1);
-        progressBar=findViewById(R.id.progressBar);
-        changepass=findViewById(R.id.changepass);
-        more_bankadd=findViewById(R.id.more_bankadd);
-        scrollView=findViewById(R.id.scrollView);
-        mobileverify=findViewById(R.id.mobileverify);
-        emailverify=findViewById(R.id.emailverify);
-        addressverify=findViewById(R.id.addressverify);
-        downloadreport=findViewById(R.id.downloadreport);
-        profileedit=findViewById(R.id.profileedit);
-        edit_layout=findViewById(R.id.edit_layout);
+        mobileno = findViewById(R.id.mobileno);
+        email = findViewById(R.id.email);
+        address = findViewById(R.id.address);
+        citystate = findViewById(R.id.citystate);
+        pincode = findViewById(R.id.pincode);
+        creditscore = findViewById(R.id.creditscore);
+        back_activity_button = findViewById(R.id.back_activity_button);
+        servicesrecy = findViewById(R.id.servicerecycler);
+        more_service = findViewById(R.id.more_service);
+        bankrecycler = findViewById(R.id.bankrecycler);
+        imageView1 = findViewById(R.id.imageView1);
+        progressBar = findViewById(R.id.progressBar);
+        changepass = findViewById(R.id.changepass);
+        more_bankadd = findViewById(R.id.more_bankadd);
+        scrollView = findViewById(R.id.scrollView);
+        mobileverify = findViewById(R.id.mobileverify);
+        emailverify = findViewById(R.id.emailverify);
+        addressverify = findViewById(R.id.addressverify);
+        downloadreport = findViewById(R.id.downloadreport);
+        profileedit = findViewById(R.id.profileedit);
+        edit_layout = findViewById(R.id.edit_layout);
 
-        permissionUtils=new PermissionUtils(Profile_Activity.this);
+        permissionUtils = new PermissionUtils(Profile_Activity.this);
 
 
         back_activity_button.setOnClickListener(this);
@@ -162,12 +162,10 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         customerProfileImage = CustomerBO.setCustomerProfileImage();
 
 
-
-
         navigation = findViewById(R.id.navigation);
         navigation.setSelectedItemId(R.id.bottom_profile);
 
-        BottomNavigationView  navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
@@ -175,19 +173,19 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
 
         servicesrecy.setHasFixedSize(true);
         servicesrecy.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-      //  servicesrecy.addItemDecoration(new DividerItemDecorator(serviceautope.size(),2,false));
+        //  servicesrecy.addItemDecoration(new DividerItemDecorator(serviceautope.size(),2,false));
         servicesrecy.setNestedScrollingEnabled(false);
 
 
         bankrecycler.setHasFixedSize(true);
         bankrecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-       // bankrecycler.addItemDecoration(new DividerItemDecorator(serviceautope.size(),2,false));
+        // bankrecycler.addItemDecoration(new DividerItemDecorator(serviceautope.size(),2,false));
         bankrecycler.setNestedScrollingEnabled(false);
 
     }
 
 
-    BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =new BottomNavigationView.OnNavigationItemSelectedListener() {
+    BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
@@ -197,10 +195,10 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                 case R.id.bottom_profile:
                     break;
                 case R.id.bottom_history:
-                    startActivity(new Intent(Profile_Activity.this,History.class));
+                    startActivity(new Intent(Profile_Activity.this, History.class));
                     break;
                 case R.id.bottom_help:
-                    startActivity(new Intent(Profile_Activity.this,Help.class));
+                    startActivity(new Intent(Profile_Activity.this, Help.class));
                     break;
             }
             return true;
@@ -211,105 +209,109 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             backbuttonfun();
-             return true;
+            return true;
         }
         return super.onKeyDown(keyCode, event);
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.back_activity_button:
                 backbuttonfun();
                 break;
             case R.id.downloadreport:
-                permissionUtils.check_permission(PermissionHandler.fileDownloadAndReadPermissionArrayList(Profile_Activity.this), Content_Message.DOWNLOAD_PERMISSION, ApplicationConstant.REQ_DOWNLOAD_PERMISSION);
+                permissionUtils.check_permission(PermissionHandler.fileDownloadAndReadPermissionArrayList(Profile_Activity.this),
+                        Content_Message.DOWNLOAD_PERMISSION, ApplicationConstant.REQ_DOWNLOAD_PERMISSION);
                 break;
             case R.id.emailverify:
-                String[] buttons = {"No","Yes"};
+                String[] buttons = {"No", "Yes"};
                 Utility.confirmationDialog(new DialogInterface() {
                     @Override
                     public void confirm(Dialog dialog) {
-                        Utility.dismissDialog(Profile_Activity.this,dialog);
-                        sendOtpToEmailVerify("email",email.getText().toString());
+                        Utility.dismissDialog(Profile_Activity.this, dialog);
+                        sendOtpToEmailVerify("email", email.getText().toString());
                     }
+
                     @Override
                     public void modify(Dialog dialog) {
-                        Utility.dismissDialog(Profile_Activity.this,dialog);
+                        Utility.dismissDialog(Profile_Activity.this, dialog);
                     }
-                },this,null,"Would you like to verify the email ?\n"+email.getText().toString(),"Alert",buttons);
+                }, this, null, "Would you like to verify the email ?\n" + email.getText().toString(), "Alert", buttons);
                 break;
             case R.id.more_service:
-                startActivityForResult(new Intent(Profile_Activity.this,AdditionalService.class),REQ_ADD_MORE_SERVICE);
+                startActivityForResult(new Intent(Profile_Activity.this, AdditionalService.class), REQ_ADD_MORE_SERVICE);
                 break;
             case R.id.imageView1:
-                permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(Profile_Activity.this), Content_Message.CAMERA_PERMISSION,ApplicationConstant.REQ_CAMERA_PERMISSION);
+                permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(Profile_Activity.this), Content_Message.CAMERA_PERMISSION,
+                        ApplicationConstant.REQ_CAMERA_PERMISSION);
                 break;
             case R.id.changepass:
-                String[] changePass = {"No","Yes"};
+                String[] changePass = {"No", "Yes"};
                 Utility.confirmationDialog(new DialogInterface() {
                     @Override
                     public void confirm(Dialog dialog) {
-                        Utility.dismissDialog(Profile_Activity.this,dialog);
+                        Utility.dismissDialog(Profile_Activity.this, dialog);
 
-                        Intent intent =new Intent(Profile_Activity.this,ChangePassword.class);
-                        intent.putExtra("customerid",Session.getCustomerId(Profile_Activity.this));
-                        intent.putExtra("methodname","setCustomerChangePassword");
-                        startActivityForResult(intent,REQ_CHANGE_PASS);
+                        Intent intent = new Intent(Profile_Activity.this, ChangePassword.class);
+                        intent.putExtra("customerid", Session.getCustomerId(Profile_Activity.this));
+                        intent.putExtra("methodname", "setCustomerChangePassword");
+                        startActivityForResult(intent, REQ_CHANGE_PASS);
                     }
+
                     @Override
                     public void modify(Dialog dialog) {
-                        Utility.dismissDialog(Profile_Activity.this,dialog);
+                        Utility.dismissDialog(Profile_Activity.this, dialog);
                     }
-                },this,null,"Would you like change pin ?","Alert",changePass);
+                }, this, null, "Would you like change pin ?", "Alert", changePass);
                 break;
             case R.id.more_bankadd:
-                startActivityForResult(new Intent(Profile_Activity.this,AddBankAndServicelist.class),REQ_ADDBANK_ANDSERVICE);
+                startActivityForResult(new Intent(Profile_Activity.this, AddBankAndServicelist.class), REQ_ADDBANK_ANDSERVICE);
                 break;
-            case R.id.edit_layout :
-                MyDialog.changeCustomerAddressDialog(Profile_Activity.this,new Gson().fromJson
-                        (Session.getSessionByKey(Profile_Activity.this,Session.CACHE_CUSTOMER),CustomerVO.class),
-                        true,new CallBackInterface((CallBackInterface.OnSuccess)(ok)->{
+            case R.id.edit_layout:
+                MyDialog.changeCustomerAddressDialog(Profile_Activity.this, new Gson().fromJson
+                                (Session.getSessionByKey(Profile_Activity.this, Session.CACHE_CUSTOMER), CustomerVO.class),
+                        true, new CallBackInterface((CallBackInterface.OnSuccess) (ok) -> {
 
-                    HashMap<String ,Object> objectHashMap = (HashMap<String, Object>) ok;
+                            HashMap<String, Object> objectHashMap = (HashMap<String, Object>) ok;
 
-                    Dialog dialog = (Dialog) objectHashMap.get("dialog");
-                    changeAddressCustomerVOObject = (CustomerVO) objectHashMap.get("customer");
-                    changeAddressCustomerVOObject.setCustomerId(Integer.parseInt(Session.getCustomerId(Profile_Activity.this)));
+                            Dialog dialog = (Dialog) objectHashMap.get("dialog");
+                            changeAddressCustomerVOObject = (CustomerVO) objectHashMap.get("customer");
+                            changeAddressCustomerVOObject.setCustomerId(Integer.parseInt(Session.getCustomerId(Profile_Activity.this)));
 
-                    if(!changeAddressCustomerVOObject.getMobileNumber().equals(Session.getCustomerMobileNumber(Profile_Activity.this))){
-                        sendOtpToMobileVerify("mobile",changeAddressCustomerVOObject.getMobileNumber(),dialog);
-                    }else{
-                        Utility.dismissDialog(context,dialog);
-                        changeCustomerDetails(changeAddressCustomerVOObject);
-                    }
-                }),"Change Profile Details :");
+                            if (!changeAddressCustomerVOObject.getMobileNumber().equals(Session.getCustomerMobileNumber(Profile_Activity.this))) {
+                                sendOtpToMobileVerify("mobile", changeAddressCustomerVOObject.getMobileNumber(), dialog);
+                            } else {
+                                Utility.dismissDialog(context, dialog);
+                                changeCustomerDetails(changeAddressCustomerVOObject);
+                            }
+                        }), "Change Profile Details :");
                 break;
         }
     }
 
 
-    public void sendOtpToMobileVerify(String type,String mobileNumber,Dialog dialog){
-        OTPApi.sendOtpToMobileVerification(Profile_Activity.this,mobileNumber,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+    public void sendOtpToMobileVerify(String type, String mobileNumber, Dialog dialog) {
+        OTPApi.sendOtpToMobileVerification(Profile_Activity.this, mobileNumber, new VolleyResponse((VolleyResponse.OnSuccess) (success) -> {
 
             //dismissDialog
-            Utility.dismissDialog(context,dialog);
+            Utility.dismissDialog(context, dialog);
 
             CustomerVO customerVO = (CustomerVO) success;
             customerVO.setUserid(mobileNumber);
             customerVO.setLoginType(type);
-            Intent intent=new Intent(Profile_Activity.this,Verify_Otp_By_Id.class);
+            Intent intent = new Intent(Profile_Activity.this, Verify_Otp_By_Id.class);
             customerVO.setActionname("mobileOTPVerificationOnProfile");
             String json = new Gson().toJson(customerVO); // myObject - instance of MyObject
-            intent.putExtra("resp",json);
-            startActivityForResult(intent,REQ_MOBILE_VERIFY);
+            intent.putExtra("resp", json);
+            startActivityForResult(intent, REQ_MOBILE_VERIFY);
         }));
     }
 
 
-    public void changeCustomerDetails(CustomerVO customerVO){
+    public void changeCustomerDetails(CustomerVO customerVO) {
         HashMap<String, Object> params = new HashMap<String, Object>();
-        ConnectionVO connectionVO =CustomerBO.updateCustomerDetails();
+        ConnectionVO connectionVO = CustomerBO.updateCustomerDetails();
 
         Gson gson = new Gson();
         String json = gson.toJson(customerVO);
@@ -319,20 +321,21 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             @Override
             public void onError(String message) {
             }
+
             @Override
             public void onResponse(Object resp) throws JSONException {
                 JSONObject response = (JSONObject) resp;
-                Gson gson=new Gson();
+                Gson gson = new Gson();
                 CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
-                if(customerVO.getStatusCode().equals("400")){
+                if (customerVO.getStatusCode().equals("400")) {
                     ArrayList error = (ArrayList) customerVO.getErrorMsgs();
                     StringBuilder sb = new StringBuilder();
-                    for(int i=0; i<error.size(); i++){
+                    for (int i = 0; i < error.size(); i++) {
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(Profile_Activity.this,customerVO.getDialogTitle(),sb.toString(),false);
-                }else {
-                    CustomerCacheUpdate.updateCustomerCache(context,customerVO);
+                    Utility.showSingleButtonDialog(Profile_Activity.this, customerVO.getDialogTitle(), sb.toString(), false);
+                } else {
+                    CustomerCacheUpdate.updateCustomerCache(context, customerVO);
                     getProfileDate(Session.getCustomerId(Profile_Activity.this));
                 }
             }
@@ -340,41 +343,40 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
 
     }
 
-    public void startCamera(){
-            AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
-            pictureDialog.setTitle("Select Action");
-            String[] pictureDialogItems = {
-                    "Select photo from gallery",
-                    "Capture photo from camera",
-                    "Remove profile photo"
-            };
-            pictureDialog.setItems(pictureDialogItems,
-                    new android.content.DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(android.content.DialogInterface dialog, int which) {
-                            switch (which) {
-                                case 0:
-                                    galleryimage();
-                                    break;
-                                case 1:
-                                    cameraimage();
-                                    break;
-                                case 2:
-                                    removeProfileImage();
-                                    break;
-                            }
+    public void startCamera() {
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
+        pictureDialog.setTitle("Select Action");
+        String[] pictureDialogItems = {
+                "Select photo from gallery",
+                "Capture photo from camera",
+                "Remove profile photo"
+        };
+        pictureDialog.setItems(pictureDialogItems,
+                new android.content.DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(android.content.DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                galleryimage();
+                                break;
+                            case 1:
+                                cameraimage();
+                                break;
+                            case 2:
+                                removeProfileImage();
+                                break;
+                        }
                     }
-                    });
-            pictureDialog.show();
+                });
+        pictureDialog.show();
     }
 
 
-
-    private void removeProfileImage(){
+    private void removeProfileImage() {
         HashMap<String, Object> params = new HashMap<String, Object>();
-        ConnectionVO connectionVO =CustomerBO.removeProfileImage();
+        ConnectionVO connectionVO = CustomerBO.removeProfileImage();
 
-        CustomerVO customerVO=new CustomerVO();
+        CustomerVO customerVO = new CustomerVO();
         customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(this)));
         Gson gson = new Gson();
         String json = gson.toJson(customerVO);
@@ -384,19 +386,20 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             @Override
             public void onError(String message) {
             }
+
             @Override
             public void onResponse(Object resp) throws JSONException {
                 JSONObject response = (JSONObject) resp;
-                Gson gson=new Gson();
+                Gson gson = new Gson();
                 CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
-                if(customerVO.getStatusCode().equals("400")){
+                if (customerVO.getStatusCode().equals("400")) {
                     ArrayList error = (ArrayList) customerVO.getErrorMsgs();
                     StringBuilder sb = new StringBuilder();
-                    for(int i=0; i<error.size(); i++){
+                    for (int i = 0; i < error.size(); i++) {
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(Profile_Activity.this,customerVO.getDialogTitle(),sb.toString(),false);
-                }else {
+                    Utility.showSingleButtonDialog(Profile_Activity.this, customerVO.getDialogTitle(), sb.toString(), false);
+                } else {
                     imageView1.setImageBitmap(null);
                     //imageView1.setImageBitmap(Utility.drawableToBitmap(getDrawable(R.drawable.noprofileimage)));
                     imageView1.setBackgroundResource(R.drawable.ava_user);
@@ -406,96 +409,91 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
     }
 
 
-    public void galleryimage(){
+    public void galleryimage() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(galleryIntent,REQ_GALLERY );
+        startActivityForResult(galleryIntent, REQ_GALLERY);
 
     }
 
-    public void cameraimage(){
+    public void cameraimage() {
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-        photofileurl=null;
-        try
-        {
+        photofileurl = null;
+        try {
             // place where to store camera taken picture
-            photofileurl = Utility.createTemporaryFile("picture", ".jpg",Profile_Activity.this);
+            photofileurl = Utility.createTemporaryFile("picture", ".jpg", Profile_Activity.this);
             photofileurl.delete();
             Uri mImageUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", photofileurl);
 
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
             startActivityForResult(intent, REQ_IMAGE);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            ExceptionsNotification.ExceptionHandling(Profile_Activity.this , Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Profile_Activity.this, Utility.getStackTrace(e));
             //Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
-    public void backbuttonfun(){
+
+    public void backbuttonfun() {
         Intent intent = new Intent(getApplicationContext(), Home.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
-
-
     }
 
-    public void sendOtpToEmailVerify(String type,String emailId){
-      OTPApi.sendOtpToEmailVerification(Profile_Activity.this,emailId,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
-          CustomerVO customerVO = (CustomerVO) s;
-          customerVO.setUserid(emailId);
-          customerVO.setLoginType(type);
-          Intent intent=new Intent(Profile_Activity.this,Verify_Email_Otp_By_Id.class);
+    public void sendOtpToEmailVerify(String type, String emailId) {
+        OTPApi.sendOtpToEmailVerification(Profile_Activity.this, emailId, new VolleyResponse((VolleyResponse.OnSuccess) (s) -> {
+            CustomerVO customerVO = (CustomerVO) s;
+            customerVO.setUserid(emailId);
+            customerVO.setLoginType(type);
+            Intent intent = new Intent(Profile_Activity.this, Verify_Email_Otp_By_Id.class);
 
-          customerVO.setActionname("emailOTPVerification");
-          String json = new Gson().toJson(customerVO); // myObject - instance of MyObject
-          intent.putExtra("resp",json);
-          startActivityForResult(intent,REQ_EMAIL_VERIFY);
-      }));
+            customerVO.setActionname("emailOTPVerification");
+            String json = new Gson().toJson(customerVO); // myObject - instance of MyObject
+            intent.putExtra("resp", json);
+            startActivityForResult(intent, REQ_EMAIL_VERIFY);
+        }));
     }
-
-
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            if(resultCode==RESULT_OK){
-                if(requestCode==REQ_EMAIL_VERIFY ){
-                    if(data!=null){
+            if (resultCode == RESULT_OK) {
+                if (requestCode == REQ_EMAIL_VERIFY) {
+                    if (data != null) {
                         getProfileDate(Session.getCustomerId(Profile_Activity.this));
                     }
-                }else if(requestCode==REQ_MOBILE_VERIFY ){
+                } else if (requestCode == REQ_MOBILE_VERIFY) {
                     changeCustomerDetails(changeAddressCustomerVOObject);
-                }else if(requestCode==REQ_ADD_MORE_SERVICE){
-                        getProfileDate(Session.getCustomerId(Profile_Activity.this));
-                }else if (requestCode == REQ_IMAGE) {
+                } else if (requestCode == REQ_ADD_MORE_SERVICE) {
+                    getProfileDate(Session.getCustomerId(Profile_Activity.this));
+                } else if (requestCode == REQ_IMAGE) {
                     try {
-                        bmp =Utility.decodeImageFromFiles(Uri.fromFile(photofileurl).getPath(),500,500);
-                        if(bmp.getWidth()>bmp.getHeight()){
-                            bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),Utility.getImageMatrix(Profile_Activity.this,photofileurl),true);
+                        bmp = Utility.decodeImageFromFiles(Uri.fromFile(photofileurl).getPath(), 500, 500);
+                        if (bmp.getWidth() > bmp.getHeight()) {
+                            bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), Utility.getImageMatrix(Profile_Activity.this, photofileurl), true);
                         }
                         imageView1.setImageBitmap(bmp);
-                        performCrop(Utility.getVersionWiseUri(Profile_Activity.this,photofileurl));
-                    }catch (Exception e){
-                        ExceptionsNotification.ExceptionHandling(Profile_Activity.this , Utility.getStackTrace(e));
+                        performCrop(Utility.getVersionWiseUri(Profile_Activity.this, photofileurl));
+                    } catch (Exception e) {
+                        ExceptionsNotification.ExceptionHandling(Profile_Activity.this, Utility.getStackTrace(e));
                     }
 
-                }else if(requestCode==REQ_GALLERY){
+                } else if (requestCode == REQ_GALLERY) {
                     try {
                         Uri contentURI = data.getData();
-                        bmp= Utility.decodeImageFromFiles(Utility.getPathByUri(Profile_Activity.this,contentURI) ,500,500);
-                        if(bmp.getWidth()>bmp.getHeight()){
-                            bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),Utility.getImageMatrix(Profile_Activity.this,new File(Objects.requireNonNull(contentURI.getPath()))),true);
+                        bmp = Utility.decodeImageFromFiles(Utility.getPathByUri(Profile_Activity.this, contentURI), 500, 500);
+                        if (bmp.getWidth() > bmp.getHeight()) {
+                            bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), Utility.getImageMatrix(Profile_Activity.this, new File(Objects.requireNonNull(contentURI.getPath()))), true);
                         }
                         imageView1.setImageBitmap(bmp);
                         performCrop(contentURI);
-                    }catch (Exception e){
-                        ExceptionsNotification.ExceptionHandling(Profile_Activity.this , Utility.getStackTrace(e));
+                    } catch (Exception e) {
+                        ExceptionsNotification.ExceptionHandling(Profile_Activity.this, Utility.getStackTrace(e));
                     }
-                }else  if(requestCode==PIC_CROP){
+                } else if (requestCode == PIC_CROP) {
                     //get the returned data
                     try {
                         Bundle extras = data.getExtras();
@@ -504,36 +502,35 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                         //display the returned cropped image
                         imageView1.setImageBitmap(bmp);
                         setCustomerProfileImage();
-                    }catch (Exception e){
-                        ExceptionsNotification.ExceptionHandling(Profile_Activity.this , Utility.getStackTrace(e));
+                    } catch (Exception e) {
+                        ExceptionsNotification.ExceptionHandling(Profile_Activity.this, Utility.getStackTrace(e));
                     }
-                }else if(requestCode==REQ_CHANGE_PASS){
-                    Utility.showSingleButtonDialog(Profile_Activity.this,"Alert","Pin Successfully Updated ",false);
-                }else if(requestCode==REQ_ADDBANK_ANDSERVICE){
+                } else if (requestCode == REQ_CHANGE_PASS) {
+                    Utility.showSingleButtonDialog(Profile_Activity.this, "Alert", "Pin Successfully Updated ", false);
+                } else if (requestCode == REQ_ADDBANK_ANDSERVICE) {
                     getProfileDate(Session.getCustomerId(Profile_Activity.this));
-                }else if(requestCode==ApplicationConstant.REQ_CHANGE_ADDRESS_OTP_VERIFY_RESULT){
+                } else if (requestCode == ApplicationConstant.REQ_CHANGE_ADDRESS_OTP_VERIFY_RESULT) {
                     Toast.makeText(context, "ssdsdf sd ", Toast.LENGTH_SHORT).show();
-                }else if(requestCode == ApplicationConstant.REQ_MANDATE_REVOKE_SERVICE_WISE_RESULT){
+                } else if (requestCode == ApplicationConstant.REQ_MANDATE_REVOKE_SERVICE_WISE_RESULT) {
                     getProfileDate(Session.getCustomerId(Profile_Activity.this));
                 }
-            }else{
-                if(requestCode==PIC_CROP){
+            } else {
+                if (requestCode == PIC_CROP) {
                     imageView1.setImageBitmap(bmp);
                     setCustomerProfileImage();
                 }
             }
-        }catch (Exception e) {
-            ExceptionsNotification.ExceptionHandling(Profile_Activity.this , Utility.getStackTrace(e));
+        } catch (Exception e) {
+            ExceptionsNotification.ExceptionHandling(Profile_Activity.this, Utility.getStackTrace(e));
             //Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
 
-
-    private void performCrop(Uri picUri){
+    private void performCrop(Uri picUri) {
         try {
             //call the standard crop action intent (the user device may not support it)
-            Intent cropIntent = new Intent( "com.android.camera.action.CROP");
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
             //indicate image type and Uri
             cropIntent.setDataAndType(picUri, "image/*");
 
@@ -550,30 +547,29 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             cropIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             //start the activity - we handle returning in onActivityResult
             startActivityForResult(cropIntent, PIC_CROP);
-        }
-        catch(ActivityNotFoundException anfe){
+        } catch (ActivityNotFoundException anfe) {
             //display an error message
            /* String errorMessage = "Whoops - your device doesn't support the crop action!";
             Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
             toast.show();*/
             imageView1.setImageBitmap(bmp);
             setCustomerProfileImage();
-        }catch (Exception e){
-            ExceptionsNotification.ExceptionHandling(Profile_Activity.this , Utility.getStackTrace(e));
-           // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+        } catch (Exception e) {
+            ExceptionsNotification.ExceptionHandling(Profile_Activity.this, Utility.getStackTrace(e));
+            // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
 
-    private void setCustomerProfileImage(){
-        BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,true, new BackgroundServiceInterface() {
+    private void setCustomerProfileImage() {
+        BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd, true, new BackgroundServiceInterface() {
             @Override
             public void doInBackGround() {
 
                 HashMap<String, Object> params = new HashMap<String, Object>();
-                CustomerVO customerVO=new CustomerVO();
+                CustomerVO customerVO = new CustomerVO();
                 customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Profile_Activity.this)));
-                customerVO.setImage(Utility.BitMapToString(bmp,500,true));
+                customerVO.setImage(Utility.BitMapToString(bmp, 500, true));
 
                 Gson gson = new Gson();
                 String json = gson.toJson(customerVO);
@@ -588,31 +584,32 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                     @Override
                     public void onError(String message) {
                     }
+
                     @Override
                     public void onResponse(Object resp) throws JSONException {
 
                         JSONObject response = (JSONObject) resp;
-                        Gson gson=new Gson();
+                        Gson gson = new Gson();
                         CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
-                        if(customerVO.getStatusCode().equals("400")){
+                        if (customerVO.getStatusCode().equals("400")) {
                             ArrayList error = (ArrayList) customerVO.getErrorMsgs();
                             StringBuilder sb = new StringBuilder();
-                            for(int i=0; i<error.size(); i++){
+                            for (int i = 0; i < error.size(); i++) {
                                 sb.append(error.get(i)).append("\n");
                             }
-                            Utility.alertDialog(Profile_Activity.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
-                        }else {
-                            Drawable drawable=Utility.getDrawableResources(Profile_Activity.this,R.drawable.ava_user);
+                            Utility.alertDialog(Profile_Activity.this, customerVO.getDialogTitle(), sb.toString(), "Ok");
+                        } else {
+                            Drawable drawable = Utility.getDrawableResources(Profile_Activity.this, R.drawable.ava_user);
                             Picasso.with(Profile_Activity.this).load(customerVO.getImage()).transform(new CircleTransform())
-                                    .memoryPolicy(MemoryPolicy.NO_CACHE )
+                                    .memoryPolicy(MemoryPolicy.NO_CACHE)
                                     .networkPolicy(NetworkPolicy.NO_CACHE)
                                     .error(R.drawable.autodebitlogo)
                                     .into(imageView1, new Callback() {
                                         @Override
                                         public void onSuccess() {
                                             progressBar.setVisibility(View.GONE);
-
                                         }
+
                                         @Override
                                         public void onError() {
                                             progressBar.setVisibility(View.GONE);
@@ -627,12 +624,12 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
     }
 
 
-    private void getProfileDate(String id){
+    private void getProfileDate(String id) {
         progressBar.setVisibility(View.VISIBLE);
 
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = CustomerBO.getProfileData();
-        CustomerVO customerVO=new CustomerVO();
+        CustomerVO customerVO = new CustomerVO();
         customerVO.setCustomerId(Integer.parseInt(id));
         Gson gson = new Gson();
         String json = gson.toJson(customerVO);
@@ -642,46 +639,47 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             @Override
             public void onError(String message) {
             }
+
             @Override
             public void onResponse(Object resp) throws JSONException {
                 JSONObject response = (JSONObject) resp;
 
-                Log.w("responsesignup",response.toString());
+                Log.w("responsesignup", response.toString());
 
-                Gson gson=new Gson();
+                Gson gson = new Gson();
 
                 CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
-                if(customerVO.getStatusCode().equals("400")){
+                if (customerVO.getStatusCode().equals("400")) {
                     ArrayList error = (ArrayList) customerVO.getErrorMsgs();
                     StringBuilder sb = new StringBuilder();
-                    for(int i=0; i<error.size(); i++){
+                    for (int i = 0; i < error.size(); i++) {
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(Profile_Activity.this,customerVO.getDialogTitle(),sb.toString(),false);
-                }else {
+                    Utility.showSingleButtonDialog(Profile_Activity.this, customerVO.getDialogTitle(), sb.toString(), false);
+                } else {
                     scrollView.setVisibility(View.VISIBLE);
                     setServiceAndBankList(customerVO);
                     usename.setText(customerVO.getName());
 
-                    if(customerVO.getLevel().getLevelId()<=1){
+                    if (customerVO.getLevel().getLevelId() <= 1) {
                         pannumber.setText("---");
                         citystate.setText("---");
                         pincode.setText("---");
                         address.setText("---");
 
-                    }else {
+                    } else {
                         pannumber.setText(customerVO.getPanNo());
-                        citystate.setText(customerVO.getCity().getCityName() + ",  "+customerVO.getStateRegion().getStateRegionName());
+                        citystate.setText(customerVO.getCity().getCityName() + ",  " + customerVO.getStateRegion().getStateRegionName());
                         pincode.setText(customerVO.getPincode());
                         address.setText(customerVO.getAddress1());
                     }
-                    mobileno.setText( "+91 "+customerVO.getMobileNumber());
+                    mobileno.setText("+91 " + customerVO.getMobileNumber());
                     email.setText(customerVO.getEmailId());
 
 
-                    if(customerVO.getImage()!=null){
+                    if (customerVO.getImage() != null) {
                         Picasso.with(Profile_Activity.this).load(customerVO.getImage()).transform(new CircleTransform())
-                                .memoryPolicy(MemoryPolicy.NO_CACHE )
+                                .memoryPolicy(MemoryPolicy.NO_CACHE)
                                 .networkPolicy(NetworkPolicy.NO_CACHE)
                                 .error(R.drawable.autodebitlogo)
                                 .into(imageView1, new Callback() {
@@ -689,82 +687,82 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                                     public void onSuccess() {
                                         progressBar.setVisibility(View.GONE);
                                     }
+
                                     @Override
                                     public void onError() {
                                         progressBar.setVisibility(View.GONE);
                                     }
                                 });
-                    }else {
+                    } else {
                         progressBar.setVisibility(View.GONE);
                         //imageView1.setImageBitmap(Utility.drawableToBitmap(getDrawable(R.drawable.noprofileimage)));
                         imageView1.setBackgroundResource(R.drawable.ava_user);
                     }
 
-                    if(customerVO.getMobileVerified()==null){
+                    if (customerVO.getMobileVerified() == null) {
                         mobileverify.setImageResource(R.drawable.warning);
-                    }else {
+                    } else {
                         mobileverify.setImageResource(R.drawable.iconcheck);
                     }
 
-                    if(customerVO.getEmailVerified()==null){
+                    if (customerVO.getEmailVerified() == null) {
 
                         emailverify.setImageResource(R.drawable.warning);
                         emailverify.setOnClickListener(Profile_Activity.this);
 
-                    }else {
+                    } else {
 
                         emailverify.setImageResource(R.drawable.iconcheck);
                         emailverify.setOnClickListener(null);
                     }
 
-                    if(customerVO.getLevel().getLevelId()<=2){
-                        creditscore.setText("---" );
-                    }else {
-                        creditscore.setText("Credit Score : "+customerVO.getCreditScore() );
-                        cir_report=customerVO.getCirPdfPath();
-                        if(cir_report!=null) downloadreport.setVisibility(View.VISIBLE);
+                    if (customerVO.getLevel().getLevelId() <= 2) {
+                        creditscore.setText("---");
+                    } else {
+                        creditscore.setText("Credit Score : " + customerVO.getCreditScore());
+                        cir_report = customerVO.getCirPdfPath();
+                        if (cir_report != null) downloadreport.setVisibility(View.VISIBLE);
                     }
                 }
             }
         });
     }
 
-    public void setServiceAndBankList(final CustomerVO customerVO){
-        BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,false, new BackgroundServiceInterface() {
+    public void setServiceAndBankList(final CustomerVO customerVO) {
+        BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd, false, new BackgroundServiceInterface() {
             @Override
             public void doInBackGround() {
                 try {
                     bankServiceList.clear();
                     addservice.clear();
 
-                    JSONArray bankArry=new JSONArray(customerVO.getEnachDetails());
-                    for(int i=0;i<bankArry.length();i++){
-                        ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-                        JSONObject object =bankArry.getJSONObject(i);
-                        serviceTypeVO.setTitle(object.getString("bankName")+" \n"+object.getString("accountNumber"));
+                    JSONArray bankArry = new JSONArray(customerVO.getEnachDetails());
+                    for (int i = 0; i < bankArry.length(); i++) {
+                        ServiceTypeVO serviceTypeVO = new ServiceTypeVO();
+                        JSONObject object = bankArry.getJSONObject(i);
+                        serviceTypeVO.setTitle(object.getString("bankName") + " \n" + object.getString("accountNumber"));
                         serviceTypeVO.setAppIcon("bankicon.png");
                         serviceTypeVO.setAnonymousInteger(object.getInt("customerAuthId"));
                         bankServiceList.add(serviceTypeVO);
                     }
 
-
                     // change this active service To server
-                    List<ServiceTypeVO> serviceautope  =new Gson().fromJson(customerVO.getAnonymousString(), new TypeToken<ArrayList<ServiceTypeVO>>() { }.getType());
+                    List<ServiceTypeVO> serviceautope = new Gson().fromJson(customerVO.getAnonymousString(), new TypeToken<ArrayList<ServiceTypeVO>>() {
+                    }.getType());
                     addservice.addAll(serviceautope);
 
-
-
-                }catch (Exception e){
-                    Log.e("profile_activity",e.getMessage());
+                } catch (Exception e) {
+                    Log.e("profile_activity", e.getMessage());
                     e.printStackTrace();
                 }
             }
+
             @Override
             public void doPostExecute() {
-                RecyclerViewProfileBankAdapterMenu recyclerViewProfileBankAdapterMenu=new RecyclerViewProfileBankAdapterMenu(Profile_Activity.this, bankServiceList,R.layout.profile_bankservice_design);
+                RecyclerViewProfileBankAdapterMenu recyclerViewProfileBankAdapterMenu = new RecyclerViewProfileBankAdapterMenu(Profile_Activity.this, bankServiceList, R.layout.profile_bankservice_design);
                 bankrecycler.setAdapter(recyclerViewProfileBankAdapterMenu);
 
-                recyclerViewAdapter=new RecyclerViewAdapterMenu(Profile_Activity.this, addservice,R.layout.profile_service_design);
+                recyclerViewAdapter = new RecyclerViewAdapterMenu(Profile_Activity.this, addservice, R.layout.profile_service_design);
                 servicesrecy.setAdapter(recyclerViewAdapter);
             }
         });
@@ -783,16 +781,16 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 context.startActivity(intent);
 
-            }else{
+            } else {
                 Uri apkUri = Uri.fromFile(file);
                 Intent install = new Intent(Intent.ACTION_VIEW);
-                install.setDataAndType(apkUri,"application/pdf");
+                install.setDataAndType(apkUri, "application/pdf");
                 install.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(install);
             }
 
-        }catch (Exception e){
-            ExceptionsNotification.ExceptionHandling(Profile_Activity.this , Utility.getStackTrace(e));
+        } catch (Exception e) {
+            ExceptionsNotification.ExceptionHandling(Profile_Activity.this, Utility.getStackTrace(e));
         }
     }
 
@@ -801,67 +799,67 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Utility.showSingleButtonDialog(context,"Error !",error,false);
+                Utility.showSingleButtonDialog(context, "Error !", error, false);
             }
         });
     }
 
-    public void bankDetails(int customerAuthId){
-        startActivity(new Intent(Profile_Activity.this,Confirm_Bank_Details.class).putExtra("bankid",customerAuthId));
+    public void bankDetails(int customerAuthId) {
+        startActivity(new Intent(Profile_Activity.this, Confirm_Bank_Details.class).putExtra("bankid", customerAuthId));
     }
 
-    public void showBankDetailsDialog(CustomerAuthServiceVO customerAuthServiceVO) throws Exception{
+    public void showBankDetailsDialog(CustomerAuthServiceVO customerAuthServiceVO) throws Exception {
 
 
-            String[] changePass = {"Cancel","Modify"};
-            JSONArray jsonArray=new JSONArray();
-            JSONObject object =new JSONObject();
-            object.put("key","Bank Name");
-            object.put("value",customerAuthServiceVO.getBankName());
-            jsonArray.put(object);
+        String[] changePass = {"Cancel", "Modify"};
+        JSONArray jsonArray = new JSONArray();
+        JSONObject object = new JSONObject();
+        object.put("key", "Bank Name");
+        object.put("value", customerAuthServiceVO.getBankName());
+        jsonArray.put(object);
 
-            object =new JSONObject();
-            object.put("key","Account No");
-            object.put("value",customerAuthServiceVO.getAccountNumber());
-            jsonArray.put(object);
+        object = new JSONObject();
+        object.put("key", "Account No");
+        object.put("value", customerAuthServiceVO.getAccountNumber());
+        jsonArray.put(object);
 
-            object =new JSONObject();
-            object.put("key","Status");
-            object.put("value",customerAuthServiceVO.getAuthStatus().getStatusName());
-            jsonArray.put(object);
+        object = new JSONObject();
+        object.put("key", "Status");
+        object.put("value", customerAuthServiceVO.getAuthStatus().getStatusName());
+        jsonArray.put(object);
 
-            object =new JSONObject();
-            object.put("key","Mandate Amount");
-            object.put("value",customerAuthServiceVO.getMandateAmount());
-            jsonArray.put(object);
+        object = new JSONObject();
+        object.put("key", "Mandate Amount");
+        object.put("value", customerAuthServiceVO.getMandateAmount());
+        jsonArray.put(object);
 
-            Utility.confirmationDialog(new DialogInterface() {
-                @Override
-                public void confirm(Dialog dialog) {
-                    Utility.dismissDialog(Profile_Activity.this,dialog);
-                }
-                @Override
-                public void modify(Dialog dialog) {
-                    Utility.dismissDialog(Profile_Activity.this,dialog);
-                }
-            },Profile_Activity.this,jsonArray,null,"Bank Detail",changePass);
+        Utility.confirmationDialog(new DialogInterface() {
+            @Override
+            public void confirm(Dialog dialog) {
+                Utility.dismissDialog(Profile_Activity.this, dialog);
+            }
+
+            @Override
+            public void modify(Dialog dialog) {
+                Utility.dismissDialog(Profile_Activity.this, dialog);
+            }
+        }, Profile_Activity.this, jsonArray, null, "Bank Detail", changePass);
     }
 
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionUtils.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        permissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
     public void PermissionGranted(int request_code) {
-        if(request_code==ApplicationConstant.REQ_CAMERA_PERMISSION){
+        if (request_code == ApplicationConstant.REQ_CAMERA_PERMISSION) {
             startCamera();
-        }else if(request_code== ApplicationConstant.REQ_DOWNLOAD_PERMISSION){
-            new DownloadTask(Profile_Activity.this,Profile_Activity.this, cir_report);
+        } else if (request_code == ApplicationConstant.REQ_DOWNLOAD_PERMISSION) {
+            new DownloadTask(Profile_Activity.this, Profile_Activity.this, cir_report);
         }
-
     }
 
     @Override

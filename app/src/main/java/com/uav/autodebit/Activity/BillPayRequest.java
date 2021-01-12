@@ -424,6 +424,8 @@ public class BillPayRequest {
             Intent intent = new Intent(context,DirectPaymentActivity.class);
             intent.putExtra(DirectPaymentActivity.EXTRAS_ID,oxigenTransactionVO.getTypeId());
             intent.putExtra(DirectPaymentActivity.EXTRAS_ENCRYPTED_VALUE,oxigenTransactionVO.getEncryptedValue());
+            intent.putExtra(DirectPaymentActivity.EXTRAS_DIRECT_PAYMENT,oxigenTransactionVO.getServiceType().getDirectPayment());
+            intent.putExtra(DirectPaymentActivity.EXTRAS_TITLE,ApplicationConstant.DIRECT_PAYMENT_TITLE);
             ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_DIRECT_PAYMENT_RESULT);
         }catch (Exception e ){
             e.printStackTrace();
@@ -912,6 +914,8 @@ public class BillPayRequest {
             }else{
                 Utility.showSingleButtonDialog(context,"Error !", Content_Message.error_message,false);
             }
+        }else if(requestCode==ApplicationConstant.REQ_DIRECT_PAYMENT_RESULT){
+
         }
     }
 

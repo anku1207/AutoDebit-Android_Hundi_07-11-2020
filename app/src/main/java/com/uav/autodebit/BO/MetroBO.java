@@ -70,6 +70,13 @@ public class MetroBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO getMyDmrcTopUpDetails(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("getMyDmrcTopUpDetails");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
 
 
 
