@@ -42,6 +42,7 @@ import com.uav.autodebit.BO.ServiceBO;
 import com.uav.autodebit.CustomDialog.MyDialog;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
+import com.uav.autodebit.Interface.ConfirmationGetObjet;
 import com.uav.autodebit.Interface.ServiceClick;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
@@ -80,6 +81,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -173,7 +175,7 @@ public class Home extends Base_Activity
         activityhasmap.put("20", Loan_Repayment.class);
         activityhasmap.put("21", Fastag.class);
         activityhasmap.put("22", CableTV.class);
-        activityhasmap.put("23", AddBeneficiaryActivity.class);
+        activityhasmap.put("26", EasyOtpActivity.class);
 
         activityhasmap.put("L_2", PanVerification.class);
         activityhasmap.put("L_3", Credit_Score_Report.class);
@@ -519,7 +521,17 @@ public class Home extends Base_Activity
                         startUserClickService(activitylayout.getTag().toString(), view);
                     } else {
                         // 12/04/2020
-                        MyDialog.showWebviewAlertDialog(Home.this, serviceTypeVO.getMessage(), true, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (d) -> {
+                        MyDialog.showWebviewConditionalAlertDialog(Home.this,serviceTypeVO.getMessage(),true,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(rechargenow)->{
+                            HashMap<String,Object> objectHashMap = (HashMap<String, Object>) rechargenow;
+                            Utility.dismissDialog(Home.this, (Dialog) objectHashMap.get("dialog"));
+                            if(String.valueOf(objectHashMap.get("data")).equalsIgnoreCase("ok")){
+                                Utility.enableDisableView(view, false);
+                                startUserClickService(activitylayout.getTag().toString(), view);
+                            }
+                        },(ConfirmationGetObjet.OnCancel)(cancel)->{
+                            Utility.dismissDialog(Home.this, ((Dialog)cancel));
+                        }));
+                      /*  MyDialog.showWebviewAlertDialog(Home.this, serviceTypeVO.getMessage(), true, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (d) -> {
                             Utility.dismissDialog(Home.this, d);
 
                             Utility.enableDisableView(view, false);
@@ -527,9 +539,8 @@ public class Home extends Base_Activity
 
                         }, (ConfirmationDialogInterface.OnCancel) (cancelbtn) -> {
                             Utility.dismissDialog(Home.this, cancelbtn);
-                        }));
+                        }));*/
                     }
-
                  /*  if(serviceTypeVO.getServiceTypeId()==ApplicationConstant.Dmrc && Session.getSessionByKey_BoolenValue(Home.this,Session.CACHE_IS_DMRC_CARD_ALLOT)){
                        Utility.enableDisableView(view,false);
                        startUserClickService(activitylayout.getTag().toString(),view);
@@ -545,8 +556,6 @@ public class Home extends Base_Activity
                            Utility.dismissDialog(Home.this, cancelbtn);
                        }));
                    }*/
-
-
                 }
             });
         }
@@ -716,11 +725,19 @@ public class Home extends Base_Activity
 
                 @Override
                 public void doPostExecute() {
-                    serviceClick(Integer.parseInt(serviceId), new ServiceClick((ServiceClick.OnSuccess) (s) -> {
-                        startActivityServiceClick(Integer.parseInt(serviceId), activityhasmap.get(serviceId), s,
-                                selectServiceType.getMandateAmount(), view);
-                    }, (ServiceClick.OnError) (e) -> {
-                    }), view);
+                    if(selectServiceType.getServiceTypeWithoutTariff()!=null){
+                        Intent intent;
+                        intent = new Intent(Home.this, activityhasmap.get(serviceId));
+                        intent.putExtra("serviceid", serviceId + "");
+                        startActivity(intent);
+                    }else{
+                        serviceClick(Integer.parseInt(serviceId), new ServiceClick((ServiceClick.OnSuccess) (s) -> {
+                            startActivityServiceClick(Integer.parseInt(serviceId), activityhasmap.get(serviceId), s,
+                                    selectServiceType.getMandateAmount(), view);
+                        }, (ServiceClick.OnError) (e) -> {
+                        }), view);
+                    }
+
                 }
             });
             backgroundAsyncService.execute();

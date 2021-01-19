@@ -69,6 +69,9 @@ public class OTM_With_Text_RecyclerViewAdapter extends RecyclerView.Adapter<OTM_
         holder.mail_Layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(holder.radio_Button.isChecked()){
+                    return;
+                }
 
                 String[] buttons = {"Yes", "No"};
                 Utility.confirmationDialogTextType(new DialogInterface() {
@@ -79,6 +82,12 @@ public class OTM_With_Text_RecyclerViewAdapter extends RecyclerView.Adapter<OTM_
                             for (RadioButton key : buttonBooleanHashMap.keySet()) {
                                 key.setChecked(false);
                             }
+                            buttonBooleanHashMap.clear();
+                            for(PreMandateRequestVO preMandateRequestVO1 : productslist){
+                                preMandateRequestVO1.setEventIs(false);
+                            }
+                            preMandateRequestVO.setEventIs(true);
+                            productslist.set(position, preMandateRequestVO);
                             buttonBooleanHashMap.put(holder.radio_Button, preMandateRequestVO);
                             holder.radio_Button.setChecked(true);
                         }));
@@ -93,11 +102,13 @@ public class OTM_With_Text_RecyclerViewAdapter extends RecyclerView.Adapter<OTM_
             }
         });
         if (preMandateRequestVO.isEventIs()) {
-            for (RadioButton key : buttonBooleanHashMap.keySet()) {
+           /* for (RadioButton key : buttonBooleanHashMap.keySet()) {
                 key.setChecked(false);
-            }
+            }*/
             buttonBooleanHashMap.put(holder.radio_Button, preMandateRequestVO);
             holder.radio_Button.setChecked(true);
+        }else{
+            holder.radio_Button.setChecked(false);
         }
     }
 

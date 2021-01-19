@@ -44,6 +44,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.uav.autodebit.BO.MetroBO;
@@ -96,35 +97,36 @@ import java.util.Objects;
 import io.branch.referral.util.BRANCH_STANDARD_EVENT;
 import io.branch.referral.util.BranchEvent;
 
-public class Dmrc_Card_Request extends Base_Activity implements View.OnClickListener ,PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
+public class Dmrc_Card_Request extends Base_Activity implements View.OnClickListener, PermissionUtils.PermissionResultCallback, ActivityCompat.OnRequestPermissionsResultCallback {
 
-    EditText customername,pin,city,state,permanentaddress,mobilenumber;
+    EditText customername, pin, city, state, permanentaddress, mobilenumber;
 
-    TextView attachaddress,changeaddress,cardcharges;
+    TextView attachaddress, changeaddress, cardcharges;
     Button verify;
     Uri mImageUri;
-    int  REQ_IMAGE=1001,REQ_GALLERY=1002,PIC_CROP=1004;
+    int REQ_IMAGE = 1001, REQ_GALLERY = 1002, PIC_CROP = 1004;
     Bitmap bmp;
-    ImageView addressimage,back_activity_button1 ;
-    boolean permissionstate=true;
+    ImageView addressimage, back_activity_button1;
+    boolean permissionstate = true;
     String customerId;
     Gson gson = new Gson();
     boolean isdisable;
     UAVProgressDialog pd;
-    String stringimg=null;
+    String stringimg = null;
 
-    LinearLayout addcardlistlayout,attachaddress_layout;
-    LinearLayout layoutmainBanner ;
+    LinearLayout addcardlistlayout, attachaddress_layout;
+    LinearLayout layoutmainBanner;
     public DMRC_Customer_CardVO dmrc_customer_cardVO;
     CardTypeVO intent_cardTypeVO;
-    boolean isPersonalise;;
+    boolean isPersonalise;
+    ;
 
 
     RecyclerView recyclerView;
     ViewPager viewPager;
     ScrollView scrollView;
 
-    int serviceId= ApplicationConstant.Dmrc;
+    int serviceId = ApplicationConstant.Dmrc;
     TabLayout tabLayout;
     PermissionUtils permissionUtils;
     File photofileurl;
@@ -135,47 +137,47 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dmrc__card__request);
         getSupportActionBar().hide();
-        pd=new UAVProgressDialog(this);
+        pd = new UAVProgressDialog(this);
 
-        mobilenumber=findViewById(R.id.mobilenumber);
-        customername=findViewById(R.id.customername);
-        pin=findViewById(R.id.pin);
-        city=findViewById(R.id.city);
-        state=findViewById(R.id.state);
-        permanentaddress=findViewById(R.id.permanentaddress);
-        attachaddress=findViewById(R.id.attachaddress);
-        verify=findViewById(R.id.verify);
-        addressimage=findViewById(R.id.addressimage);
-        changeaddress=findViewById(R.id.changeaddress);
-        cardcharges=findViewById(R.id.cardcharges);
-        addcardlistlayout=findViewById(R.id.addcardlistlayout);
-        scrollView=findViewById(R.id.scrollView);
-        checkAddress=findViewById(R.id.checkAddress);
-        attachaddress_layout=findViewById(R.id.attachaddress_layout);
-        layoutmainBanner =findViewById(R.id.layoutmainBanner);
+        mobilenumber = findViewById(R.id.mobilenumber);
+        customername = findViewById(R.id.customername);
+        pin = findViewById(R.id.pin);
+        city = findViewById(R.id.city);
+        state = findViewById(R.id.state);
+        permanentaddress = findViewById(R.id.permanentaddress);
+        attachaddress = findViewById(R.id.attachaddress);
+        verify = findViewById(R.id.verify);
+        addressimage = findViewById(R.id.addressimage);
+        changeaddress = findViewById(R.id.changeaddress);
+        cardcharges = findViewById(R.id.cardcharges);
+        addcardlistlayout = findViewById(R.id.addcardlistlayout);
+        scrollView = findViewById(R.id.scrollView);
+        checkAddress = findViewById(R.id.checkAddress);
+        attachaddress_layout = findViewById(R.id.attachaddress_layout);
+        layoutmainBanner = findViewById(R.id.layoutmainBanner);
 
-        tabLayout =findViewById(R.id.indicator);
+        tabLayout = findViewById(R.id.indicator);
 
-        back_activity_button1=findViewById(R.id.back_activity_button);
+        back_activity_button1 = findViewById(R.id.back_activity_button);
 
         pin.setInputType(InputType.TYPE_CLASS_NUMBER);
         city.setKeyListener(null);
         state.setKeyListener(null);
-        permissionUtils=new PermissionUtils(Dmrc_Card_Request.this);
+        permissionUtils = new PermissionUtils(Dmrc_Card_Request.this);
 
         addcardlistlayout.removeAllViews();
 
-        isdisable = getIntent().getBooleanExtra("isdisable",true);
+        isdisable = getIntent().getBooleanExtra("isdisable", true);
         customerId = Session.getCustomerId(Dmrc_Card_Request.this);
         dmrc_customer_cardVO = gson.fromJson(getIntent().getStringExtra("dmrccard"), DMRC_Customer_CardVO.class);
 
         intent_cardTypeVO = (CardTypeVO) getIntent().getSerializableExtra("cardTypeVO");
 
 
-        if(intent_cardTypeVO!=null && intent_cardTypeVO.getPersonalization()!=null){
-            isPersonalise= intent_cardTypeVO.getPersonalization() == 1;
-        }else {
-            isPersonalise=false;
+        if (intent_cardTypeVO != null && intent_cardTypeVO.getPersonalization() != null) {
+            isPersonalise = intent_cardTypeVO.getPersonalization() == 1;
+        } else {
+            isPersonalise = false;
         }
         cardcharges.setText(intent_cardTypeVO != null ? intent_cardTypeVO.getCardFees() : null);
         if (isPersonalise) {
@@ -189,10 +191,10 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         //setCustomerDetail(dmrc_customer_cardVO);
         checkAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                if (isChecked){
-                    if(dmrc_customer_cardVO.getDmrcCustomerList()!=null && dmrc_customer_cardVO.getDmrcCustomerList().size()>0){
-                        ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    if (dmrc_customer_cardVO.getDmrcCustomerList() != null && dmrc_customer_cardVO.getDmrcCustomerList().size() > 0) {
+                        ArrayList<DMRC_Customer_CardVO> listforcard = (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
                         DMRC_Customer_CardVO dmrcCardStatusVO = listforcard.get(listforcard.size() - 1);
                         setCustomerDetail(dmrcCardStatusVO);
                         checkAddress.setVisibility(View.GONE);
@@ -201,7 +203,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 }
             }
         });
-
 
 
         back_activity_button1.setOnClickListener(this);
@@ -221,7 +222,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 //onBlur
                 else {
                     if (pin.length() < 6) {
-                        pin.setError(Utility.getErrorSpannableString(getApplicationContext(),  ErrorMsg.Pincode_6_characters_Error_Message));
+                        pin.setError(Utility.getErrorSpannableString(getApplicationContext(), ErrorMsg.Pincode_6_characters_Error_Message));
                         city.setText("");
                         state.setText("");
                     }
@@ -233,29 +234,31 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (pin.length() == 6) {
                     pincodebycity(pin.getText().toString().trim());
                 }
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
             }
         });
     }
 
-    public void addRequestDmrcCardBanner(DMRC_Customer_CardVO dmrc_customer_cardVO){
+    public void addRequestDmrcCardBanner(DMRC_Customer_CardVO dmrc_customer_cardVO) {
         addcardlistlayout.removeAllViewsInLayout();
 
-        if(dmrc_customer_cardVO.getDmrcCustomerList()!=null && dmrc_customer_cardVO.getDmrcCustomerList().size()>0){
+        if (dmrc_customer_cardVO.getDmrcCustomerList() != null && dmrc_customer_cardVO.getDmrcCustomerList().size() > 0) {
 
             //Show Addcard btn
            /* if(dmrc_customer_cardVO.getDmrcid()==null){
                 showAddCardBtn();
             }*/
 
-           //02-09-2020
+            //02-09-2020
             showAddCardBtn();
 
           /*ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
@@ -265,11 +268,11 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             recyclerView.setLayoutManager(new LinearLayoutManager(Dmrc_Card_Request.this, LinearLayoutManager.HORIZONTAL, false));
             getdata(listforcard);*/
 
-            ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
+            ArrayList<DMRC_Customer_CardVO> listforcard = (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
            /* viewPager=Utility.getViewPager(Dmrc_Card_Request.this);
             viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);*/
             getdata(listforcard);
-        }else{
+        } else {
             //02-09-2020
             setCustomerDetail(dmrc_customer_cardVO);
 
@@ -278,17 +281,17 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             int childCount = layoutmainBanner.getChildCount();
             for (int i = 0; i < childCount; i++) {
                 View v = layoutmainBanner.getChildAt(i);
-                if((v.getTag()!=null) && (v.getTag().equals("addCardBtn"))){
+                if ((v.getTag() != null) && (v.getTag().equals("addCardBtn"))) {
                     Utility.removeEle(v);
                 }
             }
-            if(scrollView.getVisibility()==View.GONE){
+            if (scrollView.getVisibility() == View.GONE) {
                 scrollviewAnimationAndVisibility();
             }
             checkAddress.setVisibility(View.GONE);
 
-            CardView cardView =Utility.getCardViewStyle(Dmrc_Card_Request.this);
-            ImageView imageView =Utility.getImageView(Dmrc_Card_Request.this);
+            CardView cardView = Utility.getCardViewStyle(Dmrc_Card_Request.this);
+            ImageView imageView = Utility.getImageView(Dmrc_Card_Request.this);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             Picasso.with(this)
                     .load("http://autope.in/images/apk/1577709175082.jpeg")
@@ -297,6 +300,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                         public void onSuccess() {
                             //do smth when picture is loaded successfully
                         }
+
                         @Override
                         public void onError() {
                         }
@@ -308,17 +312,17 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         scrollView.fullScroll(ScrollView.FOCUS_UP);
     }
 
-    public void getdata(ArrayList<DMRC_Customer_CardVO> listforcard){
-        BackgroundAsyncServiceGetList backgroundAsyncServiceGetList =new BackgroundAsyncServiceGetList(pd, false, new BackgroundAsyncServiceGetListInterface.BackgroundServiceInterface() {
+    public void getdata(ArrayList<DMRC_Customer_CardVO> listforcard) {
+        BackgroundAsyncServiceGetList backgroundAsyncServiceGetList = new BackgroundAsyncServiceGetList(pd, false, new BackgroundAsyncServiceGetListInterface.BackgroundServiceInterface() {
             @Override
             public List doInBackGround(BackgroundAsyncServiceGetListInterface backgroundAsyncServiceGetListInterface) {
 
-                ArrayList<DMRC_Customer_CardVO> dmrc_customer_cardVOS=new ArrayList<>();
-                for(DMRC_Customer_CardVO dmrc_customer_cardVOS1 :listforcard ){
-                    DMRC_Customer_CardVO dmrc_customer_cardVO =new DMRC_Customer_CardVO();
+                ArrayList<DMRC_Customer_CardVO> dmrc_customer_cardVOS = new ArrayList<>();
+                for (DMRC_Customer_CardVO dmrc_customer_cardVOS1 : listforcard) {
+                    DMRC_Customer_CardVO dmrc_customer_cardVO = new DMRC_Customer_CardVO();
                     dmrc_customer_cardVO.setCustomerName(dmrc_customer_cardVOS1.getCustomerName());
                     dmrc_customer_cardVO.setCardNo(dmrc_customer_cardVOS1.getCardNo());
-                    DmrcCardStatusVO dmrcCardStatusVO =new DmrcCardStatusVO();
+                    DmrcCardStatusVO dmrcCardStatusVO = new DmrcCardStatusVO();
                     dmrcCardStatusVO.setStatusName(dmrc_customer_cardVOS1.getDmrccardStaus().getStatusName());
                     dmrcCardStatusVO.setStatusId(dmrc_customer_cardVOS1.getDmrccardStaus().getStatusId());
                     dmrc_customer_cardVO.setIssueDate(dmrc_customer_cardVOS1.getIssueDate());
@@ -331,6 +335,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 }
                 return backgroundAsyncServiceGetListInterface.doInBackGround.doInBackGround(dmrc_customer_cardVOS);
             }
+
             @Override
             public void doPostExecute(List list) {
               /*  DMRC_List_Adpater dmrc_list_adpater=new DMRC_List_Adpater(Dmrc_Card_Request.this,list ,R.layout.design_dmrc_card_list);
@@ -339,12 +344,12 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
 */
 
-                CustomPagerAdapter models =new CustomPagerAdapter(list,Dmrc_Card_Request.this);
+                CustomPagerAdapter models = new CustomPagerAdapter(list, Dmrc_Card_Request.this);
 
-                viewPager=Utility.getViewPager(Dmrc_Card_Request.this);
+                viewPager = Utility.getViewPager(Dmrc_Card_Request.this);
                 viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
                 viewPager.setAdapter(models);
-                viewPager.setPadding(0,0,0,0);
+                viewPager.setPadding(0, 0, 0, 0);
                 tabLayout.setupWithViewPager(viewPager, false);
                 Utility.disable_Tab(tabLayout);
                 addcardlistlayout.addView(viewPager);
@@ -362,27 +367,27 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.back_activity_button:
                 finish();
                 break;
 
-            case R.id. attachaddress:
-                permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(Dmrc_Card_Request.this), Content_Message.CAMERA_PERMISSION,ApplicationConstant.REQ_CAMERA_PERMISSION);
+            case R.id.attachaddress:
+                permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(Dmrc_Card_Request.this), Content_Message.CAMERA_PERMISSION, ApplicationConstant.REQ_CAMERA_PERMISSION);
 
 
-               break;
-            case R.id. changeaddress :
+                break;
+            case R.id.changeaddress:
                 enabledAllEle(true);
                 break;
-            case R.id.verify :
+            case R.id.verify:
 
-                if(!requiredfiled()) return;
-                if(Utility.validatePattern(mobilenumber.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION)!=null){
-                    mobilenumber.setError(Utility.validatePattern(mobilenumber.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION));
+                if (!requiredfiled()) return;
+                if (Utility.validatePattern(mobilenumber.getText().toString().trim(), ApplicationConstant.MOBILENO_VALIDATION) != null) {
+                    mobilenumber.setError(Utility.validatePattern(mobilenumber.getText().toString().trim(), ApplicationConstant.MOBILENO_VALIDATION));
                     return;
                 }
-                if(pin.getText().toString().trim().length()<6){
+                if (pin.getText().toString().trim().length() < 6) {
                     pin.setError("Pincode is Wrong");
                     return;
                 }
@@ -397,17 +402,17 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 var3.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
 
-                TextView name=var3.findViewById(R.id.name);
-                TextView mobile =var3.findViewById(R.id.mobile);
-                TextView address =var3.findViewById(R.id.address);
-                ImageView canceldialog=var3.findViewById(R.id.canceldialog);
-                Button modify=var3.findViewById(R.id.modify);
-                Button next=var3.findViewById(R.id.next);
+                TextView name = var3.findViewById(R.id.name);
+                TextView mobile = var3.findViewById(R.id.mobile);
+                TextView address = var3.findViewById(R.id.address);
+                ImageView canceldialog = var3.findViewById(R.id.canceldialog);
+                Button modify = var3.findViewById(R.id.modify);
+                Button next = var3.findViewById(R.id.next);
 
 
-                name.setText("  "+customername.getText().toString());
-                mobile.setText("  "+mobilenumber.getText().toString());
-                address.setText("  "+permanentaddress.getText().toString());
+                name.setText("  " + customername.getText().toString());
+                mobile.setText("  " + mobilenumber.getText().toString());
+                address.setText("  " + permanentaddress.getText().toString());
 
 
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -431,14 +436,15 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     @Override
                     public void onClick(View view) {
                         Utility.dismissDialog(Dmrc_Card_Request.this, var3);
-                        if(bmp==null){
+                        if (bmp == null) {
                             saveDmrcCardInServer();
-                        }else {
-                            BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,true, new BackgroundServiceInterface() {
+                        } else {
+                            BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd, true, new BackgroundServiceInterface() {
                                 @Override
                                 public void doInBackGround() {
-                                    stringimg= Utility.BitMapToString(bmp,500,true);
+                                    stringimg = Utility.BitMapToString(bmp, 500, true);
                                 }
+
                                 @Override
                                 public void doPostExecute() {
                                     Utility.dismissDialog(Dmrc_Card_Request.this, pd);
@@ -456,12 +462,12 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         }
     }
 
-    public void startCamera(){
+    public void startCamera() {
         AlertDialog.Builder pictureDialog = new AlertDialog.Builder(Dmrc_Card_Request.this);
         pictureDialog.setTitle("Select Action");
         String[] pictureDialogItems = {
                 "Select photo from gallery",
-                "Capture photo from camera" };
+                "Capture photo from camera"};
         pictureDialog.setItems(pictureDialogItems,
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -478,23 +484,24 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 });
         pictureDialog.show();
     }
+
     @SuppressLint("ResourceType")
-    public void showAddCardBtn(){
+    public void showAddCardBtn() {
 
 
-        TextView textView = Utility.getTextView(Dmrc_Card_Request.this,"Apply for Additional Card");
-        textView.setPaintFlags(textView.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
+        TextView textView = Utility.getTextView(Dmrc_Card_Request.this, "Apply for Additional Card");
+        textView.setPaintFlags(textView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         textView.setTextColor(getApplication().getResources().getColorStateList(R.drawable.text_change_color_blue));
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17);
         textView.setTag("addCardBtn");
 
         Typeface typeface = ResourcesCompat.getFont(this, R.font.poppinssemibold);
-        textView.setTypeface(typeface ,Typeface.BOLD);
+        textView.setTypeface(typeface, Typeface.BOLD);
 
         int childCount = layoutmainBanner.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View v = layoutmainBanner.getChildAt(i);
-            if((v.getTag()!=null) && (v.getTag().equals("addCardBtn"))){
+            if ((v.getTag() != null) && (v.getTag().equals("addCardBtn"))) {
                 Utility.removeEle(v);
             }
         }
@@ -507,7 +514,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             @Override
             public void onClick(View view) {
                 Utility.removeEle(textView);
-                if(dmrc_customer_cardVO.getDmrcid()==null){
+                if (dmrc_customer_cardVO.getDmrcid() == null) {
                     // 01-09-2020
                     checkAddress.setVisibility(View.VISIBLE);
                     mobilenumber.setText(null);
@@ -517,16 +524,16 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     state.setText(null);
                     permanentaddress.setText(null);
                     addressimage.setImageBitmap(null);
-                    bmp=null;
+                    bmp = null;
                     scrollviewAnimationAndVisibility();
-                }else {
+                } else {
                     setCustomerDetail(dmrc_customer_cardVO);
                 }
             }
         });
     }
 
-    private void scrollviewAnimationAndVisibility(){
+    private void scrollviewAnimationAndVisibility() {
         scrollView.setVisibility(View.VISIBLE);
         TranslateAnimation animate = new TranslateAnimation(
                 0,
@@ -539,14 +546,14 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
     }
 
-    public void saveDmrcCardInServer(){
+    public void saveDmrcCardInServer() {
         try {
             checkAddress.setVisibility(View.GONE);
 
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = MetroBO.saveDmarcCards();
-            DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
-            CustomerVO customerVO=new CustomerVO();
+            DMRC_Customer_CardVO request_dmrc_customer_cardVO = new DMRC_Customer_CardVO();
+            CustomerVO customerVO = new CustomerVO();
             customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Dmrc_Card_Request.this)));
             request_dmrc_customer_cardVO.setDmrcid(dmrc_customer_cardVO.getDmrcid());
             request_dmrc_customer_cardVO.setCustomer(customerVO);
@@ -555,112 +562,114 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             request_dmrc_customer_cardVO.setAddress(permanentaddress.getText().toString());
             request_dmrc_customer_cardVO.setPincode(pin.getText().toString());
 
-            CardTypeVO cardTypeVO =new CardTypeVO();
+            CardTypeVO cardTypeVO = new CardTypeVO();
             cardTypeVO.setCardTypeId(intent_cardTypeVO.getCardTypeId());
             request_dmrc_customer_cardVO.setCardTypeVO(cardTypeVO);
 
-            if(bmp!=null){
+            if (bmp != null) {
                 request_dmrc_customer_cardVO.setImage(stringimg);
             }
-            Gson gson =new Gson();
+            Gson gson = new Gson();
             String json = gson.toJson(request_dmrc_customer_cardVO);
             params.put("volley", json);
-            Log.w("saveDmrcCardInServer",json);
+            Log.w("saveDmrcCardInServer", json);
             connectionVO.setParams(params);
-            VolleyUtils.makeJsonObjectRequest(Dmrc_Card_Request.this,connectionVO, new VolleyResponseListener() {
+            VolleyUtils.makeJsonObjectRequest(Dmrc_Card_Request.this, connectionVO, new VolleyResponseListener() {
                 @Override
                 public void onError(String message) {
                 }
+
                 @Override
                 public void onResponse(Object resp) throws JSONException {
                     JSONObject response = (JSONObject) resp;
                     Gson gson = new Gson();
                     dmrc_customer_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
 
-                    if(dmrc_customer_cardVO.getStatusCode().equals("400")){
+                    if (dmrc_customer_cardVO.getStatusCode().equals("400")) {
                         //VolleyUtils.furnishErrorMsg(  "Fail" ,response, MainActivity.this);
                         ArrayList error = (ArrayList) dmrc_customer_cardVO.getErrorMsgs();
                         StringBuilder sb = new StringBuilder();
-                        for(int i=0; i<error.size(); i++){
+                        for (int i = 0; i < error.size(); i++) {
                             sb.append(error.get(i)).append("\n");
                         }
-                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this,dmrc_customer_cardVO.getDialogTitle(),sb.toString(),false);
-                    }else {
+                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this, dmrc_customer_cardVO.getDialogTitle(), sb.toString(), false);
+                    } else {
                        /*Intent intent =new Intent(Dmrc_Card_Request.this,DMRC_Cards_List.class);
                         intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));
                         startActivity(intent);
                         finish();*/
-                       String [] btnNames={"Proceed"};
+                        String[] btnNames = {"Proceed"};
 
-                       JSONArray cardChargesJson = new JSONArray(dmrc_customer_cardVO.getDmrcFeeCharges());
-                       Utility.confirmationDialogPaymentModify(new com.uav.autodebit.util.DialogInterface() {
-                           @Override
-                           public void confirm(Dialog dialog) {
-                               Utility.dismissDialog(Dmrc_Card_Request.this, dialog);
-                               try {
-                                   if(dmrc_customer_cardVO.isEventIs()){
-                                       if(dmrc_customer_cardVO.getPaymentTypeObject()!=null){
-                                           JSONArray paymentTypeArray=new JSONArray(dmrc_customer_cardVO.getPaymentTypeObject());
-                                           if(paymentTypeArray.length()>1){
-                                               Utility.showSelectPaymentTypeDialog(Dmrc_Card_Request.this, "Payment Type", dmrc_customer_cardVO.getPaymentTypeObject(), new AlertSelectDialogClick((position) -> {
-                                                   int selectPosition = Integer.parseInt(position);
-                                                   selectPaymentTypeWiseShowDialog(Dmrc_Card_Request.this,selectPosition);
-                                               }));
-                                           }else {
-                                               selectPaymentTypeWiseShowDialog(Dmrc_Card_Request.this,paymentTypeArray.getJSONObject(0).getInt("id"));
-                                           }
-                                       }else{
-                                           Toast.makeText(Dmrc_Card_Request.this, Content_Message.error_message, Toast.LENGTH_SHORT).show();
-                                       }
-                                   }else {
-                                       sIMandateDmrc(null,null,false);
-                                   }
-                               }catch (Exception e){
-                                   ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
-                               }
-                           }
-                           @Override
-                           public void modify(Dialog dialog) {
-                               Utility.dismissDialog(Dmrc_Card_Request.this, dialog);
+                        JSONArray cardChargesJson = new JSONArray(dmrc_customer_cardVO.getDmrcFeeCharges());
+                        Utility.confirmationDialogPaymentModify(new com.uav.autodebit.util.DialogInterface() {
+                            @Override
+                            public void confirm(Dialog dialog) {
+                                Utility.dismissDialog(Dmrc_Card_Request.this, dialog);
+                                try {
+                                    if (dmrc_customer_cardVO.isEventIs()) {
+                                        if (dmrc_customer_cardVO.getPaymentTypeObject() != null) {
+                                            JSONArray paymentTypeArray = new JSONArray(dmrc_customer_cardVO.getPaymentTypeObject());
+                                            if (paymentTypeArray.length() > 1) {
+                                                Utility.showSelectPaymentTypeDialog(Dmrc_Card_Request.this, "Payment Type", dmrc_customer_cardVO.getPaymentTypeObject(), new AlertSelectDialogClick((position) -> {
+                                                    int selectPosition = Integer.parseInt(position);
+                                                    selectPaymentTypeWiseShowDialog(Dmrc_Card_Request.this, selectPosition);
+                                                }));
+                                            } else {
+                                                selectPaymentTypeWiseShowDialog(Dmrc_Card_Request.this, paymentTypeArray.getJSONObject(0).getInt("id"));
+                                            }
+                                        } else {
+                                            Toast.makeText(Dmrc_Card_Request.this, Content_Message.error_message, Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        sIMandateDmrc(null, null, false);
+                                    }
+                                } catch (Exception e) {
+                                    ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this, Utility.getStackTrace(e));
+                                }
+                            }
 
-                           }
-                       },Dmrc_Card_Request.this,cardChargesJson,null,"Card Charges",btnNames);
+                            @Override
+                            public void modify(Dialog dialog) {
+                                Utility.dismissDialog(Dmrc_Card_Request.this, dialog);
+
+                            }
+                        }, Dmrc_Card_Request.this, cardChargesJson, null, "Card Charges", btnNames);
                     }
                 }
             });
         } catch (Exception e) {
-            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this, Utility.getStackTrace(e));
             //Utility.exceptionAlertDialog(Dmrc_Card_Request.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
-    public void selectPaymentTypeWiseShowDialog(Context context , Integer paymentTypeid){
-        if (paymentTypeid.equals(ApplicationConstant.BankMandatePayment)){
+    public void selectPaymentTypeWiseShowDialog(Context context, Integer paymentTypeid) {
+        if (paymentTypeid.equals(ApplicationConstant.BankMandatePayment)) {
             // 07/05/2020
-            BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getBankMandateHtml(),new ConfirmationDialogInterface((ok)->{
+            BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this, dmrc_customer_cardVO.getBankMandateHtml(), new ConfirmationDialogInterface((ok) -> {
                 dmrc_customer_cardVO.setAnonymousInteger(AuthServiceProviderVO.ENACHIDFC);
-                setBankMandateOrRecharge(Dmrc_Card_Request.this,dmrc_customer_cardVO);
+                setBankMandateOrRecharge(Dmrc_Card_Request.this, dmrc_customer_cardVO);
             }));
 
 
-        } else if(paymentTypeid.equals(ApplicationConstant.SIMandatePayment)) {
+        } else if (paymentTypeid.equals(ApplicationConstant.SIMandatePayment)) {
             // recharge on SI mandate
-            BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getSiMandateHtml(),new ConfirmationDialogInterface((ok)->{
+            BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this, dmrc_customer_cardVO.getSiMandateHtml(), new ConfirmationDialogInterface((ok) -> {
                 dmrc_customer_cardVO.setAnonymousInteger(AuthServiceProviderVO.AUTOPE_PG);
-                setBankMandateOrRecharge(Dmrc_Card_Request.this,dmrc_customer_cardVO);
+                setBankMandateOrRecharge(Dmrc_Card_Request.this, dmrc_customer_cardVO);
             }));
             // proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),"AUTOPETXNID60", AuthServiceProviderVO.PAYU);
-        }else if(paymentTypeid.equals(ApplicationConstant.UPIMandatePayment)) {
+        } else if (paymentTypeid.equals(ApplicationConstant.UPIMandatePayment)) {
             // recharge on SI mandate
-            BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getUpiMandateHtml(),new ConfirmationDialogInterface((ok)->{
+            BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this, dmrc_customer_cardVO.getUpiMandateHtml(), new ConfirmationDialogInterface((ok) -> {
                 dmrc_customer_cardVO.setAnonymousInteger(AuthServiceProviderVO.AUTOPE_PG_UPI);
-                setBankMandateOrRecharge(Dmrc_Card_Request.this,dmrc_customer_cardVO);
+                setBankMandateOrRecharge(Dmrc_Card_Request.this, dmrc_customer_cardVO);
             }));
             // proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),"AUTOPETXNID60", AuthServiceProviderVO.PAYU);
         }
     }
 
-    public  void setBankMandateOrRecharge(Context context , DMRC_Customer_CardVO dmrc_customer_cardVO){
+    public void setBankMandateOrRecharge(Context context, DMRC_Customer_CardVO dmrc_customer_cardVO) {
         OxigenTransactionVO oxigenTransactionVO = new OxigenTransactionVO();
         oxigenTransactionVO.setServiceId(dmrc_customer_cardVO.getServiceId());
 
@@ -669,67 +678,67 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         oxigenTransactionVO.setProvider(authServiceProviderVO);
         oxigenTransactionVO.setAnonymousInteger(dmrc_customer_cardVO.getDmrcid());
 
-        BeforeRecharge.beforeRechargeAddMandate(context,oxigenTransactionVO,new MandateAndRechargeInterface((recharge)->{
-            sIMandateDmrc(Integer.parseInt((String) recharge),dmrc_customer_cardVO.getAnonymousInteger(),false);
-        }, (mandate)->{
-            if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
-                startSIActivity(context,dmrc_customer_cardVO,ApplicationConstant.PG_MANDATE);
-            }else if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
-                startBankMandateActivity(context,dmrc_customer_cardVO);
-            }else if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG_UPI){
-                startUPIActivity(context,dmrc_customer_cardVO, ApplicationConstant.PG_MANDATE);
+        BeforeRecharge.beforeRechargeAddMandate(context, oxigenTransactionVO, new MandateAndRechargeInterface((recharge) -> {
+            sIMandateDmrc(Integer.parseInt((String) recharge), dmrc_customer_cardVO.getAnonymousInteger(), false);
+        }, (mandate) -> {
+            if (oxigenTransactionVO.getProvider().getProviderId() == AuthServiceProviderVO.AUTOPE_PG) {
+                startSIActivity(context, dmrc_customer_cardVO, ApplicationConstant.PG_MANDATE);
+            } else if (oxigenTransactionVO.getProvider().getProviderId() == AuthServiceProviderVO.ENACHIDFC) {
+                startBankMandateActivity(context, dmrc_customer_cardVO);
+            } else if (oxigenTransactionVO.getProvider().getProviderId() == AuthServiceProviderVO.AUTOPE_PG_UPI) {
+                startUPIActivity(context, dmrc_customer_cardVO, ApplicationConstant.PG_MANDATE);
             }
         }));
     }
 
-    public  void startBankMandateActivity(Context context , DMRC_Customer_CardVO  dmrc_customer_cardVO){
+    public void startBankMandateActivity(Context context, DMRC_Customer_CardVO dmrc_customer_cardVO) {
         try {
-            Intent intent = new Intent(context,Enach_Mandate.class);
-            intent.putExtra("forresutl",true);
-            intent.putExtra("selectservice",new ArrayList<Integer>(Arrays.asList(dmrc_customer_cardVO.getServiceId())));
-            intent.putExtra("id",dmrc_customer_cardVO.getDmrcid());
-            ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_ENACH_MANDATE);
-        }catch (Exception e){
+            Intent intent = new Intent(context, Enach_Mandate.class);
+            intent.putExtra("forresutl", true);
+            intent.putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(dmrc_customer_cardVO.getServiceId())));
+            intent.putExtra("id", dmrc_customer_cardVO.getDmrcid());
+            ((Activity) context).startActivityForResult(intent, ApplicationConstant.REQ_ENACH_MANDATE);
+        } catch (Exception e) {
             e.printStackTrace();
-            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this, Utility.getStackTrace(e));
         }
 
     }
 
-    public  void startSIActivity(Context context ,  DMRC_Customer_CardVO  dmrc_customer_cardVO , String paymentType){
+    public void startSIActivity(Context context, DMRC_Customer_CardVO dmrc_customer_cardVO, String paymentType) {
         try {
-            Intent intent = new Intent(context,SI_First_Data.class);
-            intent.putExtra("id",dmrc_customer_cardVO.getDmrcid());
-            intent.putExtra("amount",dmrc_customer_cardVO.getAnonymousAmount());
-            intent.putExtra("serviceId",dmrc_customer_cardVO.getServiceId()+"");
-            intent.putExtra("paymentType",paymentType);
-            ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_SI_MANDATE);
-        }catch (Exception e){
+            Intent intent = new Intent(context, SI_First_Data.class);
+            intent.putExtra("id", dmrc_customer_cardVO.getDmrcid());
+            intent.putExtra("amount", dmrc_customer_cardVO.getAnonymousAmount());
+            intent.putExtra("serviceId", dmrc_customer_cardVO.getServiceId() + "");
+            intent.putExtra("paymentType", paymentType);
+            ((Activity) context).startActivityForResult(intent, ApplicationConstant.REQ_SI_MANDATE);
+        } catch (Exception e) {
             e.printStackTrace();
-            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this, Utility.getStackTrace(e));
         }
 
     }
 
-    public  void startUPIActivity(Context context ,  DMRC_Customer_CardVO  dmrc_customer_cardVO , String paymentType){
+    public void startUPIActivity(Context context, DMRC_Customer_CardVO dmrc_customer_cardVO, String paymentType) {
         try {
-            Intent intent = new Intent(context,UPI_Mandate.class);
-            intent.putExtra("id",dmrc_customer_cardVO.getDmrcid());
-            intent.putExtra("amount",dmrc_customer_cardVO.getAnonymousAmount());
-            intent.putExtra("serviceId",dmrc_customer_cardVO.getServiceId()+"");
-            intent.putExtra("paymentType",paymentType);
-            ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_UPI_FOR_MANDATE);
-        }catch (Exception e){
+            Intent intent = new Intent(context, UPI_Mandate.class);
+            intent.putExtra("id", dmrc_customer_cardVO.getDmrcid());
+            intent.putExtra("amount", dmrc_customer_cardVO.getAnonymousAmount());
+            intent.putExtra("serviceId", dmrc_customer_cardVO.getServiceId() + "");
+            intent.putExtra("paymentType", paymentType);
+            ((Activity) context).startActivityForResult(intent, ApplicationConstant.REQ_UPI_FOR_MANDATE);
+        } catch (Exception e) {
             e.printStackTrace();
-            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this, Utility.getStackTrace(e));
         }
     }
 
-    public void sIMandateDmrc(Integer bankId , Integer providerId ,boolean existingMandateType){
+    public void sIMandateDmrc(Integer bankId, Integer providerId, boolean existingMandateType) {
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = SiBO.sIMandateDmrc();
-        DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
-        CustomerVO customerVO=new CustomerVO();
+        DMRC_Customer_CardVO request_dmrc_customer_cardVO = new DMRC_Customer_CardVO();
+        CustomerVO customerVO = new CustomerVO();
         customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Dmrc_Card_Request.this)));
         request_dmrc_customer_cardVO.setCustomer(customerVO);
         request_dmrc_customer_cardVO.setDmrcid(dmrc_customer_cardVO.getDmrcid());
@@ -741,15 +750,16 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         //set customer auth bank id select by BANK list mandate
         request_dmrc_customer_cardVO.setAnonymousInteger(bankId);
 
-        Gson gson =new Gson();
+        Gson gson = new Gson();
         String json = gson.toJson(request_dmrc_customer_cardVO);
-        Log.w("sIMandateDmrc",json);
+        Log.w("sIMandateDmrc", json);
         params.put("volley", json);
         connectionVO.setParams(params);
-        VolleyUtils.makeJsonObjectRequest(Dmrc_Card_Request.this,connectionVO, new VolleyResponseListener() {
+        VolleyUtils.makeJsonObjectRequest(Dmrc_Card_Request.this, connectionVO, new VolleyResponseListener() {
             @Override
             public void onError(String message) {
             }
+
             @Override
             public void onResponse(Object resp) throws JSONException {
 
@@ -759,78 +769,78 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     Gson gson = new Gson();
                     DMRC_Customer_CardVO dmrc_customer_SI_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
 
-                    if(dmrc_customer_SI_cardVO.getStatusCode().equals("400")){
+                    if (dmrc_customer_SI_cardVO.getStatusCode().equals("400")) {
                         ArrayList error = (ArrayList) dmrc_customer_SI_cardVO.getErrorMsgs();
                         StringBuilder sb = new StringBuilder();
-                        for(int i=0; i<error.size(); i++){
+                        for (int i = 0; i < error.size(); i++) {
                             sb.append(error.get(i)).append("\n");
                         }
-                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getDialogTitle(),sb.toString(),false);
-                    }else {
+                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this, dmrc_customer_SI_cardVO.getDialogTitle(), sb.toString(), false);
+                    } else {
                        /* if(dmrc_customer_SI_cardVO.getCustomer()!=null){
                             String json = new Gson().toJson(dmrc_customer_SI_cardVO.getCustomer());
                             Session.set_Data_Sharedprefence(Dmrc_Card_Request.this,Session.CACHE_CUSTOMER,json);
                             Session.set_Data_Sharedprefence(Dmrc_Card_Request.this, Session.LOCAL_CACHE,dmrc_customer_SI_cardVO.getCustomer().getLocalCache());
                         }*/
 
-                        if(dmrc_customer_SI_cardVO.getShowDialog()){
+                        if (dmrc_customer_SI_cardVO.getShowDialog()) {
                             JSONObject object = new JSONObject(dmrc_customer_SI_cardVO.getAnonymousString());
-                            String [] btnText= {object.getString("Button1"),object.getString("Button2")};
+                            String[] btnText = {object.getString("Button1"), object.getString("Button2")};
 
-                            MyDialog.showDoubleButtonBigContentDialog(Dmrc_Card_Request.this,new BigContentDialogIntetface((button1)->{
+                            MyDialog.showDoubleButtonBigContentDialog(Dmrc_Card_Request.this, new BigContentDialogIntetface((button1) -> {
                                 Utility.dismissDialog(Dmrc_Card_Request.this, button1);
 
 
-                                BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getSiMandateHtml(),new ConfirmationDialogInterface((ok)->{
+                                BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this, dmrc_customer_SI_cardVO.getSiMandateHtml(), new ConfirmationDialogInterface((ok) -> {
                                     OxigenTransactionVO oxigenTransactionVO = new OxigenTransactionVO();
                                     oxigenTransactionVO.setServiceId(dmrc_customer_SI_cardVO.getServiceId());
 
-                                    AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
+                                    AuthServiceProviderVO authServiceProviderVO = new AuthServiceProviderVO();
                                     authServiceProviderVO.setProviderId(AuthServiceProviderVO.AUTOPE_PG);
                                     oxigenTransactionVO.setProvider(authServiceProviderVO);
 
-                                    BeforeRecharge.beforeRechargeAddMandate(Dmrc_Card_Request.this,oxigenTransactionVO,new MandateAndRechargeInterface((recharge)->{
+                                    BeforeRecharge.beforeRechargeAddMandate(Dmrc_Card_Request.this, oxigenTransactionVO, new MandateAndRechargeInterface((recharge) -> {
                                         try {
-                                            allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(),Integer.parseInt((String) recharge),false);
-                                        }catch (Exception e){
-                                            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+                                            allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(), Integer.parseInt((String) recharge), false);
+                                        } catch (Exception e) {
+                                            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this, Utility.getStackTrace(e));
                                         }
-                                    }, (mandate)->{
-                                        startSIActivity(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getDmrcid(),dmrc_customer_SI_cardVO.getAnonymousAmount(),dmrc_customer_SI_cardVO.getServiceId(),ApplicationConstant.PG_MANDATE);
+                                    }, (mandate) -> {
+                                        startSIActivity(Dmrc_Card_Request.this, dmrc_customer_SI_cardVO.getDmrcid(), dmrc_customer_SI_cardVO.getAnonymousAmount(), dmrc_customer_SI_cardVO.getServiceId(), ApplicationConstant.PG_MANDATE);
                                     }));
                                 }));
-                           }, (button2)->{
+                            }, (button2) -> {
                                 Utility.dismissDialog(Dmrc_Card_Request.this, button2);
-                                String [] proceedBtn= {"Proceed"};
-                                MyDialog.showSingleButtonBigContentDialog(Dmrc_Card_Request.this,new ConfirmationDialogInterface((ok)->{
+                                String[] proceedBtn = {"Proceed"};
+                                MyDialog.showSingleButtonBigContentDialog(Dmrc_Card_Request.this, new ConfirmationDialogInterface((ok) -> {
                                     Utility.dismissDialog(Dmrc_Card_Request.this, ok);
                                     dmrcCustomerCardSecurityDeposti(dmrc_customer_SI_cardVO.getDmrcid());
-                                }),"Add Security Deposit",dmrc_customer_SI_cardVO.getDialogMessage(),proceedBtn);
-                            }),dmrc_customer_SI_cardVO.getDialogTitle(),dmrc_customer_SI_cardVO.getHtmlString(),btnText);
-                        }else{
-                            allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(),null,false);
+                                }), "Add Security Deposit", dmrc_customer_SI_cardVO.getDialogMessage(), proceedBtn);
+                            }), dmrc_customer_SI_cardVO.getDialogTitle(), dmrc_customer_SI_cardVO.getHtmlString(), btnText);
+                        } else {
+                            allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(), null, false);
                         }
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
-                    ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+                    ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this, Utility.getStackTrace(e));
                 }
             }
         });
     }
 
-    public  void startSIActivity(Context context , int id,double amount,int serviceId, String paymentType){
+    public void startSIActivity(Context context, int id, double amount, int serviceId, String paymentType) {
         try {
-            Intent intent = new Intent(context,SI_First_Data.class);
-            intent.putExtra("id",id);
-            intent.putExtra("amount",amount);
-            intent.putExtra("serviceId",serviceId+"");
-            intent.putExtra("paymentType",paymentType);
-            ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_DMRC_MANDATE_SI_BUCKET);
+            Intent intent = new Intent(context, SI_First_Data.class);
+            intent.putExtra("id", id);
+            intent.putExtra("amount", amount);
+            intent.putExtra("serviceId", serviceId + "");
+            intent.putExtra("paymentType", paymentType);
+            ((Activity) context).startActivityForResult(intent, ApplicationConstant.REQ_DMRC_MANDATE_SI_BUCKET);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this, Utility.getStackTrace(e));
         }
 
     }
@@ -840,46 +850,49 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = MetroBO.dmrcCustomerCardSecurityDeposti();
-        DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
-        CustomerVO customerVO=new CustomerVO();
+        DMRC_Customer_CardVO request_dmrc_customer_cardVO = new DMRC_Customer_CardVO();
+        CustomerVO customerVO = new CustomerVO();
         customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Dmrc_Card_Request.this)));
         request_dmrc_customer_cardVO.setCustomer(customerVO);
         request_dmrc_customer_cardVO.setDmrcid(dmrcid);
 
-        Gson gson =new Gson();
+        Gson gson = new Gson();
         String json = gson.toJson(request_dmrc_customer_cardVO);
-        Log.w("CardSecurityDeposti",json);
+        Log.w("CardSecurityDeposti", json);
         params.put("volley", json);
         connectionVO.setParams(params);
-        VolleyUtils.makeJsonObjectRequest(Dmrc_Card_Request.this,connectionVO, new VolleyResponseListener() {
+        VolleyUtils.makeJsonObjectRequest(Dmrc_Card_Request.this, connectionVO, new VolleyResponseListener() {
             @Override
             public void onError(String message) {
             }
+
             @Override
             public void onResponse(Object resp) throws JSONException {
                 JSONObject response = (JSONObject) resp;
                 Gson gson = new Gson();
                 DMRC_Customer_CardVO dmrc_customer_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
 
-                if(dmrc_customer_cardVO.getStatusCode().equals("400")){
+                if (dmrc_customer_cardVO.getStatusCode().equals("400")) {
                     ArrayList error = (ArrayList) dmrc_customer_cardVO.getErrorMsgs();
                     StringBuilder sb = new StringBuilder();
-                    for(int i=0; i<error.size(); i++){
+                    for (int i = 0; i < error.size(); i++) {
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(Dmrc_Card_Request.this,dmrc_customer_cardVO.getDialogTitle(),sb.toString(),false);
-                }else {
-                    allotDmrcCard(dmrcid,null,false);
+                    Utility.showSingleButtonDialog(Dmrc_Card_Request.this, dmrc_customer_cardVO.getDialogTitle(), sb.toString(), false);
+                } else {
+                    allotDmrcCard(dmrcid, null, false);
                 }
             }
+
+
         });
     }
 
-    public void allotDmrcCard(Integer cardId , Integer sIMandateId ,boolean existingMandateType){
+    public void allotDmrcCard(Integer cardId, Integer sIMandateId, boolean existingMandateType) {
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = MetroBO.allotDmrcCard();
-        DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
-        CustomerVO customerVO=new CustomerVO();
+        DMRC_Customer_CardVO request_dmrc_customer_cardVO = new DMRC_Customer_CardVO();
+        CustomerVO customerVO = new CustomerVO();
         customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Dmrc_Card_Request.this)));
         request_dmrc_customer_cardVO.setCustomer(customerVO);
         request_dmrc_customer_cardVO.setDmrcid(cardId);
@@ -889,31 +902,35 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         request_dmrc_customer_cardVO.setAnonymousInteger(sIMandateId);
 
 
-        Gson gson =new Gson();
+        Gson gson = new Gson();
         String json = gson.toJson(request_dmrc_customer_cardVO);
-        Log.w("request",json);
+        Log.w("request", json);
         params.put("volley", json);
         connectionVO.setParams(params);
-        VolleyUtils.makeJsonObjectRequest(Dmrc_Card_Request.this,connectionVO, new VolleyResponseListener() {
+        VolleyUtils.makeJsonObjectRequest(Dmrc_Card_Request.this, connectionVO, new VolleyResponseListener() {
             @Override
             public void onError(String message) {
             }
+
             @Override
             public void onResponse(Object resp) throws JSONException {
                 JSONObject response = (JSONObject) resp;
+                Log.d("allotDmrcCard", response.toString());
+                System.out.println(response.toString());
                 Gson gson = new Gson();
 
                 //01-09-2020
                 //DMRC_Customer_CardVO dmrc_customer_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
                 dmrc_customer_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
-                if(dmrc_customer_cardVO.getStatusCode().equals("400")){
+
+                if (dmrc_customer_cardVO.getStatusCode().equals("400")) {
                     ArrayList error = (ArrayList) dmrc_customer_cardVO.getErrorMsgs();
                     StringBuilder sb = new StringBuilder();
-                    for(int i=0; i<error.size(); i++){
+                    for (int i = 0; i < error.size(); i++) {
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(Dmrc_Card_Request.this,dmrc_customer_cardVO.getDialogTitle(),sb.toString(),false);
-                }else {
+                    Utility.showSingleButtonDialog(Dmrc_Card_Request.this, dmrc_customer_cardVO.getDialogTitle(), sb.toString(), false);
+                } else {
                     //update customer cache
                    /* if(dmrc_customer_cardVO.getCustomer()!=null){
                         String json = new Gson().toJson(dmrc_customer_cardVO.getCustomer());
@@ -922,22 +939,44 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     }*/
 
                     try {
+                        // New 11/01/2021 Gaurav
+                        if (dmrc_customer_cardVO.getDmrcBankMandate() != null) {
+                            String btnName = "EnachBanking";
+                            Bundle bundle = new Bundle();
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, dmrc_customer_cardVO.getDmrcBankMandate().getProviderTokenId());
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, dmrc_customer_cardVO.getDmrcBankMandate().getAccountHolderName());
+                            firebaseAnalytics.logEvent(btnName, bundle);
+                        } else if (dmrc_customer_cardVO.getDmrcSiMandate() != null) {
+                            String btnName = "CreditCard";
+                            Bundle bundle = new Bundle();
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, dmrc_customer_cardVO.getDmrcBankMandate().getProviderTokenId());
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, dmrc_customer_cardVO.getDmrcBankMandate().getAccountHolderName());
+                            firebaseAnalytics.logEvent(btnName, bundle);
+                        } else if (dmrc_customer_cardVO.getDmrcUpiMandate() != null) {
+                            String btnName = "Upi";
+                            Bundle bundle = new Bundle();
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, dmrc_customer_cardVO.getDmrcBankMandate().getProviderTokenId());
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, dmrc_customer_cardVO.getDmrcBankMandate().getAccountHolderName());
+                            firebaseAnalytics.logEvent(btnName, bundle);
+                        }
+                        ///////////////////////////////
+
                         new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
                                 .setCustomerEventAlias("DMRC Card")
-                                .setTransactionID(Session.getCustomerId(Dmrc_Card_Request.this)+"|"+(ApplicationConstant.IS_PRODUCTION_ENVIRONMENT?"PRD":"UAT"))
+                                .setTransactionID(Session.getCustomerId(Dmrc_Card_Request.this) + "|" + (ApplicationConstant.IS_PRODUCTION_ENVIRONMENT ? "PRD" : "UAT"))
                                 .setDescription("DMRC Card applied")
                                 .logEvent(Dmrc_Card_Request.this);
-                    }catch (Exception e){
-                        ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this ,  Utility.getStackTrace(e), "0");
+                    } catch (Exception e) {
+                        ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this, Utility.getStackTrace(e), "0");
                     }
-                    Session.set_Data_Sharedprefence_BoolenvValue(Dmrc_Card_Request.this,Session.CACHE_IS_DMRC_CARD_ALLOT,true);
+                    Session.set_Data_Sharedprefence_BoolenvValue(Dmrc_Card_Request.this, Session.CACHE_IS_DMRC_CARD_ALLOT, true);
                     addRequestDmrcCardBanner(dmrc_customer_cardVO);
                 }
             }
         });
     }
 
-    public  boolean requiredfiled(){
+    public boolean requiredfiled() {
         mobilenumber.setError(null);
         customername.setError(null);
         pin.setError(null);
@@ -946,59 +985,55 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         permanentaddress.setError(null);
 
 
-        boolean filed=true;
-        if(mobilenumber.getText().toString().trim().equals("")){
+        boolean filed = true;
+        if (mobilenumber.getText().toString().trim().equals("")) {
             mobilenumber.setError(ErrorMsg.Field_Required);
-            filed=false;
+            filed = false;
         }
-        if(customername.getText().toString().trim().equals("")){
+        if (customername.getText().toString().trim().equals("")) {
             customername.setError(ErrorMsg.Field_Required);
-            filed=false;
+            filed = false;
 
         }
-        if(pin.getText().toString().trim().equals("")){
+        if (pin.getText().toString().trim().equals("")) {
             pin.setError(ErrorMsg.Field_Required);
-            filed=false;
+            filed = false;
         }
-        if(city.getText().toString().trim().equals("")){
+        if (city.getText().toString().trim().equals("")) {
             city.setError(ErrorMsg.Field_Required);
-            filed=false;
+            filed = false;
         }
-        if(state.getText().toString().trim().equals("")){
+        if (state.getText().toString().trim().equals("")) {
             state.setError(ErrorMsg.Field_Required);
-            filed=false;
+            filed = false;
         }
-        if(permanentaddress.getText().toString().trim().equals("")){
+        if (permanentaddress.getText().toString().trim().equals("")) {
             permanentaddress.setError(ErrorMsg.Field_Required);
-            filed=false;
+            filed = false;
         }
 
-        if(filed &&  isPersonalise && bmp==null){
-            Utility.showSingleButtonDialogOld(Dmrc_Card_Request.this,"Alert"," As you have opted for personalised card, please upload a passport size photograph.",false);
-            filed=false;
+        if (filed && isPersonalise && bmp == null) {
+            Utility.showSingleButtonDialogOld(Dmrc_Card_Request.this, "Alert", " As you have opted for personalised card, please upload a passport size photograph.", false);
+            filed = false;
         }
 
         return filed;
     }
 
 
-
-
-
-
-    public void  enabledAllEle(Boolean ele){
-            customername.setEnabled(ele);
-            mobilenumber.setEnabled(ele);
-            pin.setEnabled(ele);
-            city.setEnabled(ele);
-            state.setEnabled(ele);
-            permanentaddress.setEnabled(ele);
+    public void enabledAllEle(Boolean ele) {
+        customername.setEnabled(ele);
+        mobilenumber.setEnabled(ele);
+        pin.setEnabled(ele);
+        city.setEnabled(ele);
+        state.setEnabled(ele);
+        permanentaddress.setEnabled(ele);
 
     }
 
 
-    public void pincodebycity(String pincode){
-        DMRCApi.getCityByPincodeForDMRC(this,pincode,new VolleyResponse((success)->{
+    public void pincodebycity(String pincode) {
+        DMRCApi.getCityByPincodeForDMRC(this, pincode, new VolleyResponse((success) -> {
             CityVO cityVO = (CityVO) success;
             city.setText(cityVO.getCityName());
             state.setText(cityVO.getStateRegion().getStateRegionName());
@@ -1006,39 +1041,38 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             state.setError(null);
             pin.setError(null);
             Utility.hideKeyboard(this);
-        }, (error)->{
+        }, (error) -> {
             city.setText("");
             state.setText("");
             pin.setError(error);
         }));
     }
 
-    public void galleryimage(){
+    public void galleryimage() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(galleryIntent,REQ_GALLERY );
+        startActivityForResult(galleryIntent, REQ_GALLERY);
     }
 
-    public void cameraimage(){
+    public void cameraimage() {
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-        photofileurl=null;
-        try
-        {
+        photofileurl = null;
+        try {
             // place where to store camera taken picture
-            photofileurl = Utility.createTemporaryFile("picture", ".jpg",Dmrc_Card_Request.this);
+            photofileurl = Utility.createTemporaryFile("picture", ".jpg", Dmrc_Card_Request.this);
             photofileurl.delete();
             Uri mImageUri = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", photofileurl);
 
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
             startActivityForResult(intent, REQ_IMAGE);
-        }
-        catch(Exception e){
-            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
+        } catch (Exception e) {
+            ExceptionsNotification.ExceptionHandling(this, Utility.getStackTrace(e));
             //Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
-    public void setCustomerDetail(DMRC_Customer_CardVO dmrc_customer_cardVO){
-        if(dmrc_customer_cardVO.getDmrcid()==null){
+
+    public void setCustomerDetail(DMRC_Customer_CardVO dmrc_customer_cardVO) {
+        if (dmrc_customer_cardVO.getDmrcid() == null) {
            /* CustomerVO customerVO = gson.fromJson(Session.getSessionByKey(Dmrc_Card_Request.this,Session.CACHE_CUSTOMER), CustomerVO.class);
             if(customerVO.getPanHolderName()!=null){
                 customername.setText(customerVO.getPanHolderName());
@@ -1068,29 +1102,29 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             state.setText(null);
             permanentaddress.setText(null);
             addressimage.setImageBitmap(null);
-            bmp=null;
-        }else {
+            bmp = null;
+        } else {
             scrollviewAnimationAndVisibility();
-            if(dmrc_customer_cardVO.getCustomerName()!=null){
+            if (dmrc_customer_cardVO.getCustomerName() != null) {
                 customername.setText(dmrc_customer_cardVO.getCustomerName());
             }
-            if(dmrc_customer_cardVO.getMobileNumber()!=null){
+            if (dmrc_customer_cardVO.getMobileNumber() != null) {
                 mobilenumber.setText(dmrc_customer_cardVO.getMobileNumber());
             }
-            if(dmrc_customer_cardVO.getPincode()!=null){
+            if (dmrc_customer_cardVO.getPincode() != null) {
                 pin.setText(dmrc_customer_cardVO.getPincode());
             }
-            if(dmrc_customer_cardVO.getCity()!=null && dmrc_customer_cardVO.getCity().getCityName()!=null){
+            if (dmrc_customer_cardVO.getCity() != null && dmrc_customer_cardVO.getCity().getCityName() != null) {
                 city.setText(dmrc_customer_cardVO.getCity().getCityName());
             }
-            if(dmrc_customer_cardVO.getStateRegion()!=null && dmrc_customer_cardVO.getStateRegion().getStateRegionName()!=null){
+            if (dmrc_customer_cardVO.getStateRegion() != null && dmrc_customer_cardVO.getStateRegion().getStateRegionName() != null) {
                 state.setText(dmrc_customer_cardVO.getStateRegion().getStateRegionName());
             }
-            if(dmrc_customer_cardVO.getAddress()!=null){
+            if (dmrc_customer_cardVO.getAddress() != null) {
                 permanentaddress.setText(dmrc_customer_cardVO.getAddress());
             }
         }
-        if(isdisable) enabledAllEle(false);
+        if (isdisable) enabledAllEle(false);
     }
 
     @Override
@@ -1101,31 +1135,31 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             try {
                 if (requestCode == REQ_IMAGE) {
                     try {
-                        bmp =Utility.decodeImageFromFiles(Uri.fromFile(photofileurl).getPath(),500,500);
-                        if(bmp.getWidth()>bmp.getHeight()){
-                            bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),Utility.getImageMatrix(Dmrc_Card_Request.this,photofileurl),true);
+                        bmp = Utility.decodeImageFromFiles(Uri.fromFile(photofileurl).getPath(), 500, 500);
+                        if (bmp.getWidth() > bmp.getHeight()) {
+                            bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), Utility.getImageMatrix(Dmrc_Card_Request.this, photofileurl), true);
                         }
                         addressimage.setImageBitmap(bmp);
-                        performCrop(Utility.getVersionWiseUri(this,photofileurl));
+                        performCrop(Utility.getVersionWiseUri(this, photofileurl));
                         View current = getCurrentFocus();
                         if (current != null) current.clearFocus();
-                    }catch (Exception e){
-                        ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+                    } catch (Exception e) {
+                        ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this, Utility.getStackTrace(e));
                     }
 
-                }else  if(requestCode==REQ_GALLERY){
+                } else if (requestCode == REQ_GALLERY) {
                     try {
                         Uri contentURI = data.getData();
-                        bmp= Utility.decodeImageFromFiles(Utility.getPathByUri(Dmrc_Card_Request.this,contentURI) ,500,500);
-                        if(bmp.getWidth()>bmp.getHeight()){
-                            bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),Utility.getImageMatrix(Dmrc_Card_Request.this,new File(Objects.requireNonNull(contentURI.getPath()))),true);
+                        bmp = Utility.decodeImageFromFiles(Utility.getPathByUri(Dmrc_Card_Request.this, contentURI), 500, 500);
+                        if (bmp.getWidth() > bmp.getHeight()) {
+                            bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), Utility.getImageMatrix(Dmrc_Card_Request.this, new File(Objects.requireNonNull(contentURI.getPath()))), true);
                         }
                         addressimage.setImageBitmap(bmp);
                         performCrop(contentURI);
-                    }catch (Exception e){
-                        ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+                    } catch (Exception e) {
+                        ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this, Utility.getStackTrace(e));
                     }
-                }else  if(requestCode==PIC_CROP){
+                } else if (requestCode == PIC_CROP) {
                     //get the returned data
                     try {
                         Bundle extras = data.getExtras();
@@ -1133,52 +1167,52 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                         bmp = (Bitmap) extras.get("data");
                         //display the returned cropped image
                         addressimage.setImageBitmap(bmp);
-                    }catch (Exception e){
-                        ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+                    } catch (Exception e) {
+                        ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this, Utility.getStackTrace(e));
                     }
 
-                }else if(requestCode==ApplicationConstant.REQ_DMRC_MANDATE_SI_BUCKET){
-                    int actionId=data.getIntExtra("actionId",0);
-                    int SIMandateId=data.getIntExtra("mandateId",0);
-                    if(actionId!=0 && SIMandateId!=0){
-                        allotDmrcCard(actionId,SIMandateId,true);
-                    }else {
-                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !", "Something went wrong",false);
+                } else if (requestCode == ApplicationConstant.REQ_DMRC_MANDATE_SI_BUCKET) {
+                    int actionId = data.getIntExtra("actionId", 0);
+                    int SIMandateId = data.getIntExtra("mandateId", 0);
+                    if (actionId != 0 && SIMandateId != 0) {
+                        allotDmrcCard(actionId, SIMandateId, true);
+                    } else {
+                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this, "Error !", "Something went wrong", false);
                     }
-                }else if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
-                    boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
-                    String bankMandateId=data.getStringExtra("bankMandateId");
-                    if(enachMandateStatus && bankMandateId!=null && !bankMandateId.equals("")){
-                        sIMandateDmrc(Integer.valueOf(bankMandateId),AuthServiceProviderVO.ENACHIDFC,true);
-                    }else{
-                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Alert",data.getStringExtra("msg"),false);
+                } else if (requestCode == ApplicationConstant.REQ_ENACH_MANDATE) {
+                    boolean enachMandateStatus = data.getBooleanExtra("mandate_status", false);
+                    String bankMandateId = data.getStringExtra("bankMandateId");
+                    if (enachMandateStatus && bankMandateId != null && !bankMandateId.equals("")) {
+                        sIMandateDmrc(Integer.valueOf(bankMandateId), AuthServiceProviderVO.ENACHIDFC, true);
+                    } else {
+                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this, "Alert", data.getStringExtra("msg"), false);
                     }
-                }else if(requestCode == ApplicationConstant.REQ_UPI_FOR_MANDATE){
-                    int SIMandateId=data.getIntExtra("mandateId",0);
-                    if(SIMandateId!=0){
-                        sIMandateDmrc(SIMandateId,AuthServiceProviderVO.AUTOPE_PG_UPI,true);
-                    }else{
-                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !", Content_Message.error_message,false);
+                } else if (requestCode == ApplicationConstant.REQ_UPI_FOR_MANDATE) {
+                    int SIMandateId = data.getIntExtra("mandateId", 0);
+                    if (SIMandateId != 0) {
+                        sIMandateDmrc(SIMandateId, AuthServiceProviderVO.AUTOPE_PG_UPI, true);
+                    } else {
+                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this, "Error !", Content_Message.error_message, false);
                     }
-                }else if(requestCode == ApplicationConstant.REQ_SI_MANDATE){
-                    int SIMandateId=data.getIntExtra("mandateId",0);
-                    if(SIMandateId!=0){
-                        sIMandateDmrc(SIMandateId,AuthServiceProviderVO.AUTOPE_PG,true);
-                    }else{
-                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !", Content_Message.error_message,false);
+                } else if (requestCode == ApplicationConstant.REQ_SI_MANDATE) {
+                    int SIMandateId = data.getIntExtra("mandateId", 0);
+                    if (SIMandateId != 0) {
+                        sIMandateDmrc(SIMandateId, AuthServiceProviderVO.AUTOPE_PG, true);
+                    } else {
+                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this, "Error !", Content_Message.error_message, false);
                     }
                 }
             } catch (Exception e) {
-                ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
-           }
+                ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this, Utility.getStackTrace(e));
+            }
         }
     }
 
 
-    private void performCrop(Uri picUri){
+    private void performCrop(Uri picUri) {
         try {
             //call the standard crop action intent (the user device may not support it)
-            Intent cropIntent = new Intent( "com.android.camera.action.CROP");
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
             //indicate image type and Uri
             cropIntent.setDataAndType(picUri, "image/*");
             //set crop properties
@@ -1194,33 +1228,31 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             cropIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             //start the activity - we handle returning in onActivityResult
             startActivityForResult(cropIntent, PIC_CROP);
-        }
-        catch(ActivityNotFoundException anfe){
+        } catch (ActivityNotFoundException anfe) {
             //display an error message
           /*  String errorMessage = "Whoops - your device doesn't support the crop action!";
             Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
             toast.show();*/
-        }catch (Exception e){
-            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
+        } catch (Exception e) {
+            ExceptionsNotification.ExceptionHandling(this, Utility.getStackTrace(e));
             // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
 
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionUtils.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        permissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
     public void PermissionGranted(int request_code) {
-        if(request_code==ApplicationConstant.REQ_CAMERA_PERMISSION){
+        if (request_code == ApplicationConstant.REQ_CAMERA_PERMISSION) {
             startCamera();
         }
     }
+
     @Override
     public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
 

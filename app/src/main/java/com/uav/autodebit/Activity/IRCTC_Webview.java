@@ -453,14 +453,14 @@ public class IRCTC_Webview extends AppCompatActivity implements View.OnClickList
             ConnectionVO connectionVO = IRCTCBO.proceedIRCTCMandatePGResponse();
 
             String anonymousString = object.getString("anonymousString");//json SI response
-            String anonymousInteger = object.getString("anonymousInteger");
+            String anonymousInteger = object.getString("anonymousInteger");//order id
 
 
             CustomerVO customerVO=new CustomerVO();
             customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(IRCTC_Webview.this)));
             //autope pg response
             customerVO.setAnonymousString(anonymousString);
-            customerVO.setAnonymousInteger(Integer.parseInt(anonymousInteger));
+            customerVO.setAnonymousString1(anonymousInteger);
 
             Gson gson =new Gson();
             String json = gson.toJson(customerVO);
@@ -484,8 +484,7 @@ public class IRCTC_Webview extends AppCompatActivity implements View.OnClickList
                         Utility.showSingleButtonDialog(IRCTC_Webview.this,htmlRequestResp.getDialogTitle(),htmlRequestResp.getErrorMsgs().get(0),true);
                     } else {
                         Intent intent =new Intent();
-                      // intent.putExtra("msg",data.getStringExtra("msg"));
-                       intent.putExtra("msg","Irctc Sucessfully");
+                        intent.putExtra("msg",htmlRequestResp.getDialogMessage());
                         setResult(RESULT_OK,intent);
                         finish();
                     }

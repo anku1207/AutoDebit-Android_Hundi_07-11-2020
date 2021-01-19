@@ -316,7 +316,7 @@ public class IRCTC extends Base_Activity implements SwipeRefreshLayout.OnRefresh
             intent.putExtra(IRCTC_Webview.EXTRAS_FAIL_URL, webViewURLJson.getString("fail"));
             intent.putExtra(IRCTC_Webview.EXTRAS_SUCCESS_URL, webViewURLJson.getString("success"));
             intent.putExtra(IRCTC_Webview.EXTRAS_ENACH_MANDATE, webViewURLJson.getString("enach"));
-            intent.putExtra(IRCTC_Webview.EXTRAS_TITLE, "Payments");
+            intent.putExtra(IRCTC_Webview.EXTRAS_TITLE, customerVO.getDialogTitle());
             intent.putExtra(IRCTC_Webview.EXTRAS_PAY_MODE, payMode);
             startActivityForResult(intent, requestCode);
         } catch (Exception e) {

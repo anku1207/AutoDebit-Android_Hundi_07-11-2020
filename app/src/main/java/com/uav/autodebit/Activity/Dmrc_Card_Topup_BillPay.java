@@ -1,33 +1,47 @@
 package com.uav.autodebit.Activity;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.OxigenPlanBO;
+import com.uav.autodebit.CustomDialog.MyDialog;
+import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
+import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AutoPeTransactionVO;
+import com.uav.autodebit.vo.BaseVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
+import com.uav.autodebit.vo.DataAdapterVO;
+import com.uav.autodebit.vo.OxigenQuestionsVO;
 import com.uav.autodebit.vo.OxigenTransactionVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -114,6 +128,35 @@ public class Dmrc_Card_Topup_BillPay extends AppCompatActivity implements View.O
         }
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        try{
+            if(resultCode==RESULT_OK){
+
+               if(requestCode== ApplicationConstant.REQ_DIRECT_PAYMENT_RESULT){
+                    if(data !=null){
+                        JSONObject jsonDataObj = new JSONObject(data.getStringExtra("data"));
+                        BillPayRequest.autoPePGDirectPayment(jsonDataObj.getInt("txnId"),Dmrc_Card_Topup_BillPay.this,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+                            BaseVO BaseVO = (BaseVO) success;
+                            MyDialog.showSingleButtonBigContentDialog(Dmrc_Card_Topup_BillPay.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                ok.dismiss();
+                                finish();
+                            }),BaseVO.getDialogTitle(),BaseVO.getDialogMessage());
+                        }));
+                    }else {
+                        Utility.showSingleButtonDialog(this,"Error !","Something went wrong, Please try again!",false);
+                    }
+                }
+            }
+        }catch (Exception e){
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
+        }
+    }
+
+
     private  void getFetchTopUpDetails(int id,VolleyResponse volleyResponse)throws Exception{
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = MetroBO.getMyDmrcTopUpDetails();

@@ -6,7 +6,8 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
-import com.android.installreferrer.BuildConfig;
+
+import com.google.firebase.installations.BuildConfig;
 import com.jakewharton.disklrucache.DiskLruCache;
 
 import java.io.BufferedInputStream;

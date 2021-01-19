@@ -474,12 +474,11 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                     adapter.setDropDownViewResource(R.layout.spinner_item);
                     account_type.setAdapter(adapter);
 
-                    maxamount.setText((int)(Double.parseDouble(object.getString("minMandateAmt")))+"");
+
+                    maxamount.setText(object.has("defaultMandateAmount")?(int)(Double.parseDouble(object.getString("defaultMandateAmount")))+"":((int)(Double.parseDouble(object.getString("minMandateAmt")))+""));
                     minamt=(int)(Double.parseDouble(object.getString("minMandateAmt")));
                     errormsz=object.getString("minMandateAmtFailedMsg");
-
                     volleyResponse.onSuccess(response);
-
                 }
             }
         });

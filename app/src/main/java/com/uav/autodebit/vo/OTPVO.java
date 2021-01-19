@@ -11,6 +11,7 @@ public class OTPVO extends BaseVO implements Serializable {
     private String otp;
     private String mobileNo;
     private String emailId;
+    private Long expiredAt;
 
     public String getOtp() {
         return otp;
@@ -34,5 +35,13 @@ public class OTPVO extends BaseVO implements Serializable {
 
     public void setEmailId(String emailId) {
         this.emailId = emailId;
+    }
+
+    public Long getExpiredAt() {
+        return expiredAt;
+    }
+
+    public void setExpiredAt(Long expiredAt) {
+        this.expiredAt = expiredAt;
     }
 }

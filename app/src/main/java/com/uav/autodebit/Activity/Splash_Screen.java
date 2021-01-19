@@ -4,6 +4,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.RemoteException;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -12,6 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.installreferrer.api.InstallReferrerClient;
+import com.android.installreferrer.api.InstallReferrerStateListener;
+import com.android.installreferrer.api.ReferrerDetails;
+import com.google.android.gms.analytics.CampaignTrackingReceiver;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -42,6 +48,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
@@ -54,6 +62,11 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
     List<BannerVO> plBannerVos = new ArrayList<>();
     List<BitmapVO> imageVos = new ArrayList<>();
 
+    // New 13/01/2021 Gaurav
+    private final Executor backgroundExecutor = Executors.newSingleThreadExecutor();
+
+    ////
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +74,8 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
 
         ImageView imageView = (ImageView) findViewById(R.id.appstarticon);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        checkInstallReferrer();
 
       /*  if(!Utility.isNetworkAvailable(Splash_Screen.this)){
             AlertDialog.Builder builder = new AlertDialog.Builder(Splash_Screen.this);
@@ -333,4 +348,102 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
         bitmapVO.setImageQuality(100);
         imageVos.add(bitmapVO);
     }
+    // New 13/01/2021 Gaurav
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkInstallReferrer();
+    }
+
+
+
+
+    // TODO: Change this to use whatever preferences are appropriate. The install referrer should
+    // only be sent to the receiver once.
+    private final String prefKey = "checkedInstallReferrer";
+
+    void checkInstallReferrer() {
+        if (getPreferences(MODE_PRIVATE).getBoolean(prefKey, false)) {
+            return;
+        }
+
+        InstallReferrerClient referrerClient = InstallReferrerClient.newBuilder(this).build();
+        backgroundExecutor.execute(() -> getInstallReferrerFromClient(referrerClient));
+    }
+
+    void getInstallReferrerFromClient(InstallReferrerClient referrerClient) {
+
+        referrerClient.startConnection(new InstallReferrerStateListener() {
+            @Override
+            public void onInstallReferrerSetupFinished(int responseCode) {
+                switch (responseCode) {
+                    case InstallReferrerClient.InstallReferrerResponse.OK:
+                        ReferrerDetails response = null;
+                        try {
+                            response = referrerClient.getInstallReferrer();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                            return;
+                        }
+                        final String referrerUrl = response.getInstallReferrer();
+
+
+                        // TODO: If you're using GTM, call trackInstallReferrerforGTM instead.
+                        trackInstallReferrer(referrerUrl);
+
+
+                        // Only check this once.
+                        getPreferences(MODE_PRIVATE).edit().putBoolean(prefKey, true).commit();
+
+                        // End the connection
+                        referrerClient.endConnection();
+
+                        break;
+                    case InstallReferrerClient.InstallReferrerResponse.FEATURE_NOT_SUPPORTED:
+                        // API not available on the current Play Store app.
+                        break;
+                    case InstallReferrerClient.InstallReferrerResponse.SERVICE_UNAVAILABLE:
+                        // Connection couldn't be established.
+                        break;
+                }
+            }
+
+            @Override
+            public void onInstallReferrerServiceDisconnected() {
+
+            }
+        });
+    }
+
+    // Tracker for Classic GA (call this if you are using Classic GA only)
+    private void trackInstallReferrer(final String referrerUrl) {
+        new Handler(getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+
+                Log.v("referrer", referrerUrl);
+                CampaignTrackingReceiver receiver = new CampaignTrackingReceiver();
+                Intent intent = new Intent("com.android.vending.INSTALL_REFERRER");
+                intent.putExtra("referrer", referrerUrl);
+                receiver.onReceive(getApplicationContext(), intent);
+
+            }
+        });
+    }
+
+   /* // Tracker for GTM + Classic GA (call this if you are using GTM + Classic GA only)
+    private void trackInstallReferrerforGTM(final String referrerUrl) {
+        new Handler(getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                InstallReferrerReceiver receiver = new InstallReferrerReceiver();
+                Intent intent = new Intent("com.android.vending.INSTALL_REFERRER");
+                intent.putExtra("referrer", referrerUrl);
+                receiver.onReceive(getApplicationContext(), intent);
+            }
+        });
+    }*/
+
 }
+////////////////////////////////////////////
+

@@ -136,6 +136,7 @@ public class Dmrc_NewAndExist_Card_Dialog extends Base_Activity implements View.
                             finish();
                             try {
                                 Class<?> clazz = Class.forName(getApplicationContext().getPackageName() + ".Activity." + cardTypeVO.getActivityName());
+                                Log.d("clazz", clazz.toString());
                                 Intent intent = new Intent(this, clazz);
                                 intent.putExtra("onetimecharges", dmrc_customer_cardVO.getAnonymousString());
                                 intent.putExtra("isdisable", false);

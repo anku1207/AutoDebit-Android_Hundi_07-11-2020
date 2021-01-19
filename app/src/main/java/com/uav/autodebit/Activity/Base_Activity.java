@@ -20,6 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.util.ExceptionHandler;
 import com.uav.autodebit.util.Utility;
@@ -46,6 +47,12 @@ public class Base_Activity extends AppCompatActivity {
         intentFilter.addAction(CONNECTIVITY_ACTION);
         receiver = new CheckInternetReceiver();
         firebaseAnalytics =FirebaseAnalytics.getInstance(this);
+
+        // New 11/01/2021 Gaurav
+
+        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
+        firebaseAnalytics.setAnalyticsCollectionEnabled(true);
+        ///
         showInternetDialog();
 
     }
@@ -114,7 +121,6 @@ public class Base_Activity extends AppCompatActivity {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             getWindow().getDecorView().setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
         }
-
     }
 
     private class CheckInternetReceiver extends BroadcastReceiver {
@@ -137,5 +143,4 @@ public class Base_Activity extends AppCompatActivity {
             }
         }
     }
-
 }

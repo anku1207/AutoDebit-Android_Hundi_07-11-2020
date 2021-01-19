@@ -25,6 +25,7 @@ public class ServiceTypeVO  extends BaseVO implements Serializable {
     private String message;
     private Integer mandateRequired;
     private Integer directPayment;
+    private Integer serviceTypeWithoutTariff;
 
 
     public ServiceTypeVO(){
@@ -174,5 +175,13 @@ public class ServiceTypeVO  extends BaseVO implements Serializable {
 
     public void setDirectPayment(Integer directPayment) {
         this.directPayment = directPayment;
+    }
+
+    public Integer getServiceTypeWithoutTariff() {
+        return serviceTypeWithoutTariff;
+    }
+
+    public void setServiceTypeWithoutTariff(Integer serviceTypeWithoutTariff) {
+        this.serviceTypeWithoutTariff = serviceTypeWithoutTariff;
     }
 }

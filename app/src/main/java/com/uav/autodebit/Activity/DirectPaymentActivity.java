@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.PaymentGateWayBO;
+import com.uav.autodebit.BO.SiBO;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
@@ -43,6 +44,7 @@ import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
+import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -315,19 +317,20 @@ public class DirectPaymentActivity extends AppCompatActivity implements View.OnC
     @Override
     public void htmlresult(String result) {
         try {
+            JSONObject object = new JSONObject(result);
             HashMap<String, Object> params = new HashMap<String, Object>();
-            ConnectionVO connectionVO = PaymentGateWayBO.proceedAutoPePayment4AllResponse();
+            ConnectionVO connectionVO = SiBO.proceedAutoPePgResponse();
+            CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
+            String anonymousString = object.getString("anonymousString");//json SI response
+            String anonymousInteger = object.getString("anonymousInteger");
 
-            CustomerVO customerVO=new CustomerVO();
-            customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(DirectPaymentActivity.this)));
-            //autope pg response
-            customerVO.setAnonymousString(result);
-            //customer beneficiary id
-            customerVO.setAnonymousString1(action_Id);
-            //set service type id
-            customerVO.setServiceId(service_type_id);
-            Gson gson =new Gson();
-            String json = gson.toJson(customerVO);
+            CustomerVO customerVO = new CustomerVO();
+            customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(DirectPaymentActivity.this)));
+            customerAuthServiceVO.setCustomer(customerVO);
+            customerAuthServiceVO.setAnonymousString(anonymousString);
+            customerAuthServiceVO.setAnonymousInteger(Integer.parseInt(anonymousInteger));
+            Gson gson = new Gson();
+            String json = gson.toJson(customerAuthServiceVO);
             params.put("volley", json);
 
             Log.w("htmlresultRequest", json);
@@ -340,12 +343,21 @@ public class DirectPaymentActivity extends AppCompatActivity implements View.OnC
                 @Override
                 public void onResponse(Object resp) throws JSONException {
                     JSONObject response = (JSONObject) resp;
-                    Intent intent =new Intent();
-                    setResult(RESULT_OK,intent);
-                    intent.putExtra(EXTRAS_ID,action_Id);
-                    intent.putExtra("data",response.toString());
-                    finish();
-
+                    CustomerVO customerVO1 = new Gson().fromJson(response.toString(),CustomerVO.class);
+                    if(customerVO1.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) customerVO1.getErrorMsgs();
+                        StringBuilder sb = new StringBuilder();
+                        for(int i=0; i<error.size(); i++){
+                            sb.append(error.get(i)).append("\n");
+                        }
+                        Utility.showSingleButtonDialog(DirectPaymentActivity.this,customerVO1.getDialogTitle(),sb.toString(),true);
+                    }else{
+                        Intent intent =new Intent();
+                        intent.putExtra(EXTRAS_ID,action_Id);
+                        intent.putExtra("data",customerVO1.getAnonymousString());
+                        setResult(RESULT_OK,intent);
+                        finish();
+                    }
                 }
             });
         } catch (Exception e) {

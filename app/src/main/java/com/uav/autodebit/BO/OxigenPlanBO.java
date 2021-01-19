@@ -79,6 +79,12 @@ public class OxigenPlanBO implements Serializable {
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }
+    public static ConnectionVO autopePGDirectPayment() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("autopePGDirectPayment");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
 
 
 

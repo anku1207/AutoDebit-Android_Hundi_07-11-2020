@@ -2149,6 +2149,17 @@ public class Utility {
         return intent;
     }
 
+    public static String getTimeStampToGetTime(Long timestamp){
+        int numberOfHours = (int) ((timestamp  % 86400 ) / 3600);
+        int numberOfMinutes = (int) (((timestamp % 86400 ) % 3600 ) / 60);
+        int numberOfSeconds = (int) (((timestamp % 86400 ) % 3600 ) % 60);
+        return  stringFormat2Digits(numberOfHours)+":"+stringFormat2Digits(numberOfMinutes) +":"+stringFormat2Digits(numberOfSeconds);
+    }
+
+    public static String stringFormat2Digits(int value){
+       return String.format("%02d", value);
+    }
+
 
 }
 

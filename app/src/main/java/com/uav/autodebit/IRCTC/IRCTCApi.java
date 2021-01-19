@@ -18,6 +18,7 @@ import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerServicesVO;
 import com.uav.autodebit.vo.CustomerVO;
+import com.uav.autodebit.vo.OTPVO;
 import com.uav.autodebit.vo.PreMandateRequestVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -241,6 +242,47 @@ public class IRCTCApi {
                         Utility.showSingleButtonDialog(context,"Error !",sb.toString(),false);
                     }else {
                         volleyResponse.onSuccess(resp_CustomerServicesVO);
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+        }
+    }
+
+
+    public static void preGenerateOTP(Context  context, Integer customerId,Integer serviceId, VolleyResponse volleyResponse) {
+        try {
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            ConnectionVO connectionVO = MandateBO.preGenerateOTP();
+            CustomerVO customerVO = new CustomerVO();
+            customerVO.setCustomerId(customerId);
+            customerVO.setServiceId(serviceId);
+            Gson gson = new Gson();
+            String json = gson.toJson(customerVO);
+            params.put("volley", json);
+            connectionVO.setParams(params);
+            Log.w("preGenerateOTP",gson.toJson(customerVO));
+            VolleyUtils.makeJsonObjectRequest(context,connectionVO, new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                }
+                @Override
+                public void onResponse(Object resp) {
+                    JSONObject response = (JSONObject) resp;
+                    OTPVO otpvo = gson.fromJson(response.toString(), OTPVO.class);
+                    Log.w("Server_Resp",response.toString());
+
+                    if(otpvo.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) otpvo.getErrorMsgs();
+                        StringBuilder sb = new StringBuilder();
+                        for(int i=0; i<error.size(); i++){
+                            sb.append(error.get(i)).append("\n");
+                        }
+                        Utility.showSingleButtonDialog(context,otpvo.getDialogTitle(),sb.toString(),false);
+                    }else {
+                        volleyResponse.onSuccess(otpvo);
                     }
                 }
             });

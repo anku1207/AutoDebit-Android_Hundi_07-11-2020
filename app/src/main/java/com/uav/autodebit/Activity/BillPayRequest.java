@@ -28,6 +28,7 @@ import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AuthServiceProviderVO;
+import com.uav.autodebit.vo.BaseVO;
 import com.uav.autodebit.vo.CCTransactionStatusVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
@@ -915,9 +916,64 @@ public class BillPayRequest {
                 Utility.showSingleButtonDialog(context,"Error !", Content_Message.error_message,false);
             }
         }else if(requestCode==ApplicationConstant.REQ_DIRECT_PAYMENT_RESULT){
-
+            Toast.makeText(context, "REQ_DIRECT_PAYMENT_RESULT", Toast.LENGTH_SHORT).show();
+            try{
+                JSONObject jsonDataObj = new JSONObject(data.getStringExtra("data"));
+                autoPePGDirectPayment(jsonDataObj.getInt("txnId"),context,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+                    OxigenTransactionVO oxigenTransactionVO = (OxigenTransactionVO) success;
+                    MyDialog.showSingleButtonBigContentDialog(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                        ok.dismiss();
+                        ((Activity)context).finish();
+                    }),oxigenTransactionVO.getDialogTitle(),oxigenTransactionVO.getAnonymousString());
+                }));
+            }catch (Exception e ){
+                e.printStackTrace();
+                ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+            }
         }
     }
+
+
+    static void autoPePGDirectPayment(Integer siTxnId, Context context, VolleyResponse volleyResponse) {
+        try {
+            Gson gson =new Gson();
+
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            CustomerVO customerVO =  new CustomerVO();
+            ConnectionVO connectionVO = OxigenPlanBO.autopePGDirectPayment();
+            customerVO.setAnonymousInteger(siTxnId);
+            params.put("volley",gson.toJson(customerVO));
+            connectionVO.setParams(params);
+            Log.w("autopePGDirectPayment",gson.toJson(customerVO));
+            VolleyUtils.makeJsonObjectRequest(context,connectionVO, new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                }
+                @Override
+                public void onResponse(Object resp) {
+                    JSONObject response = (JSONObject) resp;
+                    BaseVO baseVO = gson.fromJson(response.toString(), BaseVO.class);
+
+                    if(baseVO.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) baseVO.getErrorMsgs();
+                        StringBuilder sb = new StringBuilder();
+                        for(int i=0; i<error.size(); i++){
+                            sb.append(error.get(i)).append("\n");
+                        }
+                        Utility.showSingleButtonDialog(context,baseVO.getDialogTitle(),sb.toString(),false);
+                        volleyResponse.onError(null);
+                    }else {
+                        volleyResponse.onSuccess(baseVO);
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+        }
+    }
+
+
 
     static void updateMandateAgainstOpeator(Context context,int mandateId,int actionId,int providerId ,boolean mandateByList) {
         try {
