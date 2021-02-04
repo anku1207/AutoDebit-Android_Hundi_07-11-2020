@@ -88,7 +88,6 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
 
         back_activity_button = findViewById(R.id.back_activity_button1);
 
-
         operator = findViewById(R.id.operator);
         dynamicCardViewContainer = findViewById(R.id.dynamiccards);
         fetchbilllayout = findViewById(R.id.fetchbilllayout);
@@ -103,10 +102,8 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
         minAmt = 0;
         gson = new Gson();
 
-
         eleMap = new HashMap<>();
         permissionUtils = new PermissionUtils(this);
-
 
         back_activity_button.setOnClickListener(this);
         fetchbill.setOnClickListener(this);
@@ -114,7 +111,6 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
         fetchbill.setVisibility(View.GONE);
 
         operator.setClickable(false);
-
 
         operator.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -173,11 +169,8 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
 
         try {
             operator.setEnabled(true);
-
             if (resultCode == RESULT_OK) {
-
                 if (requestCode == 100) {
-
                     //clear element maplist
                     eleMap.clear();
                     operatorname = data.getStringExtra("operatorname");
@@ -237,7 +230,6 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                             et.setHint(oxigenQuestionsVO.getQuestionLabel());
 
                             changeEdittextValue(et);
-
 
                             // Add mobileicon on Edittext for mobile
                             if (oxigenQuestionsVO.getQuestionLabel().contains("Mobile")) {

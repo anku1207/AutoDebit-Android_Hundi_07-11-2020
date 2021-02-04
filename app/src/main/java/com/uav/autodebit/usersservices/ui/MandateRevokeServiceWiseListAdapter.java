@@ -66,7 +66,6 @@ public class MandateRevokeServiceWiseListAdapter extends RecyclerView.Adapter<Ma
                             intent.putExtra("serviceTypeId",pro.getServiceType().getServiceTypeId());
                             ((Activity)context).startActivityForResult(intent, ApplicationConstant.REQ_MANDATE_DETAIL_ACTIVITY_RESULT);
                         }
-
                     }
                 });
 

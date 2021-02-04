@@ -119,8 +119,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
     public DMRC_Customer_CardVO dmrc_customer_cardVO;
     CardTypeVO intent_cardTypeVO;
     boolean isPersonalise;
-    ;
-
 
     RecyclerView recyclerView;
     ViewPager viewPager;
@@ -371,17 +369,14 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             case R.id.back_activity_button:
                 finish();
                 break;
-
             case R.id.attachaddress:
-                permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(Dmrc_Card_Request.this), Content_Message.CAMERA_PERMISSION, ApplicationConstant.REQ_CAMERA_PERMISSION);
-
-
+                permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(Dmrc_Card_Request.this), Content_Message.CAMERA_PERMISSION,
+                        ApplicationConstant.REQ_CAMERA_PERMISSION);
                 break;
             case R.id.changeaddress:
                 enabledAllEle(true);
                 break;
             case R.id.verify:
-
                 if (!requiredfiled()) return;
                 if (Utility.validatePattern(mobilenumber.getText().toString().trim(), ApplicationConstant.MOBILENO_VALIDATION) != null) {
                     mobilenumber.setError(Utility.validatePattern(mobilenumber.getText().toString().trim(), ApplicationConstant.MOBILENO_VALIDATION));
@@ -651,7 +646,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 setBankMandateOrRecharge(Dmrc_Card_Request.this, dmrc_customer_cardVO);
             }));
 
-
         } else if (paymentTypeid.equals(ApplicationConstant.SIMandatePayment)) {
             // recharge on SI mandate
             BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this, dmrc_customer_cardVO.getSiMandateHtml(), new ConfirmationDialogInterface((ok) -> {
@@ -702,7 +696,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             e.printStackTrace();
             ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this, Utility.getStackTrace(e));
         }
-
     }
 
     public void startSIActivity(Context context, DMRC_Customer_CardVO dmrc_customer_cardVO, String paymentType) {
@@ -717,7 +710,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             e.printStackTrace();
             ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this, Utility.getStackTrace(e));
         }
-
     }
 
     public void startUPIActivity(Context context, DMRC_Customer_CardVO dmrc_customer_cardVO, String paymentType) {
@@ -789,7 +781,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
                             MyDialog.showDoubleButtonBigContentDialog(Dmrc_Card_Request.this, new BigContentDialogIntetface((button1) -> {
                                 Utility.dismissDialog(Dmrc_Card_Request.this, button1);
-
 
                                 BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this, dmrc_customer_SI_cardVO.getSiMandateHtml(), new ConfirmationDialogInterface((ok) -> {
                                     OxigenTransactionVO oxigenTransactionVO = new OxigenTransactionVO();
@@ -883,8 +874,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     allotDmrcCard(dmrcid, null, false);
                 }
             }
-
-
         });
     }
 
@@ -900,7 +889,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
         //set customer auth si id select by SI Mandate list mandate
         request_dmrc_customer_cardVO.setAnonymousInteger(sIMandateId);
-
 
         Gson gson = new Gson();
         String json = gson.toJson(request_dmrc_customer_cardVO);
@@ -1028,7 +1016,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         city.setEnabled(ele);
         state.setEnabled(ele);
         permanentaddress.setEnabled(ele);
-
     }
 
 

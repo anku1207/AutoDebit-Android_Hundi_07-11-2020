@@ -45,8 +45,6 @@ public class ListViewSingleText extends Base_Activity {
         activityIntent = getIntent();
         connectionVO = (ConnectionVO) activityIntent.getSerializableExtra(ApplicationConstant.INTENT_EXTRA_CONNECTION);
 
-
-
         ImageView back_activity_button=(ImageView)findViewById(R.id.back_activity_button);
         TextView title=(TextView)findViewById(R.id.title);
         getSupportActionBar().hide();
@@ -59,18 +57,10 @@ public class ListViewSingleText extends Base_Activity {
             }
         });
 
-
         sharedPreferences = getSharedPreferences(ApplicationConstant.SHAREDPREFENCE,  Context.MODE_PRIVATE);
-
-
         String jsonString= (String)sharedPreferences.getString( connectionVO.getSharedPreferenceKey(),null);
-
-
-
         entityText = new ArrayList<String>();
         entityId = new ArrayList<Object>();
-
-
 
         try {
             JSONObject jsonObject = new JSONObject(jsonString);
@@ -100,10 +90,8 @@ public class ListViewSingleText extends Base_Activity {
                 intent.putExtra("valueId",entityId.get(i).toString());
                 setResult(RESULT_OK,intent);
                 finish() ;
-
             }
         });
-
     }
 
     @Override

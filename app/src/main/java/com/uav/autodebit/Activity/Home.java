@@ -37,8 +37,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
+import com.uav.autodebit.BO.CustomerBO;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.ServiceBO;
+import com.uav.autodebit.BO.UberBO;
 import com.uav.autodebit.CustomDialog.MyDialog;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
@@ -62,6 +64,7 @@ import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.BannerVO;
+import com.uav.autodebit.vo.BaseVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerVO;
@@ -211,6 +214,10 @@ public class Home extends Base_Activity
                     finish();
                     return;
                 }
+            }else if(customerVO.getLevel().getLevelId() >= 1 && customerVO.getPanNo()==null){
+                startActivity(new Intent(Home.this, PanVerification.class));
+                finish();
+                return;
             }
         } catch (Exception e) {
             ExceptionsNotification.ExceptionHandling(Home.this, Utility.getStackTrace(e));
@@ -258,12 +265,13 @@ public class Home extends Base_Activity
         logoutbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-          /*  SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.remove(Session.CACHE_CUSTOMER);
-            editor.remove(Session.CACHE_USER_LOGINID);
-            editor.commit();*/
-                startActivity(new Intent(Home.this, Login.class));
-                finishAffinity();
+              /* SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.remove(Session.CACHE_CUSTOMER);
+                editor.remove(Session.CACHE_USER_LOGINID);
+                editor.commit();*/
+                /*startActivity(new Intent(Home.this, Login.class));
+                finishAffinity();*/
+                logoutByUser(Integer.parseInt(Session.getCustomerId(Home.this)));
             }
         });
 
@@ -309,6 +317,44 @@ public class Home extends Base_Activity
         //set app version
         app_Version_Code.setText("version " + Utility.getVersionName(Home.this));
 
+    }
+
+    public void logoutByUser(int customerId) {
+      try {
+          HashMap<String, Object> params = new HashMap<String, Object>();
+          ConnectionVO connectionVO = CustomerBO.userLogoutByApp();
+          CustomerVO customerVO =new CustomerVO();
+          customerVO.setCustomerId(customerId);
+          String json = new Gson().toJson(customerVO);
+          params.put("volley", json);
+          connectionVO.setParams(params);
+          Log.w("logoutByUser",params.toString());
+          VolleyUtils.makeJsonObjectRequest(Home.this,connectionVO , new VolleyResponseListener() {
+              @Override
+              public void onError(String message) {
+              }
+              @Override
+              public void onResponse(Object resp) throws JSONException {
+                  JSONObject response = (JSONObject) resp;
+                  Gson gson = new Gson();
+                  BaseVO baseVO= gson.fromJson(response.toString(), BaseVO.class);
+                  if(baseVO.getStatusCode().equals("400")){
+                      ArrayList error = (ArrayList) baseVO.getErrorMsgs();
+                      StringBuilder sb = new StringBuilder();
+                      for(int i=0; i<error.size(); i++){
+                          sb.append(error.get(i)).append("\n");
+                      }
+                      Utility.showSingleButtonDialog(Home.this,baseVO.getDialogTitle(),sb.toString(),false);
+                  }else {
+                      startActivity(new Intent(Home.this, Login.class));
+                      finishAffinity();
+                  }
+              }
+          });
+      }catch (Exception e ){
+          e.printStackTrace();
+          ExceptionsNotification.ExceptionHandling(Home.this, Utility.getStackTrace(e));
+      }
     }
 
     public void showNotificationIndicator() {

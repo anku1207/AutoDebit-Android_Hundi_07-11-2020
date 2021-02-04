@@ -419,7 +419,6 @@ public class IRCTC_Webview extends AppCompatActivity implements View.OnClickList
         try{
             if(resultCode==RESULT_OK){
                 if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
-
                     boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
                     String mandateId=data.getStringExtra("bankMandateId");
                     int actionId=data.getIntExtra("actionId",0);
@@ -431,13 +430,8 @@ public class IRCTC_Webview extends AppCompatActivity implements View.OnClickList
                             finish();
                         }));
                     }else{
-
                         Utility.showSingleButtonDialog(IRCTC_Webview.this,"Alert",data.getStringExtra("msg"),false);
                     }
-                }
-            }else {
-                if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
-                    finish();
                 }
             }
         }catch (Exception e){

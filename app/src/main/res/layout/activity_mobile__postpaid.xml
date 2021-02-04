@@ -4,18 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.uav.autodebit.Activity.PanVerification"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.uav.autodebit.Activity.PanVerification">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_awesome_toolbar"
-        android:layout_height="50dp"
         android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:background="@color/appbar"
+        app:contentInsetEnd="0dp"
         app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
         app:contentInsetRight="0dp"
-        app:contentInsetEnd="0dp">
+        app:contentInsetStart="0dp">
 
         <ImageView
             android:id="@+id/back_activity_button1"
@@ -73,72 +73,71 @@
         android:fillViewport="true">
 
 
-
         <LinearLayout
+            android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:paddingTop="50dp"
-            android:id="@+id/main">
+            android:orientation="vertical"
+            android:paddingTop="50dp">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardElevation="7dp"
                 android:layout_margin="10dp"
                 app:cardCornerRadius="15dp"
-                >
+                app:cardElevation="7dp">
+
                 <EditText
+                    android:id="@+id/operator"
+                    style="@style/commonEdittextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/operator"
                     android:backgroundTint="@color/white"
+                    android:cursorVisible="false"
+                    android:drawableLeft="@drawable/operator"
                     android:hint="Operator"
-                    android:singleLine="true"
-                    android:id="@+id/operator"
                     android:inputType="textCapCharacters"
                     android:maxLines="1"
-                    android:cursorVisible="false"
-                    style="@style/commonEdittextStyle"
+                    android:singleLine="true"
 
                     />
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/dynamiccards"
-                android:orientation="vertical">
-            </LinearLayout>
-            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardElevation="7dp"
-                android:layout_margin="10dp"
-                app:cardCornerRadius="15dp"
+                android:orientation="vertical"></LinearLayout>
+
+            <androidx.cardview.widget.CardView
                 android:id="@+id/amountlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:visibility="gone"
-                >
+                app:cardCornerRadius="15dp"
+                app:cardElevation="7dp">
+
                 <EditText
                     android:id="@+id/amount"
+                    style="@style/commonEdittextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:drawableLeft="@drawable/amount"
                     android:backgroundTint="@color/white"
-                    android:hint="Amount"
-                    android:singleLine="true"
-                    android:maxLength="8"
-                    android:inputType="number|numberDecimal"
                     android:digits="@string/NumberDigits"
-                    android:maxLines="1"
-                    style="@style/commonEdittextStyle"
+                    android:drawableLeft="@drawable/amount"
                     android:enabled="false"
-                    />
+                    android:hint="Amount"
+                    android:inputType="number|numberDecimal"
+                    android:maxLength="8"
+                    android:maxLines="1"
+                    android:singleLine="true" />
             </androidx.cardview.widget.CardView>
+
             <Button
                 android:id="@+id/fetchbill"
                 android:layout_width="100dp"
@@ -149,57 +148,53 @@
                 android:background="@drawable/cornerbutton"
                 android:text="Confirm"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
-                />
+                android:textColor="@color/white" />
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/fetchbillcard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardElevation="7dp"
                 android:layout_margin="10dp"
-                app:cardCornerRadius="15dp"
-                android:id="@+id/fetchbillcard"
                 android:visibility="gone"
-                >
+                app:cardCornerRadius="15dp"
+                app:cardElevation="7dp">
 
                 <LinearLayout
+                    android:id="@+id/fetchbilllayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:id="@+id/fetchbilllayout">
-                </LinearLayout>
+                    android:orientation="vertical"></LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
+                android:id="@+id/min_amt_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/min_amt_layout"
-                android:visibility="gone"
+                android:animateLayoutChanges="true"
                 android:orientation="vertical"
-                android:animateLayoutChanges="true">
-            </LinearLayout>
+                android:visibility="gone"></LinearLayout>
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
                 android:orientation="horizontal"
                 android:paddingLeft="20dp"
-                android:paddingEnd="20dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginBottom="20dp"
-                android:paddingTop="10dp">
+                android:paddingTop="10dp"
+                android:paddingEnd="20dp">
+
                 <ImageView
                     android:layout_width="100dp"
                     android:layout_height="30dp"
+                    android:layout_gravity="center"
                     android:scaleType="fitXY"
-                    android:src="@drawable/bbpslogo"
-                    android:layout_gravity="center"/>
+                    android:src="@drawable/bbpslogo" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
 
 
 </LinearLayout>

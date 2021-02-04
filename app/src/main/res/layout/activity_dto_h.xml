@@ -4,20 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.uav.autodebit.Activity.PanVerification"
     android:orientation="vertical"
-    >
+    tools:context="com.uav.autodebit.Activity.PanVerification">
 
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_awesome_toolbar"
-        android:layout_height="50dp"
         android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:background="@color/appbar"
+        app:contentInsetEnd="0dp"
         app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
         app:contentInsetRight="0dp"
-        app:contentInsetEnd="0dp">
+        app:contentInsetStart="0dp">
+
         <ImageView
             android:id="@+id/back_activity_button"
             android:layout_width="40dp"
@@ -28,10 +28,7 @@
             android:scaleType="center"
             android:src="@drawable/rof_backbutton"
             android:textStyle="bold"
-            android:tint="@color/white"
-
-
-            />
+            android:tint="@color/white" />
 
         <LinearLayout
             android:id="@+id/saveshipmenticonintop"
@@ -63,9 +60,7 @@
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="20dp"
-            android:textStyle="bold"
-
-            />
+            android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
 
     <ScrollView
@@ -73,69 +68,57 @@
         android:layout_height="match_parent">
 
 
-
-
         <LinearLayout
+            android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:paddingTop="50dp"
-            android:id="@+id/main">
+            android:orientation="vertical"
+            android:paddingTop="50dp">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardElevation="7dp"
                 android:layout_margin="10dp"
                 app:cardCornerRadius="15dp"
-                >
+                app:cardElevation="7dp">
+
                 <EditText
+                    android:id="@+id/accountnumber"
+                    style="@style/commonEdittextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/pencil"
                     android:backgroundTint="@color/white"
+                    android:cursorVisible="true"
+                    android:drawableLeft="@drawable/pencil"
                     android:hint="Subscriber Id"
-                    android:singleLine="true"
-                    android:id="@+id/accountnumber"
                     android:inputType="number"
                     android:maxLines="1"
-                    android:cursorVisible="true"
-                    style="@style/commonEdittextStyle"
-                    />
+                    android:singleLine="true" />
             </androidx.cardview.widget.CardView>
 
             <Button
+                android:id="@+id/proceed"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/proceed"
-                android:text="Proceed"
                 android:layout_gravity="center"
-                android:layout_marginBottom="20dp"
                 android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/cornerbutton"
-                android:textColor="@color/white"
-
-                />
+                android:text="Proceed"
+                android:textColor="@color/white" />
 
 
             <LinearLayout
+                android:id="@+id/plandetailslayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:id="@+id/plandetailslayout">
-
+                android:orientation="vertical">
 
             </LinearLayout>
         </LinearLayout>
-
-
-
     </ScrollView>
-
-
-
 </LinearLayout>
 
 

@@ -55,21 +55,20 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Loan_Repayment extends Base_Activity implements View.OnClickListener , PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback {
-
-    EditText amount,operator;
+public class Loan_Repayment extends Base_Activity implements View.OnClickListener, PermissionUtils.PermissionResultCallback, ActivityCompat.OnRequestPermissionsResultCallback {
+    EditText amount, operator;
     ImageView back_activity_button;
-    String operatorcode,operatorname=null;
+    String operatorcode, operatorname = null;
     Button proceed;
     TextView fetchbill;
     CardView amountlayout;
 
-    LinearLayout dynamicCardViewContainer , fetchbilllayout,min_amt_layout;
+    LinearLayout dynamicCardViewContainer, fetchbilllayout, min_amt_layout;
 
-    List<OxigenQuestionsVO> questionsVOS= new ArrayList<OxigenQuestionsVO>();
+    List<OxigenQuestionsVO> questionsVOS = new ArrayList<OxigenQuestionsVO>();
     CardView fetchbillcard;
 
-    boolean isFetchBill=true;
+    boolean isFetchBill = true;
     String operatorListDate;
     UAVProgressDialog pd;
     OxigenTransactionVO oxigenTransactionVOresp;
@@ -78,36 +77,33 @@ public class Loan_Repayment extends Base_Activity implements View.OnClickListene
 
     int minAmt;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loan__repayment);
-
         getSupportActionBar().hide();
 
-        operatorListDate=null;
-        pd=new UAVProgressDialog(this);
+        operatorListDate = null;
+        pd = new UAVProgressDialog(this);
 
-        amount=findViewById(R.id.amount);
-        back_activity_button=findViewById(R.id.back_activity_button1);
+        amount = findViewById(R.id.amount);
+        back_activity_button = findViewById(R.id.back_activity_button1);
 
         amount.setEnabled(false);
 
+        proceed = findViewById(R.id.proceed);
+        fetchbill = findViewById(R.id.fetchbill);
+        amountlayout = findViewById(R.id.amountlayout);
+        operator = findViewById(R.id.operator);
+        dynamicCardViewContainer = findViewById(R.id.dynamiccards);
+        fetchbilllayout = findViewById(R.id.fetchbilllayout);
+        fetchbillcard = findViewById(R.id.fetchbillcard);
+        min_amt_layout = findViewById(R.id.min_amt_layout);
+        minAmt = 0;
 
-        proceed=findViewById(R.id.proceed);
-        fetchbill=findViewById(R.id.fetchbill);
-        amountlayout=findViewById(R.id.amountlayout);
-        operator=findViewById(R.id.operator);
-        dynamicCardViewContainer =findViewById(R.id.dynamiccards);
-        fetchbilllayout=findViewById(R.id.fetchbilllayout);
-        fetchbillcard =findViewById(R.id.fetchbillcard);
-        min_amt_layout=findViewById(R.id.min_amt_layout);
-        minAmt=0;
-
-        oxigenTransactionVOresp=new OxigenTransactionVO();
-        gson =new Gson();
-        permissionUtils=new PermissionUtils(Loan_Repayment.this);
+        oxigenTransactionVOresp = new OxigenTransactionVO();
+        gson = new Gson();
+        permissionUtils = new PermissionUtils(Loan_Repayment.this);
 
         amountlayout.setVisibility(View.GONE);
 
@@ -116,25 +112,24 @@ public class Loan_Repayment extends Base_Activity implements View.OnClickListene
         fetchbill.setOnClickListener(this);
 
         operator.setClickable(false);
-
-
         operator.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(MotionEvent.ACTION_UP == motionEvent.getAction()) {
+                if (MotionEvent.ACTION_UP == motionEvent.getAction()) {
                     operator.setEnabled(false);
                     //startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,Listview_With_Image.class));
-                    BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,true, new BackgroundServiceInterface() {
+                    BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd, true, new BackgroundServiceInterface() {
                         @Override
                         public void doInBackGround() {
                             operatorListDate = gson.toJson(getDataList());
                         }
+
                         @Override
                         public void doPostExecute() {
-                            Intent intent =new Intent(Loan_Repayment.this, Listview_With_Image.class);
+                            Intent intent = new Intent(Loan_Repayment.this, Listview_With_Image.class);
                             intent.putExtra("datalist", operatorListDate);
-                            intent.putExtra("title","Operator");
-                            startActivityForResult(intent,100);
+                            intent.putExtra("title", "Operator");
+                            startActivityForResult(intent, 100);
                         }
                     });
                     backgroundAsyncService.execute();
@@ -144,42 +139,38 @@ public class Loan_Repayment extends Base_Activity implements View.OnClickListene
         });
     }
 
-    public ArrayList<DataAdapterVO> getDataList(){
+    public ArrayList<DataAdapterVO> getDataList() {
         ArrayList<DataAdapterVO> datalist = new ArrayList<>();
-        String operator= Session.getSessionByKey(Loan_Repayment.this,Session.CACHE_LOAN_OPERATOR);
+        String operator = Session.getSessionByKey(Loan_Repayment.this, Session.CACHE_LOAN_OPERATOR);
         try {
-            JSONArray jsonArray =new JSONArray(operator);
-            Log.w("dataoperator",jsonArray.toString());
-            for(int i=0;i<jsonArray.length();i++){
+            JSONArray jsonArray = new JSONArray(operator);
+            Log.w("dataoperator", jsonArray.toString());
+            for (int i = 0; i < jsonArray.length(); i++) {
                 DataAdapterVO dataAdapterVO = new DataAdapterVO();
-                JSONObject object =jsonArray.getJSONObject(i);
+                JSONObject object = jsonArray.getJSONObject(i);
                 dataAdapterVO.setText(object.getString("name"));
                 dataAdapterVO.setQuestionsData(object.getString("questionsData"));
-                dataAdapterVO.setImageUrl(object.has("imageUrl") ?object.getString("imageUrl"):null);
+                dataAdapterVO.setImageUrl(object.has("imageUrl") ? object.getString("imageUrl") : null);
                 dataAdapterVO.setAssociatedValue(object.getString("service"));
                 dataAdapterVO.setIsbillFetch(object.getString("isbillFetch"));
                 dataAdapterVO.setMinTxnAmount(object.getInt("minTxnAmount"));
                 datalist.add(dataAdapterVO);
             }
         } catch (Exception e) {
-            Utility.showToast(this,Content_Message.error_message);
+            Utility.showToast(this, Content_Message.error_message);
         }
-        return  datalist;
+        return datalist;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        try{
+        try {
             operator.setEnabled(true);
-
-            if(resultCode==RESULT_OK){
-
-
-                if(requestCode==100){
-                    operatorname =data.getStringExtra("operatorname");
-                    operatorcode=data.getStringExtra("operator");
+            if (resultCode == RESULT_OK) {
+                if (requestCode == 100) {
+                    operatorname = data.getStringExtra("operatorname");
+                    operatorcode = data.getStringExtra("operator");
 
                     amountlayout.setVisibility(View.VISIBLE);
 
@@ -195,37 +186,38 @@ public class Loan_Repayment extends Base_Activity implements View.OnClickListene
                     if (dataAdapterVO.getIsbillFetch().equals("1")) {
                         fetchbill.setVisibility(View.VISIBLE);
                         amount.setEnabled(false);
-                        isFetchBill=true;
+                        isFetchBill = true;
                     } else {
                         fetchbill.setVisibility(View.GONE);
                         amount.setEnabled(true);
-                        isFetchBill=false;
+                        isFetchBill = false;
                     }
 
                     //add min Amt Layout
-                    if(dataAdapterVO.getMinTxnAmount()!=null){
-                        if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
-                        minAmt=dataAdapterVO.getMinTxnAmount();
+                    if (dataAdapterVO.getMinTxnAmount() != null) {
+                        if (min_amt_layout.getChildCount() > 0) min_amt_layout.removeAllViews();
+                        minAmt = dataAdapterVO.getMinTxnAmount();
 
-                        Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
+                        Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
                         min_amt_layout.startAnimation(animFadeIn);
                         min_amt_layout.setVisibility(View.VISIBLE);
-                        min_amt_layout.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(224,224,224), 0.5f));
-                        min_amt_layout.setPadding(Utility.getPixelsFromDPs(Loan_Repayment.this,15),Utility.getPixelsFromDPs(Loan_Repayment.this,15),0,Utility.getPixelsFromDPs(Loan_Repayment.this,15));
+                        min_amt_layout.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(224, 224, 224), 0.5f));
+                        min_amt_layout.setPadding(Utility.getPixelsFromDPs(Loan_Repayment.this, 15), Utility.getPixelsFromDPs(Loan_Repayment.this, 15), 0, Utility.getPixelsFromDPs(Loan_Repayment.this, 15));
 
-                        min_amt_layout.addView(DynamicLayout.billMinLayout(Loan_Repayment.this,dataAdapterVO));
-                    }else {
+                        min_amt_layout.addView(DynamicLayout.billMinLayout(Loan_Repayment.this, dataAdapterVO));
+                    } else {
                         min_amt_layout.setVisibility(View.GONE);
                     }
 
                     //Remove dynamic cards from the layout and arraylist
-                    if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
+                    if (dynamicCardViewContainer.getChildCount() > 0)
+                        dynamicCardViewContainer.removeAllViews();
                     removefetchbilllayout();
                     questionsVOS.clear();
                     //Create dynamic cards of edit text
-                    if(dataAdapterVO.getQuestionsData() !=null){
+                    if (dataAdapterVO.getQuestionsData() != null) {
                         JSONArray jsonArray = new JSONArray(dataAdapterVO.getQuestionsData());
-                        for(int i=0; i<jsonArray.length(); i++){
+                        for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             OxigenQuestionsVO oxigenQuestionsVO = gson.fromJson(jsonObject.toString(), OxigenQuestionsVO.class);
 
@@ -240,103 +232,99 @@ public class Loan_Repayment extends Base_Activity implements View.OnClickListene
                             cardView.addView(et);
 
                             dynamicCardViewContainer.addView(cardView);
-                            if(oxigenQuestionsVO.getInstructions()!=null){
+                            if (oxigenQuestionsVO.getInstructions() != null) {
                                 TextView tv = Utility.getTextView(this, oxigenQuestionsVO.getInstructions());
                                 dynamicCardViewContainer.addView(tv);
                             }
                             oxigenQuestionsVO.setElementId(et.getId());
                             questionsVOS.add(oxigenQuestionsVO);
                         }
-                        EditText editText =(EditText) findViewById(questionsVOS.get(0).getElementId());
+                        EditText editText = (EditText) findViewById(questionsVOS.get(0).getElementId());
                         editText.requestFocus();
                     }
 
-                }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE || requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE || requestCode== ApplicationConstant.REQ_SI_MANDATE || requestCode== ApplicationConstant.REQ_MANDATE_FOR_BILL_FETCH_ERROR || requestCode== ApplicationConstant.REQ_SI_FOR_BILL_FETCH_ERROR){
-                    if(data !=null){
-                        BillPayRequest.onActivityResult(this,data,requestCode);
-                    }else {
-                        Utility.showSingleButtonDialog(this,"Error !","Something went wrong, Please try again!",false);
+                } else if (requestCode == 200 || requestCode == ApplicationConstant.REQ_ENACH_MANDATE || requestCode == ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE || requestCode == ApplicationConstant.REQ_SI_MANDATE || requestCode == ApplicationConstant.REQ_MANDATE_FOR_BILL_FETCH_ERROR || requestCode == ApplicationConstant.REQ_SI_FOR_BILL_FETCH_ERROR) {
+                    if (data != null) {
+                        BillPayRequest.onActivityResult(this, data, requestCode);
+                    } else {
+                        Utility.showSingleButtonDialog(this, "Error !", "Something went wrong, Please try again!", false);
                     }
                 }
             }
-        }catch (Exception e){
-            ExceptionsNotification.ExceptionHandling(Loan_Repayment.this , Utility.getStackTrace(e));
-
+        } catch (Exception e) {
+            ExceptionsNotification.ExceptionHandling(Loan_Repayment.this, Utility.getStackTrace(e));
             // Utility.exceptionAlertDialog(Loan_Repayment.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
-
-
     @Override
     public void onClick(View view) {
         Utility.hideKeyboard(Loan_Repayment.this);
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.back_activity_button1:
                 finish();
                 break;
             case R.id.proceed:
                 try {
-                    JSONObject dataarray=getQuestionLabelDate(true);
-                    if(dataarray==null)return;
+                    JSONObject dataarray = getQuestionLabelDate(true);
+                    if (dataarray == null) return;
 
-                    if(isFetchBill){
-                        BillPayRequest.proceedRecharge(Loan_Repayment.this,isFetchBill,oxigenTransactionVOresp);
-                    }else {
-                        BillPayRequest.confirmationDialogBillPay(Loan_Repayment.this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                            OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                    if (isFetchBill) {
+                        BillPayRequest.proceedRecharge(Loan_Repayment.this, isFetchBill, oxigenTransactionVOresp);
+                    } else {
+                        BillPayRequest.confirmationDialogBillPay(Loan_Repayment.this, operator, amount, dataarray, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
+                            OxigenTransactionVO oxigenTransactionVO = new OxigenTransactionVO();
                             oxigenTransactionVO.setOperateName(operatorcode);
                             oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
                             oxigenTransactionVO.setAnonymousString(dataarray.toString());
 
-                            ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+                            ServiceTypeVO serviceTypeVO = new ServiceTypeVO();
                             serviceTypeVO.setServiceTypeId(ApplicationConstant.LOAN_REPAYMENT);
                             oxigenTransactionVO.setServiceType(serviceTypeVO);
 
-                            CustomerVO customerVO =new CustomerVO();
+                            CustomerVO customerVO = new CustomerVO();
                             customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Loan_Repayment.this)));
                             oxigenTransactionVO.setCustomer(customerVO);
 
-                            BillPayRequest.proceedRecharge(Loan_Repayment.this,isFetchBill,oxigenTransactionVO);
+                            BillPayRequest.proceedRecharge(Loan_Repayment.this, isFetchBill, oxigenTransactionVO);
                         }));
                     }
-                }catch (Exception e){
-                    ExceptionsNotification.ExceptionHandling(Loan_Repayment.this , Utility.getStackTrace(e));
+                } catch (Exception e) {
+                    ExceptionsNotification.ExceptionHandling(Loan_Repayment.this, Utility.getStackTrace(e));
                     // Utility.exceptionAlertDialog(Loan_Repayment.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                 }
                 break;
             case R.id.fetchbill:
                 try {
+                    JSONObject dataarray = getQuestionLabelDate(false);
+                    if (dataarray == null) return;
 
-                    JSONObject dataarray=getQuestionLabelDate(false);
-                    if(dataarray==null)return;
-
-                    CustomerVO customerVO =new CustomerVO();
+                    CustomerVO customerVO = new CustomerVO();
                     customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Loan_Repayment.this)));
 
-                    ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+                    ServiceTypeVO serviceTypeVO = new ServiceTypeVO();
                     serviceTypeVO.setServiceTypeId(ApplicationConstant.LOAN_REPAYMENT);
 
-                    OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                    OxigenTransactionVO oxigenTransactionVO = new OxigenTransactionVO();
                     oxigenTransactionVO.setOperateName(operatorcode);
                     oxigenTransactionVO.setCustomer(customerVO);
                     oxigenTransactionVO.setServiceType(serviceTypeVO);
                     oxigenTransactionVO.setAnonymousString(dataarray.toString());
 
-                    BillPayRequest.proceedFetchBill(oxigenTransactionVO,Loan_Repayment.this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                    BillPayRequest.proceedFetchBill(oxigenTransactionVO, Loan_Repayment.this, new VolleyResponse((VolleyResponse.OnSuccess) (s) -> {
                         try {
-                            oxigenTransactionVOresp=(OxigenTransactionVO)s;
+                            oxigenTransactionVOresp = (OxigenTransactionVO) s;
                             fetchbill.setVisibility(View.GONE);
-                            amount.setText(oxigenTransactionVOresp.getNetAmount()+"");
+                            amount.setText(oxigenTransactionVOresp.getNetAmount() + "");
 
-                            JSONArray dataArry =new JSONArray(oxigenTransactionVOresp.getAnonymousString());
+                            JSONArray dataArry = new JSONArray(oxigenTransactionVOresp.getAnonymousString());
 
                             Typeface typeface = ResourcesCompat.getFont(Loan_Repayment.this, R.font.poppinssemibold);
-                            for(int i=0 ;i<dataArry.length();i++){
-                                JSONObject jsonObject =dataArry.getJSONObject(i);
+                            for (int i = 0; i < dataArry.length(); i++) {
+                                JSONObject jsonObject = dataArry.getJSONObject(i);
 
-                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(Loan_Repayment.this,R.style.confirmation_dialog_layout));
-                                et.setPadding(Utility.getPixelsFromDPs(Loan_Repayment.this,10),Utility.getPixelsFromDPs(Loan_Repayment.this,10),Utility.getPixelsFromDPs(Loan_Repayment.this,10),Utility.getPixelsFromDPs(Loan_Repayment.this,10));
+                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(Loan_Repayment.this, R.style.confirmation_dialog_layout));
+                                et.setPadding(Utility.getPixelsFromDPs(Loan_Repayment.this, 10), Utility.getPixelsFromDPs(Loan_Repayment.this, 10), Utility.getPixelsFromDPs(Loan_Repayment.this, 10), Utility.getPixelsFromDPs(Loan_Repayment.this, 10));
 
                                 TextView text = new TextView(new ContextThemeWrapper(Loan_Repayment.this, R.style.confirmation_dialog_filed));
                                 text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
@@ -346,9 +334,8 @@ public class Loan_Repayment extends Base_Activity implements View.OnClickListene
                                 text.setTypeface(typeface);
                                 text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-
                                 TextView value = new TextView(new ContextThemeWrapper(Loan_Repayment.this, R.style.confirmation_dialog_value));
-                                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
                                 value.setText(jsonObject.getString("value"));
                                 value.setTypeface(typeface);
                                 value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -357,34 +344,32 @@ public class Loan_Repayment extends Base_Activity implements View.OnClickListene
                                 et.addView(value);
                                 fetchbilllayout.addView(et);
                             }
-                            Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
+                            Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
                             fetchbillcard.startAnimation(animFadeIn);
                             fetchbillcard.setVisibility(View.VISIBLE);
 
-                        }catch (Exception e){
-                            ExceptionsNotification.ExceptionHandling(Loan_Repayment.this , Utility.getStackTrace(e));
-
+                        } catch (Exception e) {
+                            ExceptionsNotification.ExceptionHandling(Loan_Repayment.this, Utility.getStackTrace(e));
                             // Utility.exceptionAlertDialog(Loan_Repayment.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                         }
-                    },(VolleyResponse.OnError)(e)->{
+                    }, (VolleyResponse.OnError) (e) -> {
                         fetchbill.setVisibility(View.VISIBLE);
                     }));
-                }catch (Exception e){
-                    ExceptionsNotification.ExceptionHandling(Loan_Repayment.this , Utility.getStackTrace(e));
-
+                } catch (Exception e) {
+                    ExceptionsNotification.ExceptionHandling(Loan_Repayment.this, Utility.getStackTrace(e));
                     // Utility.exceptionAlertDialog(Loan_Repayment.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                 }
                 break;
         }
     }
 
-    private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
-        return BillPayRequest.getQuestionLabelData(Loan_Repayment.this,operator,amount,fetchBill,isFetchBill, questionsVOS,minAmt);
+    private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception {
+        return BillPayRequest.getQuestionLabelData(Loan_Repayment.this, operator, amount, fetchBill, isFetchBill, questionsVOS, minAmt);
     }
 
-    public void removefetchbilllayout(){
-        oxigenTransactionVOresp=new OxigenTransactionVO();
-        if(fetchbilllayout.getChildCount()>0) {
+    public void removefetchbilllayout() {
+        oxigenTransactionVOresp = new OxigenTransactionVO();
+        if (fetchbilllayout.getChildCount() > 0) {
             fetchbilllayout.removeAllViews();
             amount.setText("");
             fetchbill.setVisibility(View.VISIBLE);
@@ -392,16 +377,18 @@ public class Loan_Repayment extends Base_Activity implements View.OnClickListene
         }
     }
 
-    public void changeEdittextValue(EditText editText){
+    public void changeEdittextValue(EditText editText) {
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 removefetchbilllayout();
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                Log.w("onTextChanged",charSequence.toString());
+                Log.w("onTextChanged", charSequence.toString());
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
             }
@@ -411,27 +398,26 @@ public class Loan_Repayment extends Base_Activity implements View.OnClickListene
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionUtils.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        permissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
     public void PermissionGranted(int request_code) {
-        if(request_code==ApplicationConstant.REQ_READ_CONTACT_PERMISSION){
+        if (request_code == ApplicationConstant.REQ_READ_CONTACT_PERMISSION) {
             Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
             startActivityForResult(intent, 101);
         }
     }
+
     @Override
     public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
     }
+
     @Override
     public void PermissionDenied(int request_code) {
     }
+
     @Override
     public void NeverAskAgain(int request_code) {
     }
-
-
-
 }
-

@@ -278,14 +278,12 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                 acno.setError("Minimum length is 5");
                 validation=false;
             }
-
-
             if(validation){
                 if(!condition_checkbox.isChecked()){
+                    Utility.showSingleButtonDialog(Enach_Mandate.this,"Alert"," Please accept the terms & conditions ",false);
                     validation=false;
                 }
             }
-
             if(!validation) return;
 
             try {

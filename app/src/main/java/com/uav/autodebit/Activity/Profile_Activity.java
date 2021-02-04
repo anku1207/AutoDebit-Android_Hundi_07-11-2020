@@ -119,7 +119,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
 
         usename = findViewById(R.id.usename);
         pannumber = findViewById(R.id.pannumber);
-
         mobileno = findViewById(R.id.mobileno);
         email = findViewById(R.id.email);
         address = findViewById(R.id.address);
@@ -144,7 +143,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
 
         permissionUtils = new PermissionUtils(Profile_Activity.this);
 
-
         back_activity_button.setOnClickListener(this);
         more_service.setOnClickListener(this);
         changepass.setOnClickListener(this);
@@ -153,7 +151,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
 
         downloadreport.setVisibility(View.GONE);
 
-
         downloadreport.setOnClickListener(this);
         imageView1.setOnClickListener(this);
 
@@ -161,13 +158,11 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         imageView1.setBorderWidth(4);
         customerProfileImage = CustomerBO.setCustomerProfileImage();
 
-
         navigation = findViewById(R.id.navigation);
         navigation.setSelectedItemId(R.id.bottom_profile);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
 
         getProfileDate(Session.getCustomerId(Profile_Activity.this));
 
@@ -181,9 +176,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         bankrecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         // bankrecycler.addItemDecoration(new DividerItemDecorator(serviceautope.size(),2,false));
         bankrecycler.setNestedScrollingEnabled(false);
-
     }
-
 
     BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -290,7 +283,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         }
     }
 
-
     public void sendOtpToMobileVerify(String type, String mobileNumber, Dialog dialog) {
         OTPApi.sendOtpToMobileVerification(Profile_Activity.this, mobileNumber, new VolleyResponse((VolleyResponse.OnSuccess) (success) -> {
 
@@ -307,7 +299,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             startActivityForResult(intent, REQ_MOBILE_VERIFY);
         }));
     }
-
 
     public void changeCustomerDetails(CustomerVO customerVO) {
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -371,7 +362,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         pictureDialog.show();
     }
 
-
     private void removeProfileImage() {
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = CustomerBO.removeProfileImage();
@@ -408,12 +398,10 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         });
     }
 
-
     public void galleryimage() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(galleryIntent, REQ_GALLERY);
-
     }
 
     public void cameraimage() {
@@ -454,7 +442,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             startActivityForResult(intent, REQ_EMAIL_VERIFY);
         }));
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -526,7 +513,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         }
     }
 
-
     private void performCrop(Uri picUri) {
         try {
             //call the standard crop action intent (the user device may not support it)
@@ -560,7 +546,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         }
     }
 
-
     private void setCustomerProfileImage() {
         BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd, true, new BackgroundServiceInterface() {
             @Override
@@ -575,7 +560,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                 String json = gson.toJson(customerVO);
                 params.put("volley", json);
                 customerProfileImage.setParams(params);
-
             }
 
             @Override
@@ -622,7 +606,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         });
         backgroundAsyncService.execute();
     }
-
 
     private void getProfileDate(String id) {
         progressBar.setVisibility(View.VISIBLE);
@@ -845,7 +828,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             }
         }, Profile_Activity.this, jsonArray, null, "Bank Detail", changePass);
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

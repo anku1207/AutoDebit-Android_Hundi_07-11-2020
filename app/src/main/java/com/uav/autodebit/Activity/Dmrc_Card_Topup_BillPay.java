@@ -126,7 +126,6 @@ public class Dmrc_Card_Topup_BillPay extends AppCompatActivity implements View.O
             e.printStackTrace();
             ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
         }
-
     }
 
     @Override
@@ -135,16 +134,15 @@ public class Dmrc_Card_Topup_BillPay extends AppCompatActivity implements View.O
 
         try{
             if(resultCode==RESULT_OK){
-
                if(requestCode== ApplicationConstant.REQ_DIRECT_PAYMENT_RESULT){
                     if(data !=null){
                         JSONObject jsonDataObj = new JSONObject(data.getStringExtra("data"));
                         BillPayRequest.autoPePGDirectPayment(jsonDataObj.getInt("txnId"),Dmrc_Card_Topup_BillPay.this,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
-                            BaseVO BaseVO = (BaseVO) success;
+                            BaseVO baseVO = (BaseVO) success;
                             MyDialog.showSingleButtonBigContentDialog(Dmrc_Card_Topup_BillPay.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                                 ok.dismiss();
                                 finish();
-                            }),BaseVO.getDialogTitle(),BaseVO.getDialogMessage());
+                            }),baseVO.getDialogTitle(),baseVO.getDialogMessage());
                         }));
                     }else {
                         Utility.showSingleButtonDialog(this,"Error !","Something went wrong, Please try again!",false);
@@ -187,15 +185,13 @@ public class Dmrc_Card_Topup_BillPay extends AppCompatActivity implements View.O
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(Dmrc_Card_Topup_BillPay.this,"Error !",sb.toString(),true);
+                    Utility.showSingleButtonDialog(Dmrc_Card_Topup_BillPay.this,oxigenTransactionVO.getDialogTitle(),sb.toString(),true);
                     bill_pay.setVisibility(View.GONE);
                 }else {
                     volleyResponse.onSuccess(oxigenTransactionVO);
                 }
             }
         });
-
-
     }
 
     @Override

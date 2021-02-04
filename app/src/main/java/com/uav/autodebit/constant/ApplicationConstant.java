@@ -55,6 +55,7 @@ public class ApplicationConstant {
     public static Integer BankMandatePayment=1,SIMandatePayment=2,UPIMandatePayment=3;
     public static String DIRECT_PAYMENT_TITLE="Payment";
 
+
     public static final String CACHE_PORT="port";
     public static final String CACHE_IPADDRESS="ipaddress";
     public static final String CACHE_PROTOCOL="protocol";
@@ -78,7 +79,7 @@ public class ApplicationConstant {
             //return "http://164.52.192.45";
         }else{
             return  "http://205.147.103.18:8080/hundi/rest/stateless" ;
-           //  return "http://192.168.1.52:8080/hundi/rest/stateless";
+           //  return "http://192.168.1.159:8080/hundi/rest/stateless";
           // return  "http://192.168.1.54:8080/hundi/rest/stateless" ;
           //   return  "http://192.168.1.103:8080/hundi/rest/stateless" ;
           //return "http://192.168.1.25:8080/hundi/rest/stateless";

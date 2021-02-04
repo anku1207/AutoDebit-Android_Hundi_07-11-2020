@@ -113,6 +113,15 @@ public class CustomerBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO userLogoutByApp(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("userLogoutByApp");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
+
 
 
 }

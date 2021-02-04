@@ -32,7 +32,6 @@ public class Bsnl_Landline_Corporate extends Base_Activity implements View.OnCli
         amount=findViewById(R.id.amount);
         back_activity_button=findViewById(R.id.back_activity_button1);
         title=findViewById(R.id.title);
-
         proceed=findViewById(R.id.proceed);
         accountnumber=findViewById(R.id.accountnumber);
         fetchbill=findViewById(R.id.fetchbill);
@@ -40,9 +39,7 @@ public class Bsnl_Landline_Corporate extends Base_Activity implements View.OnCli
         fetchbill.setOnClickListener(this);
         proceed.setOnClickListener(this);
 
-
         title.setText(getIntent().getStringExtra("key"));
-
     }
 
     @Override
@@ -65,19 +62,16 @@ public class Bsnl_Landline_Corporate extends Base_Activity implements View.OnCli
     }
 
     public boolean validatefiled(String type){
-
         boolean valid=true;
 
         accountnumber.setError(null);
         amount.setError(null);
         fetchbill.setVisibility(View.VISIBLE);
 
-
         if(accountnumber.getText().toString().equals("")){
             accountnumber.setError(ErrorMsg.Field_Required);
             valid=false;
         }
-
 
         if(type.equals("proceed")){
             if(amount.getText().toString().equals("")){

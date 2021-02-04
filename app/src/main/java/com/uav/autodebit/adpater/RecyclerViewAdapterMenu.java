@@ -10,8 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.uav.autodebit.Activity.DMRC_Mandate_CardList_Activity;
 import com.uav.autodebit.Activity.Dmrc_NewAndExist_Card_Dialog;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
@@ -30,17 +33,16 @@ recyclerview.adapter
 recyclerview.viewholder
 */
 
-public class RecyclerViewAdapterMenu extends RecyclerView.Adapter<RecyclerViewAdapterMenu.ProdectViewHolder>{
-    Context mctx ;
+public class RecyclerViewAdapterMenu extends RecyclerView.Adapter<RecyclerViewAdapterMenu.ProdectViewHolder> {
+    Context mctx;
     List<ServiceTypeVO> serviceTypeVOS;
     int Activityname;
-
 
 
     public RecyclerViewAdapterMenu(Context mctx, List<ServiceTypeVO> serviceTypeVOS, int Activityname) {
         this.mctx = mctx;
         this.serviceTypeVOS = serviceTypeVOS;
-        this.Activityname=Activityname;
+        this.Activityname = Activityname;
     }
 
     @Override
@@ -54,10 +56,10 @@ public class RecyclerViewAdapterMenu extends RecyclerView.Adapter<RecyclerViewAd
     @Override
     public void onBindViewHolder(ProdectViewHolder holder, int position) {
 
-         final ServiceTypeVO pro=serviceTypeVOS.get(position);
-         holder.textview.setText(pro.getTitle());
-         holder.imageView.setImageDrawable(Utility.GetImage(mctx,pro.getAppIcon()));
-         holder.mainlayout.setEnabled(true);
+        final ServiceTypeVO pro = serviceTypeVOS.get(position);
+        holder.textview.setText(pro.getTitle());
+        holder.imageView.setImageDrawable(Utility.GetImage(mctx, pro.getAppIcon()));
+        holder.mainlayout.setEnabled(true);
 
 
          /* holder.mailmenu.setOnClickListener(new View.OnClickListener() {
@@ -74,12 +76,19 @@ public class RecyclerViewAdapterMenu extends RecyclerView.Adapter<RecyclerViewAd
             @Override
             public void onClick(View v) {
                 Integer serviceTypeID = pro.getServiceTypeId();
-                if(serviceTypeID== ApplicationConstant.Dmrc){
-                    mctx.startActivity(new Intent(mctx, Dmrc_NewAndExist_Card_Dialog.class));
-                }else{
+                if (serviceTypeID == ApplicationConstant.Dmrc) {
+                    // mctx.startActivity(new Intent(mctx, Dmrc_NewAndExist_Card_Dialog.class));
+
+                    //New Work 22/jan/2021 ////
+                    Intent intentDmrcMandateCardList = new Intent(mctx, DMRC_Mandate_CardList_Activity.class);
+                    intentDmrcMandateCardList.putExtra("serviceID", serviceTypeID);
+                    ((Activity) mctx).startActivityForResult(intentDmrcMandateCardList, ApplicationConstant.REQ_MANDATE_REVOKE_SERVICE_WISE_RESULT);
+                  //  mctx.startActivity(intentDmrcMandateCardList);
+                    //////////////////////////
+                } else {
                     Intent intent = new Intent(mctx, MandateRevokeServiceWiseActivity.class);
-                    intent.putExtra("serviceID",serviceTypeID);
-                    ((Activity)mctx).startActivityForResult(intent,ApplicationConstant.REQ_MANDATE_REVOKE_SERVICE_WISE_RESULT);
+                    intent.putExtra("serviceID", serviceTypeID);
+                    ((Activity) mctx).startActivityForResult(intent, ApplicationConstant.REQ_MANDATE_REVOKE_SERVICE_WISE_RESULT);
                 }
             }
         });
@@ -89,16 +98,18 @@ public class RecyclerViewAdapterMenu extends RecyclerView.Adapter<RecyclerViewAd
     public int getItemCount() {
         return serviceTypeVOS.size();
     }
-    public  class ProdectViewHolder extends RecyclerView.ViewHolder {
+
+    public class ProdectViewHolder extends RecyclerView.ViewHolder {
 
         LinearLayout mainlayout;
         ImageView imageView;
         TextView textview;
+
         public ProdectViewHolder(View itemView) {
             super(itemView);
-            imageView=itemView.findViewById(R.id.imageView);
-            textview=itemView.findViewById(R.id.textview);
-            mainlayout=itemView.findViewById(R.id.mainlayout);
+            imageView = itemView.findViewById(R.id.imageView);
+            textview = itemView.findViewById(R.id.textview);
+            mainlayout = itemView.findViewById(R.id.mainlayout);
 
         }
     }

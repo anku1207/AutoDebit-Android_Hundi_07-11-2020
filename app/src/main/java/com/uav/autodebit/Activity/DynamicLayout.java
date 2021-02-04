@@ -26,14 +26,14 @@ import com.uav.autodebit.vo.DataAdapterVO;
 
 public class DynamicLayout {
 
-    public static LinearLayout billMinLayout(Context context, DataAdapterVO dataAdapterVO){
+    public static LinearLayout billMinLayout(Context context, DataAdapterVO dataAdapterVO) {
         LinearLayout parent_min_layout = new LinearLayout(context);
         parent_min_layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         parent_min_layout.setOrientation(LinearLayout.VERTICAL);
 
 
-        TextView textView = Utility.getTextView(context,"Important Information");
-        textView.setLayoutParams(Utility.getLayoutparams(context,0,0,0,0));
+        TextView textView = Utility.getTextView(context, "Important Information");
+        textView.setLayoutParams(Utility.getLayoutparams(context, 0, 0, 0, 0));
         parent_min_layout.addView(textView);
 
 
@@ -42,14 +42,15 @@ public class DynamicLayout {
         parent.setOrientation(LinearLayout.HORIZONTAL);
 
         ImageView imageView = new ImageView(context);
-        imageView.setLayoutParams(new LinearLayout.LayoutParams(Utility.getPixelsFromDPs(context,15), Utility.getPixelsFromDPs(context,15), (float)0));
+        imageView.setLayoutParams(new LinearLayout.LayoutParams(Utility.getPixelsFromDPs(context, 15), Utility.getPixelsFromDPs(context, 15), (float) 0));
         imageView.setImageDrawable(context.getDrawable(R.drawable.iconcheck));
-        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);;
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        ;
 
         TextView text1 = new TextView(context);
-        text1.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,(float)1));
-        text1.setText("Minimum amount allowed is Rs "+dataAdapterVO.getMinTxnAmount().toString());
-        text1.setLayoutParams(Utility.getLayoutparams(context,10,0,0,0));
+        text1.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+        text1.setText("Minimum amount allowed is Rs " + dataAdapterVO.getMinTxnAmount().toString());
+        text1.setLayoutParams(Utility.getLayoutparams(context, 10, 0, 0, 0));
         parent.addView(imageView);
         parent.addView(text1);
         parent_min_layout.addView(parent);
@@ -57,13 +58,13 @@ public class DynamicLayout {
     }
 
 
-    static  void addContectIconEdittext(Context context, PermissionUtils permissionUtils, UAVEditText et){
+    static void addContectIconEdittext(Context context, PermissionUtils permissionUtils, UAVEditText et) {
         try {
             Drawable drawable = Utility.getDrawableResources(context, R.drawable.contacts);
             drawable = DrawableCompat.wrap(drawable);
             DrawableCompat.setTint(drawable, context.getResources().getColor(R.color.appbar));
 
-            et.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mobile,0 , R.drawable.contacts, 0);
+            et.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mobile, 0, R.drawable.contacts, 0);
             et.setDrawableClickListener(new DrawableClickListener() {
                 @Override
                 public void onClick(DrawablePosition target) {
@@ -74,11 +75,12 @@ public class DynamicLayout {
                     }
                 }
             });
-        }catch (Exception e){
-            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+        } catch (Exception e) {
+            ExceptionsNotification.ExceptionHandling(context, Utility.getStackTrace(e));
         }
     }
-    static String addMobileNumberInEdittext(Context context ,Intent data){
+
+    static String addMobileNumberInEdittext(Context context, Intent data) {
         String num = "";
         Uri contactData = data.getData();
         Cursor c = context.getContentResolver().query(contactData, null, null, null, null);
@@ -88,10 +90,10 @@ public class DynamicLayout {
             if (Integer.valueOf(hasNumber) == 1) {
                 Cursor numbers = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
                 while (numbers.moveToNext()) {
-                    num = numbers.getString(numbers.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\s+","");
+                    num = numbers.getString(numbers.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\s+", "");
                 }
-                if (num.length()>10) {
-                    num=num.substring(num.length() - 10);
+                if (num.length() > 10) {
+                    num = num.substring(num.length() - 10);
                 }
             }
         }
@@ -100,7 +102,7 @@ public class DynamicLayout {
     }
 
 
-    static String addNumberInEdittext(Context context ,Intent data){
+    static String addNumberInEdittext(Context context, Intent data) {
         String num = "";
         Uri contactData = data.getData();
         Cursor c = context.getContentResolver().query(contactData, null, null, null, null);
@@ -110,7 +112,7 @@ public class DynamicLayout {
             if (Integer.valueOf(hasNumber) == 1) {
                 Cursor numbers = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
                 while (numbers.moveToNext()) {
-                    num = numbers.getString(numbers.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\s+","");
+                    num = numbers.getString(numbers.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\s+", "");
                 }
             }
         }

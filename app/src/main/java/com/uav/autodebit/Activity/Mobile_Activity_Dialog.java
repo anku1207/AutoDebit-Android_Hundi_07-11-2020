@@ -17,7 +17,8 @@ import com.uav.autodebit.R;
 
 public class Mobile_Activity_Dialog extends AppCompatActivity {
 
-    String serviceid="" ;
+    String serviceid = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,14 +26,14 @@ public class Mobile_Activity_Dialog extends AppCompatActivity {
 
         serviceid = getIntent().getStringExtra("serviceid");
 
-        DisplayMetrics displayMetrics =new DisplayMetrics();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width=displayMetrics.widthPixels;
-        int height=displayMetrics.heightPixels;
+        int width = displayMetrics.widthPixels;
+        int height = displayMetrics.heightPixels;
 
-      //  getWindow().setLayout((int)(width*.9),(int)(height*.7));
+        //  getWindow().setLayout((int)(width*.9),(int)(height*.7));
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        WindowManager.LayoutParams params =getWindow().getAttributes();
+        WindowManager.LayoutParams params = getWindow().getAttributes();
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER;
         getWindow().setAttributes(params);
@@ -43,8 +44,8 @@ public class Mobile_Activity_Dialog extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent intent;
-                intent =new Intent(Mobile_Activity_Dialog.this, Mobile_Prepaid_Recharge_Service.class);
-                intent.putExtra("serviceid",serviceid+"");
+                intent = new Intent(Mobile_Activity_Dialog.this, Mobile_Prepaid_Recharge_Service.class);
+                intent.putExtra("serviceid", serviceid + "");
                 startActivity(intent);
                 finish();
             }
@@ -55,8 +56,8 @@ public class Mobile_Activity_Dialog extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent intent;
-                intent =new Intent(Mobile_Activity_Dialog.this, Mobile_Postpaid.class);
-                intent.putExtra("serviceid",serviceid+"");
+                intent = new Intent(Mobile_Activity_Dialog.this, Mobile_Postpaid.class);
+                intent.putExtra("serviceid", serviceid + "");
                 startActivity(intent);
                 finish();
             }

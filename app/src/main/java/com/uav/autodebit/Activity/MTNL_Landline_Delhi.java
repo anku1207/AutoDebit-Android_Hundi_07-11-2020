@@ -18,40 +18,35 @@ import com.uav.autodebit.override.UAVEditText;
 public class MTNL_Landline_Delhi extends Base_Activity implements View.OnClickListener {
     EditText amount;
     ImageView back_activity_button;
-    UAVEditText accountnumber,number;
+    UAVEditText accountnumber, number;
     Button proceed;
-    TextView fetchbill,title;
-
+    TextView fetchbill, title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mtnl_landline_delhi);
-
         getSupportActionBar().hide();
 
-        amount=findViewById(R.id.amount);
-        back_activity_button=findViewById(R.id.back_activity_button1);
-        title=findViewById(R.id.title);
+        amount = findViewById(R.id.amount);
+        back_activity_button = findViewById(R.id.back_activity_button1);
+        title = findViewById(R.id.title);
 
-        proceed=findViewById(R.id.proceed);
-        accountnumber=findViewById(R.id.accountnumber);
-        fetchbill=findViewById(R.id.fetchbill);
-        number=findViewById(R.id.number);
+        proceed = findViewById(R.id.proceed);
+        accountnumber = findViewById(R.id.accountnumber);
+        fetchbill = findViewById(R.id.fetchbill);
+        number = findViewById(R.id.number);
+
         back_activity_button.setOnClickListener(this);
-
         proceed.setOnClickListener(this);
         fetchbill.setOnClickListener(this);
 
         title.setText(getIntent().getStringExtra("key"));
-
-
-
-
     }
+
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.back_activity_button1:
                 finish();
                 break;
@@ -59,47 +54,37 @@ public class MTNL_Landline_Delhi extends Base_Activity implements View.OnClickLi
                 validatefiled("proceed");
                 break;
             case R.id.fetchbill:
-                if( validatefiled("fetchbill")){
+                if (validatefiled("fetchbill")) {
                     accountnumber.setError(null);
                     amount.setError(null);
                     number.setError(null);
                     Toast.makeText(this, "sdfsd", Toast.LENGTH_SHORT).show();
                 }
                 break;
-
         }
     }
 
-    public boolean validatefiled(String type){
-
-        boolean valid=true;
+    public boolean validatefiled(String type) {
+        boolean valid = true;
 
         accountnumber.setError(null);
         amount.setError(null);
         number.setError(null);
         fetchbill.setVisibility(View.VISIBLE);
-
-
-        if(accountnumber.getText().toString().equals("")){
+        if (accountnumber.getText().toString().equals("")) {
             accountnumber.setError(ErrorMsg.Field_Required);
-            valid=false;
+            valid = false;
         }
-        if(number.getText().toString().equals("")){
+        if (number.getText().toString().equals("")) {
             number.setError(ErrorMsg.Field_Required);
-            valid=false;
+            valid = false;
         }
-
-        if(type.equals("proceed")){
-            if(amount.getText().toString().equals("")){
+        if (type.equals("proceed")) {
+            if (amount.getText().toString().equals("")) {
                 amount.setError(ErrorMsg.Field_Required);
-                valid=false;
+                valid = false;
             }
         }
-
-
         return valid;
-
-
     }
-
 }

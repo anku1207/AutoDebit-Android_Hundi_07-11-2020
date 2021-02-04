@@ -46,7 +46,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.EasyOtpActivity"></activity>
+        <activity android:name=".Activity.DMRC_Mandate_CardList_Activity"></activity>
+        <activity android:name=".Activity.EasyOtpActivity" />
         <activity android:name=".Activity.Dmrc_Card_Topup_BillPay" />
         <activity android:name=".Activity.DirectPaymentActivity" />
         <activity android:name=".Activity.Skip_Mandate_Payment_Notification" />

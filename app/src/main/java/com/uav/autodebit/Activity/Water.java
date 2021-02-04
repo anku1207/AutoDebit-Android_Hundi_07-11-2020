@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -52,19 +53,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Water extends Base_Activity implements View.OnClickListener {
-
-
-    EditText operator,netAmount;
+    EditText operator, netAmount;
     ImageView back_activity_button;
-    String operatorcode,operatorname=null;
-    Button  fetchbill;
+    String operatorcode, operatorname = null;
+    Button fetchbill;
 
-    LinearLayout dynamicCardViewContainer , fetchbilllayout,min_amt_layout;
+    LinearLayout dynamicCardViewContainer, fetchbilllayout, min_amt_layout;
 
-    List<OxigenQuestionsVO> questionsVOS= new ArrayList<OxigenQuestionsVO>();
-    CardView fetchbillcard,amountlayout;
+    List<OxigenQuestionsVO> questionsVOS = new ArrayList<OxigenQuestionsVO>();
+    CardView fetchbillcard, amountlayout;
 
-    boolean isFetchBill=true;
+    boolean isFetchBill = true;
     String operatorListDate;
     UAVProgressDialog pd;
     OxigenTransactionVO oxigenTransactionVOresp;
@@ -77,59 +76,49 @@ public class Water extends Base_Activity implements View.OnClickListener {
         setContentView(R.layout.activity_water);
         getSupportActionBar().hide();
 
-        operatorListDate=null;
-        pd=new UAVProgressDialog(this);
+        operatorListDate = null;
+        pd = new UAVProgressDialog(this);
 
-        back_activity_button=findViewById(R.id.back_activity_button1);
+        back_activity_button = findViewById(R.id.back_activity_button1);
+        operator = findViewById(R.id.operator);
+        dynamicCardViewContainer = findViewById(R.id.dynamiccards);
+        fetchbilllayout = findViewById(R.id.fetchbilllayout);
+        fetchbillcard = findViewById(R.id.fetchbillcard);
+        min_amt_layout = findViewById(R.id.min_amt_layout);
 
+        fetchbill = findViewById(R.id.fetchbill);
+        amountlayout = findViewById(R.id.amountlayout);
+        netAmount = findViewById(R.id.amount);
 
-        operator=findViewById(R.id.operator);
-        dynamicCardViewContainer =findViewById(R.id.dynamiccards);
-        fetchbilllayout=findViewById(R.id.fetchbilllayout);
-        fetchbillcard =findViewById(R.id.fetchbillcard);
-        min_amt_layout=findViewById(R.id.min_amt_layout);
-
-        fetchbill=findViewById(R.id.fetchbill);
-        amountlayout =findViewById(R.id.amountlayout);
-        netAmount=findViewById(R.id.amount);
-
-        oxigenTransactionVOresp=new OxigenTransactionVO();
-        minAmt=0;
-        gson =new Gson();
-
+        oxigenTransactionVOresp = new OxigenTransactionVO();
+        minAmt = 0;
+        gson = new Gson();
 
         back_activity_button.setOnClickListener(this);
         fetchbill.setOnClickListener(this);
-
         fetchbill.setVisibility(View.GONE);
-
         operator.setClickable(false);
-
 
         operator.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(MotionEvent.ACTION_UP == motionEvent.getAction()) {
+                if (MotionEvent.ACTION_UP == motionEvent.getAction()) {
                     operator.setEnabled(false);
                     //startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,Listview_With_Image.class));
-                    BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,true, new BackgroundServiceInterface() {
+                    BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd, true, new BackgroundServiceInterface() {
                         @Override
                         public void doInBackGround() {
-
                             Gson gson = new Gson();
                             operatorListDate = gson.toJson(getDataList());
-
                             //manoj
-
                         }
+
                         @Override
                         public void doPostExecute() {
-                            Intent intent =new Intent(Water.this, Listview_With_Image.class);
+                            Intent intent = new Intent(Water.this, Listview_With_Image.class);
                             intent.putExtra("datalist", operatorListDate);
-                            intent.putExtra("title","Operator");
-                            startActivityForResult(intent,100);
-
-
+                            intent.putExtra("title", "Operator");
+                            startActivityForResult(intent, 100);
                         }
                     });
                     backgroundAsyncService.execute();
@@ -139,19 +128,19 @@ public class Water extends Base_Activity implements View.OnClickListener {
         });
     }
 
-    public ArrayList<DataAdapterVO> getDataList(){
+    public ArrayList<DataAdapterVO> getDataList() {
         ArrayList<DataAdapterVO> datalist = new ArrayList<>();
-        String operator= Session.getSessionByKey(Water.this,Session.CACHE_WATER_OPERATOR);
+        String operator = Session.getSessionByKey(Water.this, Session.CACHE_WATER_OPERATOR);
         try {
-            JSONArray jsonArray =new JSONArray(operator);
+            JSONArray jsonArray = new JSONArray(operator);
 
-            Log.w("dataoperator",jsonArray.toString());
-            for(int i=0;i<jsonArray.length();i++){
+            Log.w("dataoperator", jsonArray.toString());
+            for (int i = 0; i < jsonArray.length(); i++) {
                 DataAdapterVO dataAdapterVO = new DataAdapterVO();
-                JSONObject object =jsonArray.getJSONObject(i);
+                JSONObject object = jsonArray.getJSONObject(i);
                 dataAdapterVO.setText(object.getString("name"));
                 dataAdapterVO.setQuestionsData(object.getString("questionsData"));
-                dataAdapterVO.setImageUrl(object.has("imageUrl") ?object.getString("imageUrl"):null);
+                dataAdapterVO.setImageUrl(object.has("imageUrl") ? object.getString("imageUrl") : null);
                 dataAdapterVO.setAssociatedValue(object.getString("service"));
                 dataAdapterVO.setIsbillFetch(object.getString("isbillFetch"));
                 dataAdapterVO.setMinTxnAmount(object.getInt("minTxnAmount"));
@@ -160,20 +149,18 @@ public class Water extends Base_Activity implements View.OnClickListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return  datalist;
+        return datalist;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        try{
+        try {
             operator.setEnabled(true);
-
-            if(resultCode==RESULT_OK){
-                if(requestCode==100){
-                    operatorname =data.getStringExtra("operatorname");
-                    operatorcode=data.getStringExtra("operator");
+            if (resultCode == RESULT_OK) {
+                if (requestCode == 100) {
+                    operatorname = data.getStringExtra("operatorname");
+                    operatorcode = data.getStringExtra("operator");
 
                     DataAdapterVO dataAdapterVO = (DataAdapterVO) data.getSerializableExtra("datavo");
                     operator.setText(operatorname);
@@ -183,31 +170,31 @@ public class Water extends Base_Activity implements View.OnClickListener {
 
                     //add fetch bill btn
                     if (dataAdapterVO.getIsbillFetch().equals("1")) {
-                        isFetchBill=true;
+                        isFetchBill = true;
                         fetchbill.setVisibility(View.VISIBLE);
                     } else {
-                        isFetchBill=false;
+                        isFetchBill = false;
                         fetchbill.setVisibility(View.GONE);
                     }
 
                     //add min Amt Layout
-                    if(dataAdapterVO.getMinTxnAmount()!=null){
-                        if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
-                        minAmt=dataAdapterVO.getMinTxnAmount();
-                        Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
+                    if (dataAdapterVO.getMinTxnAmount() != null) {
+                        if (min_amt_layout.getChildCount() > 0) min_amt_layout.removeAllViews();
+                        minAmt = dataAdapterVO.getMinTxnAmount();
+                        Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
                         min_amt_layout.startAnimation(animFadeIn);
                         min_amt_layout.setVisibility(View.VISIBLE);
-                        min_amt_layout.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(224,224,224), 0.5f));
-                        min_amt_layout.setPadding(Utility.getPixelsFromDPs(this,15),Utility.getPixelsFromDPs(this,15),0,Utility.getPixelsFromDPs(this,15));
+                        min_amt_layout.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(224, 224, 224), 0.5f));
+                        min_amt_layout.setPadding(Utility.getPixelsFromDPs(this, 15), Utility.getPixelsFromDPs(this, 15), 0, Utility.getPixelsFromDPs(this, 15));
 
-                        min_amt_layout.addView(DynamicLayout.billMinLayout(this,dataAdapterVO));
-
-                    }else {
+                        min_amt_layout.addView(DynamicLayout.billMinLayout(this, dataAdapterVO));
+                    } else {
                         min_amt_layout.setVisibility(View.GONE);
                     }
 
                     //Remove dynamic cards from the layout and arraylist
-                    if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
+                    if (dynamicCardViewContainer.getChildCount() > 0)
+                        dynamicCardViewContainer.removeAllViews();
 
                     //remove fetch bill layout and remove amount layout and amount value is set null  and show bill fetch button
                     removefetchbilllayout();
@@ -215,9 +202,9 @@ public class Water extends Base_Activity implements View.OnClickListener {
                     questionsVOS.clear();
 
                     //Create dynamic cards of edit text
-                    if(dataAdapterVO.getQuestionsData() !=null){
+                    if (dataAdapterVO.getQuestionsData() != null) {
                         JSONArray jsonArray = new JSONArray(dataAdapterVO.getQuestionsData());
-                        for(int i=0; i<jsonArray.length(); i++){
+                        for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             OxigenQuestionsVO oxigenQuestionsVO = gson.fromJson(jsonObject.toString(), OxigenQuestionsVO.class);
 
@@ -232,75 +219,70 @@ public class Water extends Base_Activity implements View.OnClickListener {
 
                             cardView.addView(et);
                             dynamicCardViewContainer.addView(cardView);
-                            if(oxigenQuestionsVO.getInstructions()!=null){
+                            if (oxigenQuestionsVO.getInstructions() != null) {
                                 TextView tv = Utility.getTextView(this, oxigenQuestionsVO.getInstructions());
                                 dynamicCardViewContainer.addView(tv);
                             }
                             oxigenQuestionsVO.setElementId(et.getId());
                             questionsVOS.add(oxigenQuestionsVO);
                         }
-                        EditText editText =(EditText) findViewById(questionsVOS.get(0).getElementId());
+                        EditText editText = (EditText) findViewById(questionsVOS.get(0).getElementId());
                         editText.requestFocus();
                     }
-                }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE || requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE || requestCode== ApplicationConstant.REQ_SI_MANDATE || requestCode== ApplicationConstant.REQ_MANDATE_FOR_BILL_FETCH_ERROR || requestCode== ApplicationConstant.REQ_SI_FOR_BILL_FETCH_ERROR){
-                    if(data !=null){
-                        BillPayRequest.onActivityResult(this,data,requestCode);
-                    }else {
-                        Utility.showSingleButtonDialog(this,"Error !","Something went wrong, Please try again!",false);
+                } else if (requestCode == 200 || requestCode == ApplicationConstant.REQ_ENACH_MANDATE || requestCode == ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE || requestCode == ApplicationConstant.REQ_SI_MANDATE || requestCode == ApplicationConstant.REQ_MANDATE_FOR_BILL_FETCH_ERROR || requestCode == ApplicationConstant.REQ_SI_FOR_BILL_FETCH_ERROR) {
+                    if (data != null) {
+                        BillPayRequest.onActivityResult(this, data, requestCode);
+                    } else {
+                        Utility.showSingleButtonDialog(this, "Error !", "Something went wrong, Please try again!", false);
                     }
                 }
-
-
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(Water.this, Content_Message.error_message, Toast.LENGTH_SHORT).show();
-            ExceptionsNotification.ExceptionHandling(Water.this , Utility.getStackTrace(e));
-           // Utility.exceptionAlertDialog(Water.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Water.this, Utility.getStackTrace(e));
+            // Utility.exceptionAlertDialog(Water.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
     @Override
     public void onClick(View view) {
         Utility.hideKeyboard(Water.this);
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.back_activity_button1:
                 finish();
                 break;
             case R.id.fetchbill:
                 try {
-                    JSONObject dataarray=getQuestionLabelDate(false);
-                    if(dataarray==null)return;
-                    CustomerVO customerVO =new CustomerVO();
+                    JSONObject dataarray = getQuestionLabelDate(false);
+                    if (dataarray == null) return;
+                    CustomerVO customerVO = new CustomerVO();
                     customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(this)));
 
-                    ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+                    ServiceTypeVO serviceTypeVO = new ServiceTypeVO();
                     serviceTypeVO.setServiceTypeId(ApplicationConstant.Water);
 
-                    OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                    OxigenTransactionVO oxigenTransactionVO = new OxigenTransactionVO();
                     oxigenTransactionVO.setOperateName(operatorcode);
                     oxigenTransactionVO.setCustomer(customerVO);
                     oxigenTransactionVO.setServiceType(serviceTypeVO);
                     oxigenTransactionVO.setAnonymousString(dataarray.toString());
 
-                    BillPayRequest.proceedFetchBill(oxigenTransactionVO,this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                    BillPayRequest.proceedFetchBill(oxigenTransactionVO, this, new VolleyResponse((VolleyResponse.OnSuccess) (s) -> {
                         try {
-                            oxigenTransactionVOresp=(OxigenTransactionVO)s;
-
-
+                            oxigenTransactionVOresp = (OxigenTransactionVO) s;
                             //hide fetch bill button and show amount layout and set amount value
                             fetchbill.setVisibility(View.GONE);
                             amountlayout.setVisibility(View.VISIBLE);
                             netAmount.setText(oxigenTransactionVOresp.getNetAmount().toString());
 
-                            JSONArray dataArry =new JSONArray(oxigenTransactionVOresp.getAnonymousString());
+                            JSONArray dataArry = new JSONArray(oxigenTransactionVOresp.getAnonymousString());
                             Typeface typeface = ResourcesCompat.getFont(this, R.font.poppinssemibold);
-                            for(int i=0 ;i<dataArry.length();i++){
-                                JSONObject jsonObject =dataArry.getJSONObject(i);
+                            for (int i = 0; i < dataArry.length(); i++) {
+                                JSONObject jsonObject = dataArry.getJSONObject(i);
 
-                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(this,R.style.confirmation_dialog_layout));
-
-                                et.setPadding(Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10));
+                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(this, R.style.confirmation_dialog_layout));
+                                et.setPadding(Utility.getPixelsFromDPs(this, 10), Utility.getPixelsFromDPs(this, 10), Utility.getPixelsFromDPs(this, 10), Utility.getPixelsFromDPs(this, 10));
 
                                 TextView text = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_filed));
                                 text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
@@ -310,9 +292,8 @@ public class Water extends Base_Activity implements View.OnClickListener {
                                 text.setTypeface(typeface);
                                 text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-
                                 TextView value = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_value));
-                                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
                                 value.setText(jsonObject.getString("value"));
                                 value.setTypeface(typeface);
                                 value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -322,10 +303,9 @@ public class Water extends Base_Activity implements View.OnClickListener {
                                 fetchbilllayout.addView(et);
                             }
 
-                            Button billPaybtn=Utility.getButton(this);
+                            Button billPaybtn = Utility.getButton(this);
                             billPaybtn.setText("Proceed");
                             fetchbilllayout.addView(billPaybtn);
-
                             billPaybtn.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -333,76 +313,72 @@ public class Water extends Base_Activity implements View.OnClickListener {
                                 }
                             });
 
-                            Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
+                            Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
                             fetchbillcard.startAnimation(animFadeIn);
                             fetchbillcard.setVisibility(View.VISIBLE);
-
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                             Toast.makeText(Water.this, Content_Message.error_message, Toast.LENGTH_SHORT).show();
-                            ExceptionsNotification.ExceptionHandling(Water.this , Utility.getStackTrace(e));
-                           // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                            ExceptionsNotification.ExceptionHandling(Water.this, Utility.getStackTrace(e));
+                            // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                         }
-                    },(VolleyResponse.OnError)(e)->{
+                    }, (VolleyResponse.OnError) (e) -> {
                         // hide amount layout layout and net amount is null set and show fetch bill button
                         fetchbill.setVisibility(View.VISIBLE);
                         amountlayout.setVisibility(View.GONE);
                         netAmount.setText(null);
                     }));
-
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(Water.this, Content_Message.error_message, Toast.LENGTH_SHORT).show();
-                    ExceptionsNotification.ExceptionHandling(Water.this , Utility.getStackTrace(e));
+                    ExceptionsNotification.ExceptionHandling(Water.this, Utility.getStackTrace(e));
                     //Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                 }
                 break;
         }
     }
 
-    private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
-        return BillPayRequest.getNewTypeQuestionLabelData(this,operator,netAmount.getText().toString(),fetchBill,isFetchBill, questionsVOS,minAmt);
+    private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception {
+        return BillPayRequest.getNewTypeQuestionLabelData(this, operator, netAmount.getText().toString(), fetchBill, isFetchBill, questionsVOS, minAmt);
     }
 
-    public void proceedBillPay(){
+    public void proceedBillPay() {
         try {
-            JSONObject dataarray=getQuestionLabelDate(true);
-            if(dataarray==null)return;
-            if(isFetchBill){
-                BillPayRequest.proceedRecharge(this,isFetchBill,oxigenTransactionVOresp);
-            }else {
-                BillPayRequest.confirmationDialogBillPay(this, operator, netAmount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                    OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+            JSONObject dataarray = getQuestionLabelDate(true);
+            if (dataarray == null) return;
+            if (isFetchBill) {
+                BillPayRequest.proceedRecharge(this, isFetchBill, oxigenTransactionVOresp);
+            } else {
+                BillPayRequest.confirmationDialogBillPay(this, operator, netAmount, dataarray, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
+                    OxigenTransactionVO oxigenTransactionVO = new OxigenTransactionVO();
                     oxigenTransactionVO.setOperateName(operatorcode);
                     oxigenTransactionVO.setAmount(Double.valueOf(netAmount.getText().toString()));
                     oxigenTransactionVO.setAnonymousString(dataarray.toString());
 
-                    ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+                    ServiceTypeVO serviceTypeVO = new ServiceTypeVO();
                     serviceTypeVO.setServiceTypeId(ApplicationConstant.Water);
                     oxigenTransactionVO.setServiceType(serviceTypeVO);
 
-                    CustomerVO customerVO =new CustomerVO();
+                    CustomerVO customerVO = new CustomerVO();
                     customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(this)));
                     oxigenTransactionVO.setCustomer(customerVO);
 
-                    BillPayRequest.proceedRecharge(this,isFetchBill,oxigenTransactionVO);
+                    BillPayRequest.proceedRecharge(this, isFetchBill, oxigenTransactionVO);
                 }));
             }
-
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(Water.this, Content_Message.error_message, Toast.LENGTH_SHORT).show();
-            ExceptionsNotification.ExceptionHandling(Water.this , Utility.getStackTrace(e));
-           // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Water.this, Utility.getStackTrace(e));
+            // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
-    public void removefetchbilllayout(){
-        oxigenTransactionVOresp=new OxigenTransactionVO();
+    public void removefetchbilllayout() {
+        oxigenTransactionVOresp = new OxigenTransactionVO();
 
         //if fetch bill is true and fetch bill layout not = null
-
-        if(fetchbilllayout.getChildCount()>0) {
+        if (fetchbilllayout.getChildCount() > 0) {
             fetchbilllayout.removeAllViews();
             fetchbill.setVisibility(View.VISIBLE);
             fetchbillcard.setVisibility(View.GONE);
@@ -411,20 +387,21 @@ public class Water extends Base_Activity implements View.OnClickListener {
         }
     }
 
-    public void changeEdittextValue(EditText editText){
+    public void changeEdittextValue(EditText editText) {
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 removefetchbilllayout();
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                Log.w("onTextChanged",charSequence.toString());
+                Log.w("onTextChanged", charSequence.toString());
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
             }
         });
-
     }
 }

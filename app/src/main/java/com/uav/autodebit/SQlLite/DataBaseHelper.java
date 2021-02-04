@@ -12,9 +12,9 @@ import java.io.IOException;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
     //The Android's default system path of your application database.
-    private static String DB_PATH = "/data/data/com.uav.autodebit/databases/";
+    public static String DB_PATH = "/data/data/com.uav.autodebit/databases/";
 
-    private static String DB_NAME = "Autopedb";
+    public static String DB_NAME = "Autopedb";
 
 
 

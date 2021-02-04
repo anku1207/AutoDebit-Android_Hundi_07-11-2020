@@ -448,6 +448,7 @@ public class AddBeneficiaryActivity extends Base_Activity {
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = BeneficiaryBO.p2pInitiateAmount();
         params.put("volley", new Gson().toJson(beneAccVO));
+        Log.w("p2pInitiateAmount",new Gson().toJson(beneAccVO));
         connectionVO.setParams(params);
 
         VolleyUtils.makeJsonObjectRequest(this,connectionVO, new VolleyResponseListener() {

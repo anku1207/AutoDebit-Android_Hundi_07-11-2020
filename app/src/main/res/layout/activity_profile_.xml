@@ -19,7 +19,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/my_awesome_toolbar"
             android:layout_width="match_parent"
@@ -28,10 +27,7 @@
             app:contentInsetEnd="0dp"
             app:contentInsetLeft="0dp"
             app:contentInsetRight="0dp"
-            app:contentInsetStart="0dp"
-
-            >
-
+            app:contentInsetStart="0dp">
 
             <ImageView
                 android:id="@+id/back_activity_button"
@@ -43,10 +39,7 @@
                 android:scaleType="center"
                 android:src="@drawable/rof_backbutton"
                 android:textStyle="bold"
-                android:tint="@color/white"
-
-
-                />
+                android:tint="@color/white" />
 
             <LinearLayout
                 android:id="@+id/edit_layout"
@@ -55,7 +48,6 @@
                 android:layout_gravity="end|center_horizontal"
                 android:gravity="center"
                 android:orientation="vertical">
-
 
                 <ImageView
                     android:id="@+id/profileedit"
@@ -73,7 +65,6 @@
                     android:text="Edit"
                     android:textAlignment="center"
                     android:textColor="@color/white" />
-
             </LinearLayout>
 
             <TextView
@@ -87,10 +78,8 @@
                 android:text="MY PROFILE"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="20dp"
-                android:textStyle="bold"
-
-                />
+                android:textSize="20sp"
+                android:textStyle="bold" />
         </androidx.appcompat.widget.Toolbar>
 
         <ScrollView
@@ -100,8 +89,8 @@
             android:layout_weight="1"
             android:fillViewport="true"
             android:isScrollContainer="true"
+            android:scrollbars="none"
             android:visibility="gone">
-
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -112,7 +101,6 @@
                 android:layout_marginRight="10dp"
                 android:orientation="vertical"
                 tools:context=".androidFragment.Profile">
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -126,9 +114,7 @@
                     <RelativeLayout
                         android:id="@+id/rv"
                         android:layout_width="150dp"
-                        android:layout_height="150dp"
-
-                        >
+                        android:layout_height="150dp">
 
                         <!-- <ImageButton
                              android:id="@+id/imageView1"
@@ -162,9 +148,9 @@
                             android:id="@+id/imgFloating"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
                             android:layout_alignParentBottom="true"
-                            android:layout_marginRight="24dp"
+                            android:layout_marginEnd="24dp"
                             android:layout_marginBottom="5dp"
                             android:background="@drawable/circle_shape"
                             android:elevation="5dp"
@@ -173,10 +159,7 @@
                             android:src="@drawable/addicon"
                             android:tint="@color/appbar" />
                     </RelativeLayout>
-
-
                 </LinearLayout>
-
 
                 <TextView
                     android:id="@+id/usename"
@@ -186,11 +169,7 @@
                     android:fontFamily="@font/poppinsbold"
                     android:gravity="center"
                     android:text="customer name"
-                    android:textSize="15dp"
-
-                    >
-
-                </TextView>
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/pannumber"
@@ -200,10 +179,7 @@
                     android:fontFamily="@font/poppinsmedium"
                     android:gravity="center"
                     android:text="Pan number"
-                    android:textSize="15dp">
-
-                </TextView>
-
+                    android:textSize="15dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -215,9 +191,7 @@
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight=".1"
-
-                        />
+                        android:layout_weight=".1" />
 
                     <TextView
                         android:id="@+id/mobileno"
@@ -236,11 +210,8 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="15dp"
                         android:layout_weight=".1"
-
                         android:scaleType="fitEnd" />
-
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -252,10 +223,7 @@
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight=".1"
-
-
-                        />
+                        android:layout_weight=".1" />
 
                     <TextView
                         android:id="@+id/email"
@@ -273,11 +241,8 @@
                         android:layout_height="15dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="15dp"
-
                         android:layout_weight=".1"
                         android:scaleType="fitEnd" />
-
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -290,9 +255,7 @@
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight=".1"
-
-                        />
+                        android:layout_weight=".1" />
 
                     <TextView
                         android:id="@+id/address"
@@ -310,11 +273,8 @@
                         android:layout_height="15dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="15dp"
-
                         android:layout_weight=".1"
                         android:scaleType="fitEnd" />
-
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -327,9 +287,7 @@
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight=".1"
-
-                        />
+                        android:layout_weight=".1" />
 
                     <TextView
                         android:id="@+id/citystate"
@@ -357,9 +315,7 @@
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight=".1"
-
-                        />
+                        android:layout_weight=".1" />
 
                     <TextView
                         android:id="@+id/pincode"
@@ -375,8 +331,6 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight=".1" />
-
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -389,9 +343,7 @@
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight=".1"
-
-                        />
+                        android:layout_weight=".1" />
 
                     <TextView
                         android:id="@+id/creditscore"
@@ -414,10 +366,7 @@
                         android:scaleType="fitEnd"
                         android:src="@drawable/file_download"
                         android:tint="@drawable/creditreporttext" />
-
-
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -429,9 +378,7 @@
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight=".1"
-
-                        />
+                        android:layout_weight=".1" />
 
                     <TextView
                         android:id="@+id/changepass"
@@ -442,21 +389,17 @@
                         android:fontFamily="@font/poppinslight"
                         android:text="Change Password"
                         android:textColor="@drawable/text_change_color_app_color_black"
-
                         android:textSize="15dp" />
 
                     <ImageView
                         android:layout_width="1dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="15dp"
+                        android:layout_marginEnd="15dp"
                         android:layout_weight=".1"
                         android:scaleType="fitEnd"
                         android:tint="@drawable/creditreporttext" />
-
-
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -478,9 +421,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/poppinsbold"
                         android:text="Bank Account"
-                        android:textSize="15dp"
-
-                        />
+                        android:textSize="15sp" />
 
                     <ImageView
                         android:id="@+id/more_bankadd"
@@ -491,7 +432,6 @@
                         android:src="@drawable/addicon"
                         android:visibility="gone" />
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -510,13 +450,10 @@
                         android:id="@+id/bankrecycler"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-
-                        >
+                        android:layout_weight="1">
 
                     </androidx.recyclerview.widget.RecyclerView>
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -538,9 +475,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/poppinsbold"
                         android:text="Services Activated"
-                        android:textSize="15dp"
-
-                        />
+                        android:textSize="15sp" />
 
                     <LinearLayout
                         android:layout_width="1dp"
@@ -549,17 +484,14 @@
 
                         <ImageView
                             android:id="@+id/more_service"
-                            android:layout_width="20dp"
+                            android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight=".3"
                             android:scaleType="fitEnd"
                             android:src="@drawable/addicon"
                             android:visibility="gone" />
                     </LinearLayout>
-
-
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -592,13 +524,9 @@
                           />-->
 
                 </LinearLayout>
-
-
             </LinearLayout>
-
         </ScrollView>
     </LinearLayout>
-
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"

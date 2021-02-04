@@ -51,7 +51,7 @@ public class CustomPagerAdapter extends PagerAdapter {
     private View mCardFrontLayout;
     private View mCardBackLayout;
 
-    private HashMap<Integer , Boolean> clickViewpager = new HashMap<Integer, Boolean>();
+    private HashMap<Integer, Boolean> clickViewpager = new HashMap<Integer, Boolean>();
 
 
     public CustomPagerAdapter(List<DMRC_Customer_CardVO> models, Context context) {
@@ -77,53 +77,54 @@ public class CustomPagerAdapter extends PagerAdapter {
                 .inflate(R.layout.design_dmrc_card_list, container, false);
 
         LinearLayout mainlayout;
-        TextView name,cardnumber,status,issuedate,fcardstatus,track;
+        TextView name, cardnumber, status, issuedate, fcardstatus, track;
         ImageView imageview;
 
-        mainlayout=itemView.findViewById(R.id.mainlayout);
-        name=itemView.findViewById(R.id.name);
-        name.setText("  "+models.get(position).getCustomerName());
-        cardnumber=itemView.findViewById(R.id.cardnumber);
-        status=itemView.findViewById(R.id.status);
-        issuedate=itemView.findViewById(R.id.issuedate);
-        imageview=itemView.findViewById(R.id.imageview);
+        mainlayout = itemView.findViewById(R.id.mainlayout);
+        name = itemView.findViewById(R.id.name);
+        name.setText("  " + models.get(position).getCustomerName());
+        cardnumber = itemView.findViewById(R.id.cardnumber);
+        status = itemView.findViewById(R.id.status);
+        issuedate = itemView.findViewById(R.id.issuedate);
+        imageview = itemView.findViewById(R.id.imageview);
 
-        fcardstatus=itemView.findViewById(R.id.fcardstatus);
-        track=itemView.findViewById(R.id.track);
+        fcardstatus = itemView.findViewById(R.id.fcardstatus);
+        track = itemView.findViewById(R.id.track);
 
         //track text view set underline
         track.setPaintFlags(track.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
-        DMRC_Customer_CardVO pro=models.get(position);
-        name.setText("  "+pro.getCustomerName());
-        fcardstatus.setText("Status : "+pro.getDmrccardStaus().getStatusName());
+        DMRC_Customer_CardVO pro = models.get(position);
+        name.setText("  " + pro.getCustomerName());
+        fcardstatus.setText("Status : " + pro.getDmrccardStaus().getStatusName());
         cardnumber.setText(pro.getCardNo());
 
-        if(pro.getIssueDate()!=null){
-            Date date =new Date(pro.getIssueDate());
-            issuedate.setText("Issue Date \n"+new SimpleDateFormat("dd-MM-yyyy").format(date));
-        }else {
+        if (pro.getIssueDate() != null) {
+            Date date = new Date(pro.getIssueDate());
+            issuedate.setText("Issue Date \n" + new SimpleDateFormat("dd-MM-yyyy").format(date));
+        } else {
             issuedate.setText("");
         }
-        if(pro.getImage()!=null){
+        if (pro.getImage() != null) {
             Picasso.with(context)
                     .load(pro.getImage())
                     .fit()
                     .error(R.drawable.dmrc)
                     .placeholder(R.drawable.dmrc)
                     .into(imageview);
-        }else {
+        } else {
             imageview.setImageURI(null);
         }
-        clickViewpager.put(position,false);
+
+        clickViewpager.put(position, false);
 
         //if track is true then show track link in dmrc card (cancel /refund)
-        if(!pro.isTrackCard() && !pro.isCancelAndRefund()){
+        if (!pro.isTrackCard() && !pro.isCancelAndRefund()) {
             track.setVisibility(View.GONE);
-        }else if((pro.isTrackCard() && !pro.isCancelAndRefund()) || (pro.isTrackCard() && pro.isCancelAndRefund()) ) {
+        } else if ((pro.isTrackCard() && !pro.isCancelAndRefund()) || (pro.isTrackCard() && pro.isCancelAndRefund())) {
             track.setVisibility(View.VISIBLE);
             track.setText("Track");
-        }else if(!pro.isTrackCard() && pro.isCancelAndRefund()){
+        } else if (!pro.isTrackCard() && pro.isCancelAndRefund()) {
             track.setVisibility(View.VISIBLE);
             track.setText("Cancel / Refund");
         }
@@ -131,52 +132,53 @@ public class CustomPagerAdapter extends PagerAdapter {
         track.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(pro.getDmrcid()!=null){
-                    if((pro.isTrackCard() && !pro.isCancelAndRefund()) || (pro.isTrackCard() && pro.isCancelAndRefund()) ) {
-                        ((Activity)context).startActivity(new Intent(context, Track_Dmrc_Card.class).putExtra("cardId",pro.getDmrcid()+""));
-                    }else if(!pro.isTrackCard() && pro.isCancelAndRefund()){
+                if (pro.getDmrcid() != null) {
+                    if ((pro.isTrackCard() && !pro.isCancelAndRefund()) || (pro.isTrackCard() && pro.isCancelAndRefund())) {
+                        ((Activity) context).startActivity(new Intent(context, Track_Dmrc_Card.class).putExtra("cardId", pro.getDmrcid() + ""));
+                    } else if (!pro.isTrackCard() && pro.isCancelAndRefund()) {
                         Utility.confirmationDialogTextType(new DialogInterface() {
                             @Override
                             public void confirm(Dialog dialog) {
-                                Utility.dismissDialog(context,dialog);
-                                DMRCApi.dmrcCardCancelAndRefund(context,pro.getDmrcid(), Integer.parseInt(Session.getCustomerId(context)),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+                                Utility.dismissDialog(context, dialog);
+                                DMRCApi.dmrcCardCancelAndRefund(context, pro.getDmrcid(), Integer.parseInt(Session.getCustomerId(context)), new VolleyResponse((VolleyResponse.OnSuccess) (success) -> {
                                     DMRC_Customer_CardVO dmrc_customer_cardVO = (DMRC_Customer_CardVO) success;
                                     Activity activity = (Activity) context;
-                                    if(dmrc_customer_cardVO.isEventIs()){
-                                        MyDialog.addBankDetails(context,"Refund Details :- ",false,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
+                                    if (dmrc_customer_cardVO.isEventIs()) {
+                                        MyDialog.addBankDetails(context, "Refund Details :- ", false, new ConfirmationGetObjet((ConfirmationGetObjet.OnOk) (ok) -> {
                                             HashMap<String, Object> objectsHashMap = (HashMap<String, Object>) ok;
                                             Dialog dialog1 = (Dialog) objectsHashMap.get("dialog");
-                                            Utility.dismissDialog(context,dialog1);
+                                            Utility.dismissDialog(context, dialog1);
 
                                             RefundVO refundVO = (RefundVO) objectsHashMap.get("data");
                                             refundVO.setAnonymousInteger(pro.getDmrcid());
-                                            DMRCApi.saveNFTDetailsForDmrc(context,refundVO,new VolleyResponse((VolleyResponse.OnSuccess)(successNft)->{
-                                                DMRC_Customer_CardVO  successNft1 = (DMRC_Customer_CardVO) successNft;
-                                                if(activity.getClass().getSimpleName().equals("Dmrc_Card_Request")){
-                                                    Utility.showSingleButtonDialog(context,successNft1.getDialogTitle(),successNft1.getDialogMessage(),false);
-                                                    ((Dmrc_Card_Request)context).dmrc_customer_cardVO= successNft1;
-                                                    ((Dmrc_Card_Request)context).addRequestDmrcCardBanner(successNft1);
+                                            DMRCApi.saveNFTDetailsForDmrc(context, refundVO, new VolleyResponse((VolleyResponse.OnSuccess) (successNft) -> {
+                                                DMRC_Customer_CardVO successNft1 = (DMRC_Customer_CardVO) successNft;
+                                                if (activity.getClass().getSimpleName().equals("Dmrc_Card_Request")) {
+                                                    Utility.showSingleButtonDialog(context, successNft1.getDialogTitle(), successNft1.getDialogMessage(), false);
+                                                    ((Dmrc_Card_Request) context).dmrc_customer_cardVO = successNft1;
+                                                    ((Dmrc_Card_Request) context).addRequestDmrcCardBanner(successNft1);
                                                 }
                                             }));
                                         }));
-                                    }else {
-                                        if(activity.getClass().getSimpleName().equals("Dmrc_Card_Request")){
-                                            Utility.showSingleButtonDialog(context,dmrc_customer_cardVO.getDialogTitle(),dmrc_customer_cardVO.getDialogMessage(),false);
-                                            ((Dmrc_Card_Request)context).dmrc_customer_cardVO= dmrc_customer_cardVO;
-                                            ((Dmrc_Card_Request)context).addRequestDmrcCardBanner(dmrc_customer_cardVO);
+                                    } else {
+                                        if (activity.getClass().getSimpleName().equals("Dmrc_Card_Request")) {
+                                            Utility.showSingleButtonDialog(context, dmrc_customer_cardVO.getDialogTitle(), dmrc_customer_cardVO.getDialogMessage(), false);
+                                            ((Dmrc_Card_Request) context).dmrc_customer_cardVO = dmrc_customer_cardVO;
+                                            ((Dmrc_Card_Request) context).addRequestDmrcCardBanner(dmrc_customer_cardVO);
                                         }
                                     }
                                 }));
                             }
+
                             @Override
                             public void modify(Dialog dialog) {
-                                Utility.dismissDialog(context,dialog);
+                                Utility.dismissDialog(context, dialog);
                             }
-                        },context,null,"Your AutoPe DMRC card application will be cancelled.\n" +
-                                "Do you want to proceed?",null,new String[]{"Yes","No"});
+                        }, context, null, "Your AutoPe DMRC card application will be cancelled.\n" +
+                                "Do you want to proceed?", null, new String[]{"Yes", "No"});
                     }
-                }else {
-                    Utility.showSingleButtonDialogOld(context,"Alert", Content_Message.CONTACT_CUSTOMER_CARE,false);
+                } else {
+                    Utility.showSingleButtonDialogOld(context, "Alert", Content_Message.CONTACT_CUSTOMER_CARE, false);
                 }
             }
         });
@@ -185,7 +187,7 @@ public class CustomPagerAdapter extends PagerAdapter {
         mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utility.enableDisableView(view,false);
+                Utility.enableDisableView(view, false);
                 findViews(itemView);
                 loadAnimations();
                 changeCameraDistance();
@@ -195,19 +197,19 @@ public class CustomPagerAdapter extends PagerAdapter {
                     mSetRightOut.start();
                     mSetLeftIn.start();
                     track.setClickable(false);
-                    clickViewpager.put(position,true);
-                 } else {
+                    clickViewpager.put(position, true);
+                } else {
                     mSetRightOut.setTarget(itemView.findViewById(R.id.card_back));
                     mSetLeftIn.setTarget(itemView.findViewById(R.id.card_front));
                     mSetRightOut.start();
                     mSetLeftIn.start();
                     track.setClickable(true);
-                    clickViewpager.put(position,false);
+                    clickViewpager.put(position, false);
                 }
                 view.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Utility.enableDisableView(view,true);
+                        Utility.enableDisableView(view, true);
                     }
                 }, 2000);
             }
@@ -219,7 +221,7 @@ public class CustomPagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-       container.removeView((View)object);
+        container.removeView((View) object);
     }
 
 
@@ -234,6 +236,7 @@ public class CustomPagerAdapter extends PagerAdapter {
         mCardFrontLayout.setCameraDistance(scale);
         mCardBackLayout.setCameraDistance(scale);
     }
+
     private void loadAnimations() {
         mSetRightOut = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.out_animation);
         mSetLeftIn = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.in_animation);

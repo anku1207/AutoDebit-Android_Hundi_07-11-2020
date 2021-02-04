@@ -827,7 +827,7 @@ public class MyDialog {
         confirmAC=cusdialog.findViewById(R.id.confirmAC);
         ifscCode=cusdialog.findViewById(R.id.ifscCode);
         addBeneficiary=cusdialog.findViewById(R.id.addBeneficiary);
-        textHeading=cusdialog.findViewById(R.id.heading);
+        textHeading=cusdialog.findViewById(R.id.textHeading);
 
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();

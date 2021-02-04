@@ -1,8 +1,10 @@
 package com.uav.autodebit.Activity;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.uav.autodebit.SQlLite.DataBaseHelper;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.vo.BannerVO;
 import com.uav.autodebit.vo.CustomerVO;
@@ -12,6 +14,10 @@ import java.util.List;
 
 public class CustomerCacheUpdate {
     public static void updateCustomerCache(Context context , CustomerVO customerVO){
+        //3-02-2021 Manoj Shakya
+        if(Session.getCustomerIdOnExceptionTime(context)!=null && !Session.getCustomerIdOnExceptionTime(context).equals(customerVO.getCustomerId() != null ? customerVO.getCustomerId().toString() : null)){
+            context.deleteDatabase(DataBaseHelper.DB_PATH+DataBaseHelper.DB_NAME);
+        }
         Gson gson = new Gson();
         Session.set_Data_Sharedprefence(context,Session.CACHE_CUSTOMER,gson.toJson(customerVO));
         if(customerVO.getLocalCache()!=null){

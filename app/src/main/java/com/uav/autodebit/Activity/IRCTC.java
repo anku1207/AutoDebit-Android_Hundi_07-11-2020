@@ -335,7 +335,7 @@ public class IRCTC extends Base_Activity implements SwipeRefreshLayout.OnRefresh
                     String mandateId = data.getStringExtra("bankMandateId");
                     int actionId = data.getIntExtra("actionId", 0);
                     if (enachMandateStatus && actionId != 0 && mandateId != null) {
-                        Utility.showSingleButtonDialog(IRCTC.this,"Alert",data.getStringExtra("msg"),false);
+                        Utility.showSingleButtonDialog(IRCTC.this, "Alert", data.getStringExtra("msg"), false);
                         IRCTCApi.updateIRCTCBankMandateStatus(IRCTC.this, Integer.parseInt(mandateId), actionId, new VolleyResponse((VolleyResponse.OnSuccess) (success) -> {
                             getDetails();
                         }));
@@ -343,13 +343,13 @@ public class IRCTC extends Base_Activity implements SwipeRefreshLayout.OnRefresh
                         Utility.showSingleButtonDialog(IRCTC.this, "Alert", data.getStringExtra("msg"), false);
                     }
                 } else if (requestCode == ApplicationConstant.REQ_IRCTC_MANDATE_RESULT || requestCode == ApplicationConstant.REQ_IRCTC_MANDATE_FIRST_RESULT) {
-                    Utility.showSingleButtonDialog(IRCTC.this,"Alert",data.getStringExtra("msg"),false);
+                    Utility.showSingleButtonDialog(IRCTC.this, "Alert", data.getStringExtra("msg"), false);
                     getDetails();
                 }
             } else {
                 if (requestCode == ApplicationConstant.REQ_IRCTC_MANDATE_FIRST_RESULT) {
                     finish();
-                } else if (requestCode == ApplicationConstant.REQ_IRCTC_MANDATE_RESULT) {
+                } else if (requestCode == ApplicationConstant.REQ_IRCTC_MANDATE_RESULT || requestCode == ApplicationConstant.REQ_ENACH_MANDATE) {
                     getDetails();
                 }
             }

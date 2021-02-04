@@ -77,9 +77,6 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
         buttonLayout=findViewById(R.id.buttonLayout);
 
 
-
-
-
         navigation = findViewById(R.id.navigation);
         navigation.getMenu().setGroupCheckable(0, false, true);
         BottomNavigationView  navigation = (BottomNavigationView) findViewById(R.id.navigation);

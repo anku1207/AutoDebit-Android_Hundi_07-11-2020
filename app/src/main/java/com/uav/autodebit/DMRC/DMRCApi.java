@@ -76,7 +76,6 @@ public class DMRCApi {
                 }
             }
         });
-
     }
 
     public static void dmrcCardCancelAndRefund(Context context,int dmrcId , int customerId,VolleyResponse volleyResponse ){
@@ -150,8 +149,5 @@ public class DMRCApi {
                 }
             }
         });
-
-
-
     }
 }

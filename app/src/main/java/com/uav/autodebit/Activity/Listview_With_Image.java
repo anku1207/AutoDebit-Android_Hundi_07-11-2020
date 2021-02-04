@@ -38,15 +38,13 @@ public class Listview_With_Image extends Base_Activity {
 
     ImageView back_activity_button;
     ExpandableHeightListView listView;
-    String operatorcode,operatorname;
+    String operatorcode, operatorname;
 
     SearchView searchView;
     ImageTextAdapter myAdapter;
     UAVProgressDialog pd;
     ArrayList<DataAdapterVO> dataAdapterVOS;
     TextView title;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,15 +56,13 @@ public class Listview_With_Image extends Base_Activity {
         title = findViewById(R.id.title);
         searchView = findViewById(R.id.search_view);
 
-        pd=new UAVProgressDialog(this);
-        dataAdapterVOS=null;
+        pd = new UAVProgressDialog(this);
+        dataAdapterVOS = null;
 
         listView = findViewById(R.id.listview);
         listView.setExpanded(false);
 
-
         back_activity_button = findViewById(R.id.back_activity_button1);
-
         back_activity_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,7 +70,7 @@ public class Listview_With_Image extends Base_Activity {
             }
         });
 
-       setDateOnListview();
+        setDateOnListview();
 
         //  listView.setNestedScrollingEnabled(false);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -83,7 +79,7 @@ public class Listview_With_Image extends Base_Activity {
                 // String s=(String)parent.getItemAtPosition(position);
 
                 int i = position;
-                DataAdapterVO dataAdapterVO = (DataAdapterVO)myAdapter.dataList.get(position);
+                DataAdapterVO dataAdapterVO = (DataAdapterVO) myAdapter.dataList.get(position);
 
                 operatorcode = dataAdapterVO.getAssociatedValue();
                 operatorname = dataAdapterVO.getText();
@@ -95,11 +91,8 @@ public class Listview_With_Image extends Base_Activity {
 
                 setResult(RESULT_OK, intent);
                 finish();
-
-
             }
         });
-
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
@@ -119,28 +112,26 @@ public class Listview_With_Image extends Base_Activity {
                 myAdapter.getFilter().filter(newText.toString());
                 return false;
             }
-
-
         });
     }
 
-    private void setDateOnListview(){
-        BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,true, new BackgroundServiceInterface() {
+    private void setDateOnListview() {
+        BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd, true, new BackgroundServiceInterface() {
             @Override
             public void doInBackGround() {
 
                 Intent intent = getIntent();
                 Gson gson = new Gson();
 
-                Type type = new TypeToken<List<DataAdapterVO>>() {}.getType();
+                Type type = new TypeToken<List<DataAdapterVO>>() {
+                }.getType();
                 dataAdapterVOS = gson.fromJson(intent.getStringExtra("datalist"), type);
 
                 title.setText(intent.getStringExtra("title"));
                 myAdapter = new ImageTextAdapter(Listview_With_Image.this, dataAdapterVOS, R.layout.round_image_with_text);
                 listView.setAdapter(myAdapter);
-
-
             }
+
             @Override
             public void doPostExecute() {
 
@@ -148,5 +139,4 @@ public class Listview_With_Image extends Base_Activity {
         });
         backgroundAsyncService.execute();
     }
-
 }

@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -170,6 +171,75 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
         phone_pin_second_edittext.setOnFocusChangeListener(this);
         phone_pin_third_edittext.setOnFocusChangeListener(this);
         phone_pin_forth_edittext.setOnFocusChangeListener(this);
+
+
+
+
+        phone_pin_first_edittext.setOnKeyListener(new View.OnKeyListener(){
+            public boolean onKey(View v, int keyCode, KeyEvent event){
+                //check if the right key was pressed
+                if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (keyCode == KeyEvent.KEYCODE_DEL) {
+                        phone_pin_first_edittext.requestFocus();
+                    }else if(!phone_pin_first_edittext.getText().toString().equals("")){
+                       phone_pin_second_edittext.requestFocus();
+                    }
+                }
+                return false;
+            }
+        });
+        phone_pin_second_edittext.setOnKeyListener(new View.OnKeyListener(){
+            public boolean onKey(View v, int keyCode, KeyEvent event){
+                //check if the right key was pressed
+                if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (keyCode == KeyEvent.KEYCODE_DEL) {
+                        if(phone_pin_second_edittext.getText().toString().equals("")){
+                            phone_pin_first_edittext.requestFocus();
+                        }
+                    }else{
+                        if(!phone_pin_second_edittext.getText().toString().equals("")){
+                            phone_pin_third_edittext.requestFocus();
+                        }
+                    }
+                }
+                return false;
+            }
+        });
+
+        phone_pin_third_edittext.setOnKeyListener(new View.OnKeyListener(){
+            public boolean onKey(View v, int keyCode, KeyEvent event){
+                //check if the right key was pressed
+                if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (keyCode == KeyEvent.KEYCODE_DEL) {
+                        if(phone_pin_third_edittext.getText().toString().equals("")){
+                            phone_pin_second_edittext.requestFocus();
+                        }
+
+                    }else{
+                        if(!phone_pin_third_edittext.getText().toString().equals("")){
+                            phone_pin_forth_edittext.requestFocus();
+                        }
+                    }
+                }
+                return false;
+            }
+        });
+
+        phone_pin_forth_edittext.setOnKeyListener(new View.OnKeyListener(){
+            public boolean onKey(View v, int keyCode, KeyEvent event){
+                //check if the right key was pressed
+                if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (keyCode == KeyEvent.KEYCODE_DEL) {
+                        if(phone_pin_forth_edittext.getText().toString().equals("")){
+                            phone_pin_third_edittext.requestFocus();
+                        }
+                    }
+                }
+                return false;
+            }
+        });
+
+
     }
 
 
@@ -183,7 +253,6 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
 
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
     }
 
     @Override
@@ -228,7 +297,6 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
 
     @Override
     public void afterTextChanged(Editable editable) {
-
     }
 
 

@@ -30,16 +30,17 @@ public class ImageTextAdapter extends BaseAdapter implements Filterable {
     private ValueFilter filter;
 
 
-    public ImageTextAdapter(Context context, ArrayList<DataAdapterVO> dataList, int design){
-        this.context=context;
+    public ImageTextAdapter(Context context, ArrayList<DataAdapterVO> dataList, int design) {
+        this.context = context;
         this.dataList = dataList;
         this.design = design;
-        layoutInflater=((Activity)context).getLayoutInflater();
+        layoutInflater = ((Activity) context).getLayoutInflater();
         this.length = dataList.size();
 
-        this.originalList =dataList;
+        this.originalList = dataList;
 
     }
+
     @Override
     public int getCount() {
         return dataList.size();
@@ -58,27 +59,25 @@ public class ImageTextAdapter extends BaseAdapter implements Filterable {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        convertView = LayoutInflater.from(context).
-                    inflate(this.design, parent, false);
+        convertView = LayoutInflater.from(context).inflate(this.design, parent, false);
 
-        DataAdapterVO  dataAdapterVO = (DataAdapterVO)dataList.get(position);
+        DataAdapterVO dataAdapterVO = (DataAdapterVO) dataList.get(position);
 
-        if(dataAdapterVO!=null){
-            ImageView imageView=(ImageView)convertView.findViewById(R.id.listimage);
-            UAVTextView textView=(UAVTextView) convertView.findViewById(R.id.listtext);
+        if (dataAdapterVO != null) {
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.listimage);
+            UAVTextView textView = (UAVTextView) convertView.findViewById(R.id.listtext);
 
-            if(dataAdapterVO.getImagename()!=null && Utility.GetImage(context,dataAdapterVO.getImagename())!=null){
-                imageView.setImageDrawable(Utility.GetImage(context,dataAdapterVO.getImagename()));
-            }else if(dataAdapterVO.getImageUrl()!=null){
+            if (dataAdapterVO.getImagename() != null && Utility.GetImage(context, dataAdapterVO.getImagename()) != null) {
+                imageView.setImageDrawable(Utility.GetImage(context, dataAdapterVO.getImagename()));
+            } else if (dataAdapterVO.getImageUrl() != null) {
                 Picasso.with(context)
                         .load(dataAdapterVO.getImageUrl())
                         .placeholder(R.drawable.loadimage)
-                        .error(R.drawable.loadimage).into(imageView)
-                        ;
+                        .error(R.drawable.loadimage).into(imageView);
             }
-            textView.setTxtAssociatedValue( dataAdapterVO.getAssociatedValue());
+            textView.setTxtAssociatedValue(dataAdapterVO.getAssociatedValue());
 
-            textView.setText( dataAdapterVO.getText());
+            textView.setText(dataAdapterVO.getText());
         }
         return convertView;
     }
@@ -86,11 +85,11 @@ public class ImageTextAdapter extends BaseAdapter implements Filterable {
     @Override
     public Filter getFilter() {
 
-        if (filter == null){
-            filter  = new ValueFilter(originalList, new ValueFilter.searchInterface() {
+        if (filter == null) {
+            filter = new ValueFilter(originalList, new ValueFilter.searchInterface() {
                 @Override
                 public void newList(ArrayList<DataAdapterVO> dataAdapterVOS) {
-                    dataList=dataAdapterVOS;
+                    dataList = dataAdapterVOS;
                     notifyDataSetChanged();
                 }
             });

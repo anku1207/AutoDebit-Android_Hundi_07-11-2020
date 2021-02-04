@@ -94,8 +94,8 @@
         <item>More than 12 lacs</item>
     </string-array>
 
-    <string name="textone">Initiate ticket booking on <br />   www.irctc.co.in or IRCTC AIR</string>
+    <string name="textone">Initiate ticket booking on <br /> www.irctc.co.in </string>
     <string name="texttwo">Select IRCTC iPAY as the Payment option</string>
-    <string name="textthree">Select IRCTC iMUDRA and enter your mobile number</string>
+    <string name="textthree">Select AUTOPAY and enter your mobile number</string>
     <string name="textfour">Enter the Easy OTP and complete the ticket booking.</string>
 </resources>

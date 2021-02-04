@@ -51,8 +51,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Insurance_Renewal extends Base_Activity implements View.OnClickListener {
-
-
     EditText operator,netAmount;
     ImageView back_activity_button;
     String operatorcode,operatorname=null;
@@ -74,19 +72,17 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insurance__renewal);
-
         getSupportActionBar().hide();
+
         operatorListDate=null;
         pd=new UAVProgressDialog(this);
 
         back_activity_button=findViewById(R.id.back_activity_button1);
-
         operator=findViewById(R.id.operator);
         dynamicCardViewContainer =findViewById(R.id.dynamiccards);
         fetchbilllayout=findViewById(R.id.fetchbilllayout);
         fetchbillcard =findViewById(R.id.fetchbillcard);
         min_amt_layout=findViewById(R.id.min_amt_layout);
-
         fetchbill=findViewById(R.id.fetchbill);
         amountlayout =findViewById(R.id.amountlayout);
         netAmount=findViewById(R.id.amount);
@@ -95,15 +91,11 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
         minAmt=0;
         gson =new Gson();
 
-
         back_activity_button.setOnClickListener(this);
         fetchbill.setOnClickListener(this);
-
         fetchbill.setVisibility(View.GONE);
 
         operator.setClickable(false);
-
-
         operator.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -156,10 +148,8 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         try{
             operator.setEnabled(true);
-
             if(resultCode==RESULT_OK){
                 if(requestCode==100){
                     operatorname =data.getStringExtra("operatorname");
@@ -191,11 +181,9 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
                         min_amt_layout.setPadding(Utility.getPixelsFromDPs(this,15),Utility.getPixelsFromDPs(this,15),0,Utility.getPixelsFromDPs(this,15));
 
                         min_amt_layout.addView(DynamicLayout.billMinLayout(this,dataAdapterVO));
-
                     }else {
                         min_amt_layout.setVisibility(View.GONE);
                     }
-
                     //Remove dynamic cards from the layout and arraylist
                     if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
 
@@ -210,17 +198,12 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
                         for(int i=0; i<jsonArray.length(); i++){
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             OxigenQuestionsVO oxigenQuestionsVO = gson.fromJson(jsonObject.toString(), OxigenQuestionsVO.class);
-
                             CardView cardView = Utility.getCardViewStyle(this);
-
                             EditText et = Utility.getEditText(this);
-
                             //only policy number
                             if(Utility.containsIgnoreCase(oxigenQuestionsVO.getQuestionLabel(),"policy number")  ){
                                 et.setInputType(InputType.TYPE_CLASS_TEXT);
                             }
-
-
                             et.setId(View.generateViewId());
                             et.setHint(oxigenQuestionsVO.getQuestionLabel());
 
@@ -245,14 +228,11 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
                         Utility.showSingleButtonDialog(this,"Error !","Something went wrong, Please try again!",false);
                     }
                 }
-
             }
         }catch (Exception e){
             ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
         }
     }
-
-
 
     @Override
     public void onClick(View view) {
@@ -292,7 +272,6 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
                                 JSONObject jsonObject =dataArry.getJSONObject(i);
 
                                 LinearLayout et = new LinearLayout(new ContextThemeWrapper(this,R.style.confirmation_dialog_layout));
-
                                 et.setPadding(Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10));
 
                                 TextView text = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_filed));
@@ -302,7 +281,6 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
                                 text.setEllipsize(TextUtils.TruncateAt.END);
                                 text.setTypeface(typeface);
                                 text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
 
                                 TextView value = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_value));
                                 value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
@@ -384,7 +362,6 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
         oxigenTransactionVOresp=new OxigenTransactionVO();
 
         //if fetch bill is true and fetch bill layout not = null
-
         if(fetchbilllayout.getChildCount()>0) {
             fetchbilllayout.removeAllViews();
             fetchbill.setVisibility(View.VISIBLE);
@@ -408,6 +385,5 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
             public void afterTextChanged(Editable editable) {
             }
         });
-
     }
 }

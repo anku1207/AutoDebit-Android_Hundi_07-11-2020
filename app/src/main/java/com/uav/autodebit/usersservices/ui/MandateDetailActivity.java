@@ -1,4 +1,4 @@
-package com.uav.autodebit.usersservices.ui;
+    package com.uav.autodebit.usersservices.ui;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -88,11 +88,6 @@ public class MandateDetailActivity extends Base_Activity {
         tvHMandateTypeNumber=  findViewById(R.id.tvHMandateTypeNumber);
         tvMandateTypeNumber= findViewById(R.id.tvMandateTypeNumber);
 
-
-
-
-
-
         mandateRevokeServiceWiseRepository = new MandateRevokeServiceWiseRepository();
         csoId=getIntent().getIntExtra("csoid",0);
         serviceId=getIntent().getIntExtra("serviceTypeId",0);
@@ -118,7 +113,6 @@ public class MandateDetailActivity extends Base_Activity {
                     for(int i=0;i<jsonArray.length();i++){
                         JSONObject jsonObject =jsonArray.getJSONObject(i);
                         createDetailsList(linearLayout,jsonObject.getString("key"),jsonObject.getString("value"));
-
                     }
 
                     tvHMAndateType.setText(anonymous.getString("mandateType"));
@@ -317,28 +311,17 @@ public class MandateDetailActivity extends Base_Activity {
         }
     }
 
-
-
     public void saveMandateSwaping(Context context , int mandateId , int csoId ,int providerId ,boolean mandatetype){
        mandateRevokeServiceWiseRepository.saveMandateSwaping(context,mandateId,csoId,providerId,Integer.parseInt(Session.getCustomerId(context)),serviceId,mandatetype,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
-
            CustomerServiceOperatorVO customerServiceOperatorVO = (CustomerServiceOperatorVO) success;
            Intent intent = new Intent();
            intent.putExtra("objectResult",(Serializable)customerServiceOperatorVO);
            setResult(RESULT_OK,intent);
            finish();
-
        }));
-
-
-
-
     }
 
-
-
     private void createDetailsList(LinearLayout ll, String key, String v) {
-
         Typeface typeface = ResourcesCompat.getFont(MandateDetailActivity.this, R.font.poppinssemibold);
 
         LinearLayout et = new LinearLayout(new ContextThemeWrapper(MandateDetailActivity.this,R.style.confirmation_dialog_layout));
@@ -365,13 +348,9 @@ public class MandateDetailActivity extends Base_Activity {
         et.addView(text);
         et.addView(value);
         ll.addView(et);
-
     }
-
-
 
     public void onClickBackButton(View view) {
         finish();
     }
-
 }

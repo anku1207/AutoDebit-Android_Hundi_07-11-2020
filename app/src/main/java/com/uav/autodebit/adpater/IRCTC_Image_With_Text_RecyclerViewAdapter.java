@@ -19,8 +19,8 @@ import com.uav.autodebit.vo.DataAdapterVO;
 import java.util.HashMap;
 import java.util.List;
 
-public class IRCTC_Image_With_Text_RecyclerViewAdapter extends  RecyclerView.Adapter<IRCTC_Image_With_Text_RecyclerViewAdapter.ProdectViewHolder>{
-    Context mctx ;
+public class IRCTC_Image_With_Text_RecyclerViewAdapter extends RecyclerView.Adapter<IRCTC_Image_With_Text_RecyclerViewAdapter.ProdectViewHolder> {
+    Context mctx;
 
     List<DataAdapterVO> productslist;
     int Activityname;
@@ -28,39 +28,38 @@ public class IRCTC_Image_With_Text_RecyclerViewAdapter extends  RecyclerView.Ada
     HashMap<RadioButton, DataAdapterVO> buttonBooleanHashMap = new HashMap<RadioButton, DataAdapterVO>();
 
 
-
     public IRCTC_Image_With_Text_RecyclerViewAdapter(Context mctx, List<DataAdapterVO> productslist, int Activityname) {
         this.mctx = mctx;
         this.productslist = productslist;
-        this.Activityname=Activityname;
+        this.Activityname = Activityname;
     }
 
     @Override
     public IRCTC_Image_With_Text_RecyclerViewAdapter.ProdectViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater= LayoutInflater.from(mctx);
-        View  view = layoutInflater.inflate(Activityname, parent, false);
+        LayoutInflater layoutInflater = LayoutInflater.from(mctx);
+        View view = layoutInflater.inflate(Activityname, parent, false);
         return new IRCTC_Image_With_Text_RecyclerViewAdapter.ProdectViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(IRCTC_Image_With_Text_RecyclerViewAdapter.ProdectViewHolder holder, int position) {
 
-        final DataAdapterVO dataAdapterVO=productslist.get(position);
-        holder.image_View.setImageDrawable(Utility.GetImage(mctx,dataAdapterVO.getImagename()));
+        final DataAdapterVO dataAdapterVO = productslist.get(position);
+        holder.image_View.setImageDrawable(Utility.GetImage(mctx, dataAdapterVO.getImagename()));
         holder.type_Text.setText(dataAdapterVO.getText());
 
         holder.mail_Layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (RadioButton key: buttonBooleanHashMap.keySet()) {
+                for (RadioButton key : buttonBooleanHashMap.keySet()) {
                     key.setChecked(false);
                 }
-                buttonBooleanHashMap.put( holder.radio_Button,dataAdapterVO);
+                buttonBooleanHashMap.put(holder.radio_Button, dataAdapterVO);
                 holder.radio_Button.setChecked(true);
-                ((IRCTC)mctx).setAppendLayout(mctx,dataAdapterVO);
+                ((IRCTC) mctx).setAppendLayout(mctx, dataAdapterVO);
             }
         });
-        if(dataAdapterVO.isDefaultMandate()){
+        if (dataAdapterVO.isDefaultMandate()) {
             holder.mail_Layout.performClick();
         }
     }
@@ -69,22 +68,24 @@ public class IRCTC_Image_With_Text_RecyclerViewAdapter extends  RecyclerView.Ada
     public int getItemCount() {
         return productslist.size();
     }
-    public  class ProdectViewHolder extends RecyclerView.ViewHolder {
+
+    public class ProdectViewHolder extends RecyclerView.ViewHolder {
 
         RadioButton radio_Button;
         ImageView image_View;
         LinearLayout mail_Layout;
         TextView type_Text;
+
         public ProdectViewHolder(View itemView) {
             super(itemView);
-            image_View=(ImageView)itemView.findViewById(R.id.image_View);
-            radio_Button=itemView.findViewById(R.id.radio_Button);
-            mail_Layout=itemView.findViewById(R.id.mail_Layout);
-            type_Text=itemView.findViewById(R.id.type_Text);
+            image_View = (ImageView) itemView.findViewById(R.id.image_View);
+            radio_Button = itemView.findViewById(R.id.radio_Button);
+            mail_Layout = itemView.findViewById(R.id.mail_Layout);
+            type_Text = itemView.findViewById(R.id.type_Text);
 
             if (productslist.size() < 4) {
                 mail_Layout.setLayoutParams(new LinearLayout.LayoutParams(
-                        Utility.getDeviceWidth(mctx)/productslist.size(),
+                        Utility.getDeviceWidth(mctx) / productslist.size(),
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 ));
             }

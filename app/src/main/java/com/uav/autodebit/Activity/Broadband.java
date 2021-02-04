@@ -77,14 +77,11 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
         pd=new UAVProgressDialog(this);
 
         back_activity_button=findViewById(R.id.back_activity_button1);
-
-
         operator=findViewById(R.id.operator);
         dynamicCardViewContainer =findViewById(R.id.dynamiccards);
         fetchbilllayout=findViewById(R.id.fetchbilllayout);
         fetchbillcard =findViewById(R.id.fetchbillcard);
         min_amt_layout=findViewById(R.id.min_amt_layout);
-
         fetchbill=findViewById(R.id.fetchbill);
         amountlayout =findViewById(R.id.amountlayout);
         netAmount=findViewById(R.id.amount);
@@ -93,15 +90,11 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
         minAmt=0;
         gson =new Gson();
 
-
         back_activity_button.setOnClickListener(this);
         fetchbill.setOnClickListener(this);
-
         fetchbill.setVisibility(View.GONE);
 
         operator.setClickable(false);
-
-
         operator.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -111,12 +104,9 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
                     BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,true, new BackgroundServiceInterface() {
                         @Override
                         public void doInBackGround() {
-
                             Gson gson = new Gson();
                             operatorListDate = gson.toJson(getDataList());
-
                             //manoj
-
                         }
                         @Override
                         public void doPostExecute() {
@@ -124,8 +114,6 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
                             intent.putExtra("datalist", operatorListDate);
                             intent.putExtra("title","Operator");
                             startActivityForResult(intent,100);
-
-
                         }
                     });
                     backgroundAsyncService.execute();
@@ -161,12 +149,9 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         try{
             operator.setEnabled(true);
-
             if(resultCode==RESULT_OK){
-
                 if(requestCode==100){
                     operatorname =data.getStringExtra("operatorname");
                     operatorcode=data.getStringExtra("operator");
@@ -278,7 +263,6 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
                        try {
                            oxigenTransactionVOresp=(OxigenTransactionVO)s;
 
-
                            //hide fetch bill button and show amount layout and set amount value
                            fetchbill.setVisibility(View.GONE);
                            amountlayout.setVisibility(View.VISIBLE);
@@ -290,7 +274,6 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
                                JSONObject jsonObject =dataArry.getJSONObject(i);
 
                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(this,R.style.confirmation_dialog_layout));
-
                                et.setPadding(Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10));
 
                                TextView text = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_filed));
@@ -300,7 +283,6 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
                                text.setEllipsize(TextUtils.TruncateAt.END);
                                text.setTypeface(typeface);
                                text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
 
                                TextView value = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_value));
                                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
@@ -312,11 +294,9 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
                                et.addView(value);
                                fetchbilllayout.addView(et);
                            }
-
                            Button billPaybtn=Utility.getButton(this);
                            billPaybtn.setText("Proceed");
                            fetchbilllayout.addView(billPaybtn);
-
                            billPaybtn.setOnClickListener(new View.OnClickListener() {
                                @Override
                                public void onClick(View view) {
@@ -338,7 +318,6 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
                        amountlayout.setVisibility(View.GONE);
                        netAmount.setText(null);
                    }));
-
                }catch (Exception e){
                    ExceptionsNotification.ExceptionHandling(Broadband.this , Utility.getStackTrace(e));
                   // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
@@ -384,9 +363,7 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
 
     public void removefetchbilllayout(){
         oxigenTransactionVOresp=new OxigenTransactionVO();
-
         //if fetch bill is true and fetch bill layout not = null
-
         if(fetchbilllayout.getChildCount()>0) {
             fetchbilllayout.removeAllViews();
             fetchbill.setVisibility(View.VISIBLE);
@@ -410,6 +387,5 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
             public void afterTextChanged(Editable editable) {
             }
         });
-
     }
 }

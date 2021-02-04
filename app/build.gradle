@@ -113,6 +113,9 @@ dependencies {
     implementation 'com.android.installreferrer:installreferrer:2.2'
     //Google tag manager
     implementation 'com.google.android.gms:play-services-tagmanager:17.0.0'
+   // implementation 'com.google.android.gms.analytics.CampaignTrackingReceiver:17.0.0'
+
+
 
 //////////////////////
 
