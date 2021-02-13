@@ -29,7 +29,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
+import com.uav.autodebit.Interface.ServiceClick;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
@@ -42,6 +44,7 @@ import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.OxigenQuestionsVO;
@@ -294,54 +297,83 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                         Log.e("RESPONSE", s.toString());
                         try {
                             oxigenTransactionVOresp = (OxigenTransactionVO) s;
-                            //hide fetch bill button and show amount layout and set amount value
-                            fetchbill.setVisibility(View.GONE);
-                            amountlayout.setVisibility(View.VISIBLE);
-                            netAmount.setText(oxigenTransactionVOresp.getNetAmount().toString());
 
-                            JSONArray dataArry = new JSONArray(oxigenTransactionVOresp.getAnonymousString());
-                            Typeface typeface = ResourcesCompat.getFont(this, R.font.poppinssemibold);
-                            for (int i = 0; i < dataArry.length(); i++) {
-                                JSONObject jsonObject = dataArry.getJSONObject(i);
+                            if(oxigenTransactionVOresp.getStatusCode().equals("01")){
+                                fetchbill.setVisibility(View.GONE);
+                                amountlayout.setVisibility(View.GONE);
+                                BillPayRequest.billFetchFail(Mobile_Postpaid.this,oxigenTransactionVOresp,fetchbilllayout,fetchbillcard,new ServiceClick((ServiceClick.OnSuccess)(clickBtn)->{
+                                    try{
+                                        Utility.showSelectPaymentTypeDialog(this, "Payment Type", oxigenTransactionVOresp.getPaymentTypeObject(), new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (position) -> {
+                                            int selectPosition = Integer.parseInt(position);
+                                            OxigenTransactionVO btnClickResponse= (OxigenTransactionVO) clickBtn;
+                                            if (selectPosition == ApplicationConstant.BankMandatePayment) {
+                                                //bank
+                                                BillPayRequest.showBankMandateOrSiMandateInfo(this, btnClickResponse.getBankMandateHtml(), new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
+                                                    btnClickResponse.setProvider(BillPayRequest.getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
+                                                    BillPayRequest.BillFetchFailAddMandate(this, btnClickResponse);
+                                                }));
+                                            } else if (selectPosition == ApplicationConstant.SIMandatePayment) {
+                                                //si
+                                                BillPayRequest.showBankMandateOrSiMandateInfo(this, btnClickResponse.getSiMandateHtml(), new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
+                                                    btnClickResponse.setProvider(BillPayRequest.getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG));
+                                                    BillPayRequest.BillFetchFailAddMandate(this, btnClickResponse);
+                                                }));
+                                            }
+                                        }));
+                                    }catch (Exception e ){
+                                        ExceptionsNotification.ExceptionHandling(this, Utility.getStackTrace(e));
+                                    }
+                                }));
 
-                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(this, R.style.confirmation_dialog_layout));
+                            }else {
+                                //hide fetch bill button and show amount layout and set amount value
+                                fetchbill.setVisibility(View.GONE);
+                                amountlayout.setVisibility(View.VISIBLE);
+                                netAmount.setText(oxigenTransactionVOresp.getNetAmount().toString());
 
-                                et.setPadding(Utility.getPixelsFromDPs(this, 10), Utility.getPixelsFromDPs(this, 10), Utility.getPixelsFromDPs(this, 10), Utility.getPixelsFromDPs(this, 10));
+                                JSONArray dataArry = new JSONArray(oxigenTransactionVOresp.getAnonymousString());
+                                Typeface typeface = ResourcesCompat.getFont(this, R.font.poppinssemibold);
+                                for (int i = 0; i < dataArry.length(); i++) {
+                                    JSONObject jsonObject = dataArry.getJSONObject(i);
 
-                                TextView text = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_filed));
-                                text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
-                                text.setText(jsonObject.getString("key"));
-                                text.setMaxLines(1);
-                                text.setEllipsize(TextUtils.TruncateAt.END);
-                                text.setTypeface(typeface);
-                                text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                    LinearLayout et = new LinearLayout(new ContextThemeWrapper(this, R.style.confirmation_dialog_layout));
 
-                                TextView value = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_value));
-                                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
-                                value.setText(jsonObject.getString("value"));
-                                value.setTypeface(typeface);
-                                value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                    et.setPadding(Utility.getPixelsFromDPs(this, 10), Utility.getPixelsFromDPs(this, 10), Utility.getPixelsFromDPs(this, 10), Utility.getPixelsFromDPs(this, 10));
 
-                                et.addView(text);
-                                et.addView(value);
-                                fetchbilllayout.addView(et);
-                            }
+                                    TextView text = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_filed));
+                                    text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                                    text.setText(jsonObject.getString("key"));
+                                    text.setMaxLines(1);
+                                    text.setEllipsize(TextUtils.TruncateAt.END);
+                                    text.setTypeface(typeface);
+                                    text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-                            Button billPaybtn = Utility.getButton(this);
-                            billPaybtn.setText("Proceed");
-                            fetchbilllayout.addView(billPaybtn);
+                                    TextView value = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_value));
+                                    value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                                    value.setText(jsonObject.getString("value"));
+                                    value.setTypeface(typeface);
+                                    value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-                            billPaybtn.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    proceedBillPay();
+                                    et.addView(text);
+                                    et.addView(value);
+                                    fetchbilllayout.addView(et);
                                 }
-                            });
 
-                            Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
-                            fetchbillcard.startAnimation(animFadeIn);
-                            fetchbillcard.setVisibility(View.VISIBLE);
+                                Button billPaybtn = Utility.getButton(this);
+                                billPaybtn.setText("Proceed");
+                                fetchbilllayout.addView(billPaybtn);
 
+                                billPaybtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        proceedBillPay();
+                                    }
+                                });
+
+                                Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
+                                fetchbillcard.startAnimation(animFadeIn);
+                                fetchbillcard.setVisibility(View.VISIBLE);
+                            }
                         } catch (Exception e) {
                             ExceptionsNotification.ExceptionHandling(this, Utility.getStackTrace(e));
                             // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
@@ -352,7 +384,6 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                         amountlayout.setVisibility(View.GONE);
                         netAmount.setText(null);
                     }));
-
                 } catch (Exception e) {
                     ExceptionsNotification.ExceptionHandling(this, Utility.getStackTrace(e));
                 }

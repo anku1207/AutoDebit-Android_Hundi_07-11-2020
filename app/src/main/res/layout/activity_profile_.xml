@@ -90,7 +90,7 @@
             android:fillViewport="true"
             android:isScrollContainer="true"
             android:scrollbars="none"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -107,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="30dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="10dp"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal">
 
@@ -140,8 +140,8 @@
 
                         <com.uav.autodebit.override.CircularImageView
                             android:id="@+id/imageView1"
-                            android:layout_width="150dp"
-                            android:layout_height="150dp"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
                             android:scaleType="centerCrop" />
 
                         <ImageView
@@ -150,8 +150,8 @@
                             android:layout_height="20dp"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentBottom="true"
-                            android:layout_marginEnd="24dp"
-                            android:layout_marginBottom="5dp"
+                            android:layout_marginEnd="45dp"
+                            android:layout_marginBottom="35dp"
                             android:background="@drawable/circle_shape"
                             android:elevation="5dp"
                             android:padding="2dp"
@@ -169,6 +169,7 @@
                     android:fontFamily="@font/poppinsbold"
                     android:gravity="center"
                     android:text="customer name"
+                    android:textColor="@color/black"
                     android:textSize="15sp" />
 
                 <TextView
@@ -179,6 +180,7 @@
                     android:fontFamily="@font/poppinsmedium"
                     android:gravity="center"
                     android:text="Pan number"
+                    android:textColor="@color/black"
                     android:textSize="15dp" />
 
                 <LinearLayout
@@ -201,6 +203,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/poppinslight"
                         android:text=""
+                        android:textColor="@color/black"
                         android:textSize="15dp" />
 
                     <ImageView
@@ -233,6 +236,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/poppinslight"
                         android:text=""
+                        android:textColor="@color/black"
                         android:textSize="15dp" />
 
                     <ImageView
@@ -265,6 +269,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/poppinslight"
                         android:text=""
+                        android:textColor="@color/black"
                         android:textSize="15dp" />
 
                     <ImageView
@@ -297,6 +302,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/poppinslight"
                         android:text=""
+                        android:textColor="@color/black"
                         android:textSize="15dp" />
 
                     <ImageView
@@ -325,6 +331,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/poppinslight"
                         android:text=""
+                        android:textColor="@color/black"
                         android:textSize="15dp" />
 
                     <ImageView
@@ -421,6 +428,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/poppinsbold"
                         android:text="Bank Account"
+                        android:textColor="@color/black"
                         android:textSize="15sp" />
 
                     <ImageView
@@ -475,6 +483,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/poppinsbold"
                         android:text="Services Activated"
+                        android:textColor="@color/black"
                         android:textSize="15sp" />
 
                     <LinearLayout
@@ -536,7 +545,7 @@
         android:layout_marginEnd="0dp"
         android:background="?android:attr/windowBackground"
         app:itemIconTint="@color/bottom_nav_color"
-        app:itemTextColor="@color/defaultTextColor"
+        app:itemTextColor="@color/bottom_nav_color"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

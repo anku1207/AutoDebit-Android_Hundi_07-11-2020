@@ -21,7 +21,6 @@ public class ConnectionVO implements Serializable {
     private Boolean isLoaderAvoided;
 
     public ConnectionVO(){
-
     }
 
     public String getMethodName() {

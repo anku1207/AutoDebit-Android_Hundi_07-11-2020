@@ -396,7 +396,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 var3.setCanceledOnTouchOutside(false);
                 var3.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
-
                 TextView name = var3.findViewById(R.id.name);
                 TextView mobile = var3.findViewById(R.id.mobile);
                 TextView address = var3.findViewById(R.id.address);
@@ -404,11 +403,9 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 Button modify = var3.findViewById(R.id.modify);
                 Button next = var3.findViewById(R.id.next);
 
-
                 name.setText("  " + customername.getText().toString());
                 mobile.setText("  " + mobilenumber.getText().toString());
                 address.setText("  " + permanentaddress.getText().toString());
-
 
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                 lp.copyFrom(var3.getWindow().getAttributes());
@@ -935,17 +932,17 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                             bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, dmrc_customer_cardVO.getDmrcBankMandate().getAccountHolderName());
                             firebaseAnalytics.logEvent(btnName, bundle);
                         } else if (dmrc_customer_cardVO.getDmrcSiMandate() != null) {
-                            String btnName = "CreditCard";
+                            String btnNameC = "CreditCard";
                             Bundle bundle = new Bundle();
                             bundle.putString(FirebaseAnalytics.Param.ITEM_ID, dmrc_customer_cardVO.getDmrcBankMandate().getProviderTokenId());
                             bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, dmrc_customer_cardVO.getDmrcBankMandate().getAccountHolderName());
-                            firebaseAnalytics.logEvent(btnName, bundle);
+                            firebaseAnalytics.logEvent(btnNameC, bundle);
                         } else if (dmrc_customer_cardVO.getDmrcUpiMandate() != null) {
-                            String btnName = "Upi";
+                            String btnNameU = "Upi";
                             Bundle bundle = new Bundle();
                             bundle.putString(FirebaseAnalytics.Param.ITEM_ID, dmrc_customer_cardVO.getDmrcBankMandate().getProviderTokenId());
                             bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, dmrc_customer_cardVO.getDmrcBankMandate().getAccountHolderName());
-                            firebaseAnalytics.logEvent(btnName, bundle);
+                            firebaseAnalytics.logEvent(btnNameU, bundle);
                         }
                         ///////////////////////////////
 

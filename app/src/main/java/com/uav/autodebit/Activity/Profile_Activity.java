@@ -788,7 +788,8 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
     }
 
     public void bankDetails(int customerAuthId) {
-        startActivity(new Intent(Profile_Activity.this, Confirm_Bank_Details.class).putExtra("bankid", customerAuthId));
+     //   startActivity(new Intent(Profile_Activity.this, Confirm_Bank_Details.class).putExtra("bankid", customerAuthId));
+        startActivity(new Intent(Profile_Activity.this, MandateDetailsActivity.class).putExtra("bankid", customerAuthId));
     }
 
     public void showBankDetailsDialog(CustomerAuthServiceVO customerAuthServiceVO) throws Exception {

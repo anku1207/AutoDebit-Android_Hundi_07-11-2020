@@ -10,73 +10,74 @@ import java.util.regex.Pattern;
 
 public class ApplicationConstant {
 
-    public static final String MOBILENO_VALIDATION="{\"pattern\":\"^[6-9][0-9]{9}$\", \"msg\":  \"Mobile No. accepts only  numbers and length should be 10 (first number to start with [6-9])}\"}";
+    public static final String MOBILENO_VALIDATION = "{\"pattern\":\"^[6-9][0-9]{9}$\", \"msg\":  \"Mobile No. accepts only  numbers and length should be 10 (first number to start with [6-9])}\"}";
     public static final String SOMETHINGWRONG = "Something went wrong. Please Try Again";
-    public static final String EMAIL_VALIDATION="{\"pattern\":\"^[a-zA-Z0-9][a-zA-Z0-9._-]+@[a-zA-Z0-9][a-zA-Z0-9.-]+.[a-zA-Z]{2,6}$\",  \"msg\": \"Enter a valid email address\"}";
+    public static final String EMAIL_VALIDATION = "{\"pattern\":\"^[a-zA-Z0-9][a-zA-Z0-9._-]+@[a-zA-Z0-9][a-zA-Z0-9.-]+.[a-zA-Z]{2,6}$\",  \"msg\": \"Enter a valid email address\"}";
 
     public static final Pattern pancard = Pattern.compile("[A-Z]{5}[0-9]{4}[A-Z]{1}");
 
-    public final static String AUTHKEY= "G4s4cCMx2aM7lky1";
+    public final static String AUTHKEY = "G4s4cCMx2aM7lky1";
 
-    public final static  boolean IS_PRODUCTION_ENVIRONMENT= false;
+    public final static boolean IS_PRODUCTION_ENVIRONMENT = false;
 
-    public static int MobilePrepaid=5,MobilePostpaid=14,D2h=17,Dmrc=2,Electricity=10,Landline=7,Water=12,Broadband=8,PNG=6,Gas=11,DTH=13,DISHTV=18,INSURANCE_RENEWAL=19,LOAN_REPAYMENT=20,FASTAG=21,CABLE_TV=22 ,Uber=16,IRCTC=1
-    ,PreAndPost=23,GasDual=24,MoneyTransfer=25;
+    public static int MobilePrepaid = 5, MobilePostpaid = 14, D2h = 17, Dmrc = 2, Electricity = 10, Landline = 7, Water = 12, Broadband = 8, PNG = 6, Gas = 11, DTH = 13, DISHTV = 18, INSURANCE_RENEWAL = 19, LOAN_REPAYMENT = 20, FASTAG = 21, CABLE_TV = 22, Uber = 16, IRCTC = 1, PreAndPost = 23, GasDual = 24, MoneyTransfer = 25;
 
-    public static int  REQ_ENACH_MANDATE=1003,REQ_ALLSERVICE=1004,REQ_SI_MANDATE=1005,REQ_MANDATE_FOR_FIRSTTIME_RECHARGE=1006,REQ_POPAPACTIVITYRESULT=1007,
-            REQ_MANDATE_FOR_BILL_FETCH_ERROR=1008,REQ_SI_FOR_BILL_FETCH_ERROR=1009,REQ_UPI_FOR_MANDATE=1010,REQ_DMRC_MANDATE_SI_BUCKET=1011,
-            REQ_MANDATE_DETAIL_ACTIVITY_RESULT=1012,REQ_CHANGE_ADDRESS_OTP_VERIFY_RESULT=1013,REQ_MANDATE_REVOKE_SERVICE_WISE_RESULT=1014,
-            REQ_AUTOPE_PAYMENT_RESULT=1015,REQ_DEFAULT_MANDATE_CHANGE=1016,REQ_IRCTC_MANDATE_RESULT=1017,REQ_IRCTC_MANDATE_FIRST_RESULT=1018,REQ_DIRECT_PAYMENT_RESULT=1019;
-    public static int  REQ_CAMERA_PERMISSION=2001, REQ_DOWNLOAD_PERMISSION=2002,REQ_READ_SMS_PERMISSION=2003,REQ_READ_CONTACT_PERMISSION=2004;
-    public static int  REQ_Code_D2H=3001;
-    public static int  REQ_MAKE_CALL_PERMISSION=2005;
+    public static int REQ_ENACH_MANDATE = 1003, REQ_ALLSERVICE = 1004, REQ_SI_MANDATE = 1005, REQ_MANDATE_FOR_FIRSTTIME_RECHARGE = 1006, REQ_POPAPACTIVITYRESULT = 1007,
+            REQ_MANDATE_FOR_BILL_FETCH_ERROR = 1008, REQ_SI_FOR_BILL_FETCH_ERROR = 1009, REQ_UPI_FOR_MANDATE = 1010, REQ_DMRC_MANDATE_SI_BUCKET = 1011,
+            REQ_MANDATE_DETAIL_ACTIVITY_RESULT = 1012, REQ_CHANGE_ADDRESS_OTP_VERIFY_RESULT = 1013, REQ_MANDATE_REVOKE_SERVICE_WISE_RESULT = 1014,
+            REQ_AUTOPE_PAYMENT_RESULT = 1015, REQ_DEFAULT_MANDATE_CHANGE = 1016, REQ_IRCTC_MANDATE_RESULT = 1017, REQ_IRCTC_MANDATE_FIRST_RESULT = 1018, REQ_DIRECT_PAYMENT_RESULT = 1019;
+    public static int REQ_CAMERA_PERMISSION = 2001, REQ_DOWNLOAD_PERMISSION = 2002, REQ_READ_SMS_PERMISSION = 2003, REQ_READ_CONTACT_PERMISSION = 2004;
+    public static int REQ_Code_D2H = 3001;
+    public static int REQ_MAKE_CALL_PERMISSION = 2005;
 
-    public static String PG_MANDATE="mandate";
-    public static String PG_PAYMENT="payment";
-    public static String PG_MANDATE_AND_RECHARGE="mandateandrecharge";
-    public static String NOTIFICATION_ACTION="notification_act";
+    public static String PG_MANDATE = "mandate";
+    public static String PG_PAYMENT = "payment";
+    public static String PG_MANDATE_AND_RECHARGE = "mandateandrecharge";
+    public static String NOTIFICATION_ACTION = "notification_act";
 
-    public final static  String SI_SERVICE="autopepg";
+    public final static String SI_SERVICE = "autopepg";
     //private final static String URL_ADDRESS = getServerAddress();
     private final static String HTTPURL = getServerAddress();
 
-    public  static final int SOCKET_TIMEOUT_MILLISEC = 60000;
+    public static final int SOCKET_TIMEOUT_MILLISEC = 60000;
     public static final String SHAREDPREFENCE = "hundi";
 
-    public static final String STATUS_SIGNUP_MOBILE_OTP_VERIFY="SIGNUP_MOBILE_OTP_VERIFIED";
-    public static final String STATUS_SIGNUP_EMAIL_OTP_VERIFY="SIGNUP_EMAIL_OTP_VERIFIED";
-    public static final String STATUS_SIGNUP_ACTIVE="Active";
-    public static final String STATUS_PAN_VERIFIED="Pan_Verified";
+    public static final String STATUS_SIGNUP_MOBILE_OTP_VERIFY = "SIGNUP_MOBILE_OTP_VERIFIED";
+    public static final String STATUS_SIGNUP_EMAIL_OTP_VERIFY = "SIGNUP_EMAIL_OTP_VERIFIED";
+    public static final String STATUS_SIGNUP_ACTIVE = "Active";
+    public static final String STATUS_PAN_VERIFIED = "Pan_Verified";
 
     public static final String INTENT_EXTRA_CONNECTION = "connection";
 
-    public static final double SI_UPI_MANDATE_AMOUNT=1.00;
+    public static final double SI_UPI_MANDATE_AMOUNT = 1.00;
 
-    public static Integer BankMandatePayment=1,SIMandatePayment=2,UPIMandatePayment=3;
-    public static String DIRECT_PAYMENT_TITLE="Payment";
+    public static Integer BankMandatePayment = 1, SIMandatePayment = 2, UPIMandatePayment = 3;
+    public static String DIRECT_PAYMENT_TITLE = "Payment";
 
 
-    public static final String CACHE_PORT="port";
-    public static final String CACHE_IPADDRESS="ipaddress";
-    public static final String CACHE_PROTOCOL="protocol";
+    public static final String CACHE_PORT = "port";
+    public static final String CACHE_IPADDRESS = "ipaddress";
+    public static final String CACHE_PROTOCOL = "protocol";
 
-    public  static String getHttpURL(Context context){
+    public static String getHttpURL(Context context) {
         SharedPreferences sharedPreferences;
-        sharedPreferences = context.getSharedPreferences(ApplicationConstant.SHAREDPREFENCE,  Context.MODE_PRIVATE);
-        String protocol= (String)sharedPreferences.getString( ApplicationConstant.CACHE_PROTOCOL,null);
-        String ipAddress= (String)sharedPreferences.getString( ApplicationConstant.CACHE_IPADDRESS,null);
-        String port= (String)sharedPreferences.getString( ApplicationConstant.CACHE_PORT,null);
+        sharedPreferences = context.getSharedPreferences(ApplicationConstant.SHAREDPREFENCE, Context.MODE_PRIVATE);
+        String protocol = (String) sharedPreferences.getString(ApplicationConstant.CACHE_PROTOCOL, null);
+        String ipAddress = (String) sharedPreferences.getString(ApplicationConstant.CACHE_IPADDRESS, null);
+        String port = (String) sharedPreferences.getString(ApplicationConstant.CACHE_PORT, null);
 
-        if(protocol!=null && ipAddress != null && port!=null){
-            return protocol+"://"+ipAddress + ":" + port + "/rof/rest/stateless/";
-        }else{
+        if (protocol != null && ipAddress != null && port != null) {
+            return protocol + "://" + ipAddress + ":" + port + "/rof/rest/stateless/";
+        } else {
             return HTTPURL;
         }
     }
-    public static String getServerAddress(){
-        if(IS_PRODUCTION_ENVIRONMENT){
+
+    public static String getServerAddress() {
+        if (IS_PRODUCTION_ENVIRONMENT) {
             return "http://app.autope.in/hundi/rest/stateless";
             //return "http://164.52.192.45";
+
         }else{
             return  "http://205.147.103.18:8080/hundi/rest/stateless" ;
            //  return "http://192.168.1.159:8080/hundi/rest/stateless";
@@ -89,32 +90,32 @@ public class ApplicationConstant {
     }
 
 
-    public static String getTrackingUrl(){
+    public static String getTrackingUrl() {
         String url;
-        if(IS_PRODUCTION_ENVIRONMENT){
-            url ="https://www.autope.in/tracking.php";
-        }else {
-            url ="http://test.autodebit.in/tracking.php";
+        if (IS_PRODUCTION_ENVIRONMENT) {
+            url = "https://www.autope.in/tracking.php";
+        } else {
+            url = "http://test.autodebit.in/tracking.php";
         }
         return url;
     }
 
-    public static String getTermAndConditionUrl(){
+    public static String getTermAndConditionUrl() {
         String url;
-        if(IS_PRODUCTION_ENVIRONMENT){
-            url ="https://www.autope.in/appHtml/terms-and-conditions.html";
-        }else {
-            url ="http://test.autodebit.in/appHtml/terms-and-conditions.html";
+        if (IS_PRODUCTION_ENVIRONMENT) {
+            url = "https://www.autope.in/appHtml/terms-and-conditions.html";
+        } else {
+            url = "http://test.autodebit.in/appHtml/terms-and-conditions.html";
         }
         return url;
     }
 
-    public static String getFaqUrl(){
+    public static String getFaqUrl() {
         String url;
-        if(IS_PRODUCTION_ENVIRONMENT){
-            url ="https://www.autope.in/appHtml/faq.html";
-        }else {
-            url ="http://test.autodebit.in/appHtml/faq.html";
+        if (IS_PRODUCTION_ENVIRONMENT) {
+            url = "https://www.autope.in/appHtml/faq.html";
+        } else {
+            url = "http://test.autodebit.in/appHtml/faq.html";
         }
         return url;
     }

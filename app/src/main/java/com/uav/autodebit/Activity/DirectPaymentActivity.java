@@ -39,9 +39,11 @@ import com.uav.autodebit.BO.PaymentGateWayBO;
 import com.uav.autodebit.BO.SiBO;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
+import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.Session;
+import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
@@ -305,13 +307,23 @@ public class DirectPaymentActivity extends AppCompatActivity implements View.OnC
     }
 
     public void backBtnFun(){
-        if (doubleBackpress){
-            super.onBackPressed();
-        }else {
-            Toast.makeText(this, getString(R.string.backpress_to_exit), Toast.LENGTH_SHORT).show();
-            doubleBackpress = true;
-            new Handler().postDelayed(() -> doubleBackpress = false, 2000);
-        }
+        cancelTransaction();
+    }
+
+
+    private void cancelTransaction() {
+        String[] buttons = {"Yes","No"};
+        Utility.confirmationDialogTextType(new DialogInterface() {
+            @Override
+            public void confirm(Dialog dialog) {
+                Utility.dismissDialog(DirectPaymentActivity.this, dialog);
+                finish();
+            }
+            @Override
+            public void modify(Dialog dialog) {
+                Utility.dismissDialog(DirectPaymentActivity.this, dialog);
+            }
+        },DirectPaymentActivity.this,null, Content_Message.CANCEL_TRANSACTION,"Cancel Transaction",buttons);
     }
 
     @Override

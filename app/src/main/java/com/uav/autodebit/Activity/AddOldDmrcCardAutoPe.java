@@ -962,6 +962,7 @@ public class AddOldDmrcCardAutoPe extends Base_Activity implements View.OnClickL
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         permissionUtils.onRequestPermissionsResult(requestCode,permissions,grantResults);
     }
+
     @Override
     public void PermissionGranted(int request_code) {
         if(request_code==ApplicationConstant.REQ_CAMERA_PERMISSION){

@@ -113,7 +113,6 @@ public class User_Registration extends Base_Activity {
                 }
 
                 if(!useremail.getText().toString().trim().equals("") && Utility.validatePattern(useremail.getText().toString().trim(), ApplicationConstant.EMAIL_VALIDATION)!=null){
-
                     useremail.setError(Utility.validatePattern(useremail.getText().toString().trim(),ApplicationConstant.EMAIL_VALIDATION));
                     inputvalid=false;
                 }
@@ -133,18 +132,9 @@ public class User_Registration extends Base_Activity {
 
                 verifydialog();
                 //signuser();
-
-
             }
         });
     }
-
-
-
-
-
-
-
 
     public  void confirmationDialog(com.uav.autodebit.util.DialogInterface mcxtinter, Context context , JSONArray jsonArray , String Msg , String title, int[] textviewsize, String... buttons){
         String leftButton= (buttons.length==0 ?"Modify":buttons[0]);//(leftButton ==null?"Modify": leftButton);
@@ -162,7 +152,6 @@ public class User_Registration extends Base_Activity {
             var3.setCanceledOnTouchOutside(false);
             var3.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
-
             LinearLayout mainlayout =var3.findViewById(R.id.mainlayout);
             TextView dialog_title=var3.findViewById(R.id.dialog_title);
             Button modify=var3.findViewById(R.id.modify);
@@ -175,7 +164,6 @@ public class User_Registration extends Base_Activity {
             dialog_title.setText(title);
 
             Typeface typeface = ResourcesCompat.getFont(context, R.font.poppinssemibold);
-
 
             if(Msg==null){
                 for(int i=0;i<jsonArray.length();i++){
@@ -198,8 +186,6 @@ public class User_Registration extends Base_Activity {
                     text1.setText(" : ");
                     text1.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
 
-
-
                     TextView value = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_value));
                     value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,(float) valueTextView));
                     value.setTextColor(User_Registration.this.getResources().getColor(R.color.defaultTextColor));
@@ -218,13 +204,9 @@ public class User_Registration extends Base_Activity {
                 text.setText(Msg);
                 text.setTypeface(typeface);
 
-
                 et.addView(text);
                 mainlayout.addView(et);
             }
-
-
-
 
             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
             lp.copyFrom(var3.getWindow().getAttributes());
@@ -248,7 +230,6 @@ public class User_Registration extends Base_Activity {
                 @Override
                 public void onClick(View view) {
                     dialogInterface.confirm(var3);
-
                 }
             });
 
@@ -262,9 +243,7 @@ public class User_Registration extends Base_Activity {
 
 
     public void verifydialog(){
-
         try{
-
             JSONArray jsonArray=new JSONArray();
             JSONObject object =new JSONObject();
             object.put("key","Name");
@@ -286,7 +265,6 @@ public class User_Registration extends Base_Activity {
                 @Override
                 public void confirm(Dialog dialog) {
                     Utility.dismissDialog(User_Registration.this, dialog);
-
                     try {
                         signuser();
                     }catch (Exception e){
@@ -304,12 +282,7 @@ public class User_Registration extends Base_Activity {
         }
     }
 
-
-
-
     public  void signuser(){
-
-
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = SignUpBO.signuser();
 
@@ -329,7 +302,6 @@ public class User_Registration extends Base_Activity {
 
         Log.d("customersign",json);
 
-
         VolleyUtils.makeJsonObjectRequest(this,connectionVO, new VolleyResponseListener() {
             @Override
             public void onError(String message) {
@@ -340,8 +312,6 @@ public class User_Registration extends Base_Activity {
 
                 Gson gson = new Gson();
                 CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
-
-
                 Log.w("responsesignup",response.toString());
                 if(customerVO.getStatusCode().equals("400")){
                     ArrayList error = (ArrayList) customerVO.getErrorMsgs();
@@ -408,7 +378,6 @@ public class User_Registration extends Base_Activity {
                             ExceptionsNotification.ExceptionHandling(User_Registration.this ,  Utility.getStackTrace(e), "0");
                         }
 
-
                         Intent intent =new Intent(User_Registration.this,Password.class);
                         intent.putExtra("customerid",data.getStringExtra("value"));
                         intent.putExtra("methodname","setCustomerPassword");
@@ -422,5 +391,4 @@ public class User_Registration extends Base_Activity {
             }
         }
     }
-
 }

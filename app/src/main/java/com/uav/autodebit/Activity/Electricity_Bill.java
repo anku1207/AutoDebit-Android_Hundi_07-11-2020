@@ -26,7 +26,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
+import com.uav.autodebit.Interface.ServiceClick;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
@@ -37,6 +39,7 @@ import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.OxigenQuestionsVO;
@@ -270,52 +273,81 @@ public class Electricity_Bill extends Base_Activity implements View.OnClickListe
                     BillPayRequest.proceedFetchBill(oxigenTransactionVO, Electricity_Bill.this, new VolleyResponse((VolleyResponse.OnSuccess) (s) -> {
                         try {
                             oxigenTransactionVOresp = (OxigenTransactionVO) s;
-                            //hide fetch bill button and show amount layout and set amount value
-                            fetchbill.setVisibility(View.GONE);
-                            amountlayout.setVisibility(View.VISIBLE);
-                            netAmount.setText(oxigenTransactionVOresp.getNetAmount().toString());
+                            if(oxigenTransactionVOresp.getStatusCode().equals("01")){
+                                fetchbill.setVisibility(View.GONE);
+                                amountlayout.setVisibility(View.GONE);
+                                BillPayRequest.billFetchFail(this,oxigenTransactionVOresp,fetchbilllayout,fetchbillcard,new ServiceClick((ServiceClick.OnSuccess)(clickBtn)->{
+                                    try{
+                                        Utility.showSelectPaymentTypeDialog(this, "Payment Type", oxigenTransactionVOresp.getPaymentTypeObject(), new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (position) -> {
+                                            int selectPosition = Integer.parseInt(position);
+                                            OxigenTransactionVO btnClickResponse= (OxigenTransactionVO) clickBtn;
+                                            if (selectPosition == ApplicationConstant.BankMandatePayment) {
+                                                //bank
+                                                BillPayRequest.showBankMandateOrSiMandateInfo(this, btnClickResponse.getBankMandateHtml(), new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
+                                                    btnClickResponse.setProvider(BillPayRequest.getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
+                                                    BillPayRequest.BillFetchFailAddMandate(this, btnClickResponse);
+                                                }));
+                                            } else if (selectPosition == ApplicationConstant.SIMandatePayment) {
+                                                //si
+                                                BillPayRequest.showBankMandateOrSiMandateInfo(this, btnClickResponse.getSiMandateHtml(), new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
+                                                    btnClickResponse.setProvider(BillPayRequest.getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG));
+                                                    BillPayRequest.BillFetchFailAddMandate(this, btnClickResponse);
+                                                }));
+                                            }
+                                        }));
+                                    }catch (Exception e ){
+                                        ExceptionsNotification.ExceptionHandling(this, Utility.getStackTrace(e));
+                                    }
+                                }));
 
-                            JSONArray dataArry = new JSONArray(oxigenTransactionVOresp.getAnonymousString());
-                            Typeface typeface = ResourcesCompat.getFont(Electricity_Bill.this, R.font.poppinssemibold);
-                            for (int i = 0; i < dataArry.length(); i++) {
-                                JSONObject jsonObject = dataArry.getJSONObject(i);
+                            }else {
+                                //hide fetch bill button and show amount layout and set amount value
+                                fetchbill.setVisibility(View.GONE);
+                                amountlayout.setVisibility(View.VISIBLE);
+                                netAmount.setText(oxigenTransactionVOresp.getNetAmount().toString());
 
-                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(Electricity_Bill.this, R.style.confirmation_dialog_layout));
-                                et.setPadding(Utility.getPixelsFromDPs(Electricity_Bill.this, 10), Utility.getPixelsFromDPs(Electricity_Bill.this, 10), Utility.getPixelsFromDPs(Electricity_Bill.this, 10), Utility.getPixelsFromDPs(Electricity_Bill.this, 10));
+                                JSONArray dataArry = new JSONArray(oxigenTransactionVOresp.getAnonymousString());
+                                Typeface typeface = ResourcesCompat.getFont(Electricity_Bill.this, R.font.poppinssemibold);
+                                for (int i = 0; i < dataArry.length(); i++) {
+                                    JSONObject jsonObject = dataArry.getJSONObject(i);
 
-                                TextView text = new TextView(new ContextThemeWrapper(Electricity_Bill.this, R.style.confirmation_dialog_filed));
-                                text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
-                                text.setText(jsonObject.getString("key"));
-                                text.setMaxLines(1);
-                                text.setEllipsize(TextUtils.TruncateAt.END);
-                                text.setTypeface(typeface);
-                                text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                    LinearLayout et = new LinearLayout(new ContextThemeWrapper(Electricity_Bill.this, R.style.confirmation_dialog_layout));
+                                    et.setPadding(Utility.getPixelsFromDPs(Electricity_Bill.this, 10), Utility.getPixelsFromDPs(Electricity_Bill.this, 10), Utility.getPixelsFromDPs(Electricity_Bill.this, 10), Utility.getPixelsFromDPs(Electricity_Bill.this, 10));
 
-                                TextView value = new TextView(new ContextThemeWrapper(Electricity_Bill.this, R.style.confirmation_dialog_value));
-                                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
-                                value.setText(jsonObject.getString("value"));
-                                value.setTypeface(typeface);
-                                value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                    TextView text = new TextView(new ContextThemeWrapper(Electricity_Bill.this, R.style.confirmation_dialog_filed));
+                                    text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                                    text.setText(jsonObject.getString("key"));
+                                    text.setMaxLines(1);
+                                    text.setEllipsize(TextUtils.TruncateAt.END);
+                                    text.setTypeface(typeface);
+                                    text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-                                et.addView(text);
-                                et.addView(value);
-                                fetchbilllayout.addView(et);
-                            }
+                                    TextView value = new TextView(new ContextThemeWrapper(Electricity_Bill.this, R.style.confirmation_dialog_value));
+                                    value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                                    value.setText(jsonObject.getString("value"));
+                                    value.setTypeface(typeface);
+                                    value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-                            Button billPaybtn = Utility.getButton(Electricity_Bill.this);
-                            billPaybtn.setText("Proceed");
-                            fetchbilllayout.addView(billPaybtn);
-
-                            billPaybtn.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    proceedBillPay();
+                                    et.addView(text);
+                                    et.addView(value);
+                                    fetchbilllayout.addView(et);
                                 }
-                            });
 
-                            Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
-                            fetchbillcard.startAnimation(animFadeIn);
-                            fetchbillcard.setVisibility(View.VISIBLE);
+                                Button billPaybtn = Utility.getButton(Electricity_Bill.this);
+                                billPaybtn.setText("Proceed");
+                                fetchbilllayout.addView(billPaybtn);
+
+                                billPaybtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        proceedBillPay();
+                                    }
+                                });
+
+                                Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
+                                fetchbillcard.startAnimation(animFadeIn);
+                                fetchbillcard.setVisibility(View.VISIBLE);
+                            }
 
                         } catch (Exception e) {
                             ExceptionsNotification.ExceptionHandling(Electricity_Bill.this, Utility.getStackTrace(e));

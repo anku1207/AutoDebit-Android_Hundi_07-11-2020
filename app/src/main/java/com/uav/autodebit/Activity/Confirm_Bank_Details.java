@@ -179,7 +179,7 @@ public class Confirm_Bank_Details extends Base_Activity implements View.OnClickL
 
             TextView serviceTitle = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_text_flied));
             serviceTitle.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
-            serviceTitle.setText("Service Selected");
+            serviceTitle.setText("Service Mapped");
             serviceTitle.setTypeface(typeface);
             serviceTitle.setTextColor(Utility.getColorWrapper(this, R.color.colorPrimaryDark));
             serviceTitle.setTextSize(18);

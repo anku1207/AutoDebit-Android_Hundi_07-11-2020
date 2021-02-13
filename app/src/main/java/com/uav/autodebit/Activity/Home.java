@@ -5,15 +5,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.widget.NestedScrollView;
 
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.TypefaceSpan;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 
 import androidx.core.view.GravityCompat;
@@ -31,10 +41,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
+import com.google.android.material.drawable.DrawableUtils;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.CustomerBO;
@@ -51,6 +63,7 @@ import com.uav.autodebit.R;
 ;
 import com.uav.autodebit.adpater.BannerAdapter;
 import com.uav.autodebit.adpater.UitilityAdapter;
+import com.uav.autodebit.androidFragment.Home_Menu;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.dialogs.Mobile_Dialog;
@@ -88,9 +101,7 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Home extends Base_Activity
-        implements View.OnClickListener {
-
+public class Home extends Base_Activity implements View.OnClickListener {
     SharedPreferences sharedPreferences;
     TextView profile, faqs, contact, condition, logoutbtn, revoke, app_Version_Code;
     ImageView closemenuactivity, active_notification_icon;
@@ -106,7 +117,6 @@ public class Home extends Base_Activity
     Integer level = null;
 
     ImageView allutilityservice, notificationicon, faq_icon;
-
 
     UAVProgressDialog pd;
     ServiceTypeVO selectedService;
@@ -214,7 +224,7 @@ public class Home extends Base_Activity
                     finish();
                     return;
                 }
-            }else if(customerVO.getLevel().getLevelId() >= 1 && customerVO.getPanNo()==null){
+            } else if (customerVO.getLevel().getLevelId() >= 1 && customerVO.getPanNo() == null) {
                 startActivity(new Intent(Home.this, PanVerification.class));
                 finish();
                 return;
@@ -222,8 +232,6 @@ public class Home extends Base_Activity
         } catch (Exception e) {
             ExceptionsNotification.ExceptionHandling(Home.this, Utility.getStackTrace(e));
         }
-
-
         // override local cache
         //overrideLocalCache(customerVO);
 
@@ -233,19 +241,15 @@ public class Home extends Base_Activity
         //19-10-2019
         recyclerView = findViewById(R.id.recyclerview);
         allutilityservice = findViewById(R.id.allutilityservice);
-
-
         logoutbtn = findViewById(R.id.logoutbtn);
-
-
         faqs = findViewById(R.id.faqs);
-
         condition = findViewById(R.id.condition);
         closemenuactivity = findViewById(R.id.closemenuactivity);
         notificationicon = findViewById(R.id.notificationicon);
         faq_icon = findViewById(R.id.faq_icon);
         active_notification_icon = findViewById(R.id.active_notification_icon);
         notification_layout = findViewById(R.id.notification_layout);
+
         faq_layout = findViewById(R.id.faq_layout);
         contact = findViewById(R.id.contact);
         revoke = findViewById(R.id.revoke);
@@ -256,6 +260,7 @@ public class Home extends Base_Activity
         condition.setOnClickListener(this);
         closemenuactivity.setOnClickListener(this);
         notification_layout.setOnClickListener(this);
+
         faq_layout.setOnClickListener(this);
         contact.setOnClickListener(this);
         revoke.setOnClickListener(this);
@@ -275,21 +280,19 @@ public class Home extends Base_Activity
             }
         });
 
-
         sharedPreferences = getSharedPreferences(ApplicationConstant.SHAREDPREFENCE, Context.MODE_PRIVATE);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+      /*  ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
+        toggle.syncState();*/
 
         // loadFragment(new Home_Menu());
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
 
         //show png image in bottom menu bar
         // navigation.setItemIconTintList(null);
@@ -301,7 +304,6 @@ public class Home extends Base_Activity
         } catch (Exception e) {
             ExceptionsNotification.ExceptionHandling(Home.this, Utility.getStackTrace(e));
         }
-
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
@@ -316,7 +318,6 @@ public class Home extends Base_Activity
 
         //set app version
         app_Version_Code.setText("version " + Utility.getVersionName(Home.this));
-
     }
 
     public void logoutByUser(int customerId) {
@@ -365,9 +366,7 @@ public class Home extends Base_Activity
         }
     }
 
-
     public void loadDateInRecyclerView() {
-
         //19-10-2018
         Gson gson = new Gson();
         LocalCacheVO localCacheVO = gson.fromJson(Session.getSessionByKey(this, Session.LOCAL_CACHE), LocalCacheVO.class);
@@ -403,6 +402,7 @@ public class Home extends Base_Activity
             public void onPageScrollStateChanged(int state) {
             }
         });
+
         viewPager.setOnViewPagerClickListener(new ClickableViewPager.OnClickListener() {
             @Override
             public void onViewPagerClick(ViewPager pager) {
@@ -431,7 +431,6 @@ public class Home extends Base_Activity
                     e.printStackTrace();
                     ExceptionsNotification.ExceptionHandling(Home.this, Utility.getStackTrace(e));
                 }
-
             }
         });
         // viewPager.onclick
@@ -500,13 +499,10 @@ public class Home extends Base_Activity
         } catch (Exception e) {
             ExceptionsNotification.ExceptionHandling(Home.this, Utility.getStackTrace(e));
         }
-
     }
-
 
     /*Banner slider*/
     private class SliderTimer extends TimerTask {
-
         @Override
         public void run() {
             Home.this.runOnUiThread(new Runnable() {
@@ -522,7 +518,6 @@ public class Home extends Base_Activity
         }
     }
 
-
     /*set horizontal scroll view layout elementes*/
     private void setHorizontalScrollView(List<ServiceTypeVO> dataList, int layout, int activity) {
         LinearLayout mGallery = (LinearLayout) findViewById(layout);
@@ -533,7 +528,6 @@ public class Home extends Base_Activity
             //View galView = mInflater.inflate( activity ,  mGallery, false);
 
             View galView = getLayoutInflater().inflate(activity, null);
-
             LinearLayout activitylayout = galView.findViewById(R.id.layout_servicesgallery);
 
             if (dataList.size() < 5) {
@@ -553,7 +547,6 @@ public class Home extends Base_Activity
                 activeservice.setVisibility(View.GONE);
             }
 
-
             TextView txt = (TextView) galView.findViewById(R.id.id_index_gallery_item_text);
             txt.setText(serviceTypeVO.getTitle());
 
@@ -567,15 +560,15 @@ public class Home extends Base_Activity
                         startUserClickService(activitylayout.getTag().toString(), view);
                     } else {
                         // 12/04/2020
-                        MyDialog.showWebviewConditionalAlertDialog(Home.this,serviceTypeVO.getMessage(),true,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(rechargenow)->{
-                            HashMap<String,Object> objectHashMap = (HashMap<String, Object>) rechargenow;
+                        MyDialog.showWebviewConditionalAlertDialog(Home.this, serviceTypeVO.getMessage(), true, new ConfirmationGetObjet((ConfirmationGetObjet.OnOk) (rechargenow) -> {
+                            HashMap<String, Object> objectHashMap = (HashMap<String, Object>) rechargenow;
                             Utility.dismissDialog(Home.this, (Dialog) objectHashMap.get("dialog"));
-                            if(String.valueOf(objectHashMap.get("data")).equalsIgnoreCase("ok")){
+                            if (String.valueOf(objectHashMap.get("data")).equalsIgnoreCase("ok")) {
                                 Utility.enableDisableView(view, false);
                                 startUserClickService(activitylayout.getTag().toString(), view);
                             }
-                        },(ConfirmationGetObjet.OnCancel)(cancel)->{
-                            Utility.dismissDialog(Home.this, ((Dialog)cancel));
+                        }, (ConfirmationGetObjet.OnCancel) (cancel) -> {
+                            Utility.dismissDialog(Home.this, ((Dialog) cancel));
                         }));
                       /*  MyDialog.showWebviewAlertDialog(Home.this, serviceTypeVO.getMessage(), true, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (d) -> {
                             Utility.dismissDialog(Home.this, d);
@@ -606,7 +599,6 @@ public class Home extends Base_Activity
             });
         }
     }
-
 
     public void dmrcCardRequest() {
         try {
@@ -677,7 +669,6 @@ public class Home extends Base_Activity
 
         }
     }
-
 
     public Double getHighestAmtForService(ArrayList<Integer> ids) {
         LocalCacheVO localCacheVO = new Gson().fromJson(Session.getSessionByKey(this, Session.LOCAL_CACHE), LocalCacheVO.class);
@@ -771,12 +762,12 @@ public class Home extends Base_Activity
 
                 @Override
                 public void doPostExecute() {
-                    if(selectServiceType.getServiceTypeWithoutTariff()!=null){
+                    if (selectServiceType.getServiceTypeWithoutTariff() != null) {
                         Intent intent;
                         intent = new Intent(Home.this, activityhasmap.get(serviceId));
                         intent.putExtra("serviceid", serviceId + "");
                         startActivity(intent);
-                    }else{
+                    } else {
                         serviceClick(Integer.parseInt(serviceId), new ServiceClick((ServiceClick.OnSuccess) (s) -> {
                             startActivityServiceClick(Integer.parseInt(serviceId), activityhasmap.get(serviceId), s,
                                     selectServiceType.getMandateAmount(), view);
@@ -838,7 +829,6 @@ public class Home extends Base_Activity
             }
         });
     }
-
 
     public void startActivityServiceClick(int serviceId, Class classname, Object o, double mandateamt, View view) {
         try {
@@ -1068,7 +1058,7 @@ public class Home extends Base_Activity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+       /* DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -1090,7 +1080,25 @@ public class Home extends Base_Activity
                     Utility.dismissDialog(Home.this, dialog);
                 }
             }, Home.this, null, "Do you want to exit", "App Exit", buttons);
-        }
+        }*/
+        String[] buttons = {"Cancel", "Ok"};
+
+        Utility.confirmationDialog(new DialogInterface() {
+            public String leftButton = "Cancel";
+
+            @Override
+            public void confirm(Dialog dialog) {
+                Utility.dismissDialog(Home.this, dialog);
+
+                // ActivityCompat.finishAffinity( Home.this);
+                finishAffinity();
+            }
+
+            @Override
+            public void modify(Dialog dialog) {
+                Utility.dismissDialog(Home.this, dialog);
+            }
+        }, Home.this, null, "Do you want to exit", "App Exit", buttons);
     }
 
 
@@ -1107,7 +1115,7 @@ public class Home extends Base_Activity
                     Fragment fragment = null;
                     switch (item.getItemId()) {
                         case R.id.bottom_home:
-                            //fragment=new Home_Menu();
+                            // fragment=new Home_Menu();
                             break;
                         case R.id.bottom_profile:
                             // fragment=new Profile();
@@ -1174,6 +1182,7 @@ public class Home extends Base_Activity
                 GlobalApplication.notificationCount = 0;
                 startActivity(new Intent(Home.this, Notifications.class));
                 break;
+
             case R.id.faq_layout:
                 startActivity(new Intent(Home.this, Faq_WebView.class));
                 break;
@@ -1181,6 +1190,35 @@ public class Home extends Base_Activity
                 startActivity(new Intent(Home.this, MandateRevoke.class));
                 break;
         }
-        drawer.closeDrawer(GravityCompat.START);
+        //   drawer.closeDrawer(GravityCompat.START);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home, menu);
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
+            spanString.setSpan(new ForegroundColorSpan(Color.parseColor("#40A7E8")), 0, spanString.length(), 0); //fix the color to white
+            item.setTitle(spanString);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_TermCondition) {
+            startActivity(new Intent(this, TermAndCondition_Webview.class));
+            return true;
+        }
+        if (id == R.id.action_Logout) {
+            startActivity(new Intent(Home.this, Login.class));
+            finishAffinity();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    
 }

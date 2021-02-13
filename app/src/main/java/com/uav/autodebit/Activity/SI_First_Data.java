@@ -150,7 +150,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
             public void modify(Dialog dialog) {
                 Utility.dismissDialog(SI_First_Data.this, dialog);
             }
-        },SI_First_Data.this,null,"Do you want to cancel the transaction","Cancel Transaction",buttons);
+        },SI_First_Data.this,null,Content_Message.CANCEL_TRANSACTION,"Cancel Transaction",buttons);
     }
 
     public void sifirstdata() {

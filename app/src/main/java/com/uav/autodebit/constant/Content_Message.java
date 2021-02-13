@@ -24,4 +24,6 @@ public class Content_Message {
 
     public static String CONTACT_CUSTOMER_CARE="Please contact to customer care";
 
+    public static String CANCEL_TRANSACTION = "Do you want to cancel the transaction";
+
 }

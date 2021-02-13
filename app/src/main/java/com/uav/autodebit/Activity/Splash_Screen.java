@@ -205,8 +205,6 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
     }
 
     private void loadHomeActivity() {
-
-
         try {
             if (getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION) != null) {
                 Intent intent = new Intent(Splash_Screen.this, Login.class);
@@ -355,9 +353,7 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
         checkInstallReferrer();
     }
 
-
-
-
+    
     // TODO: Change this to use whatever preferences are appropriate. The install referrer should
     // only be sent to the receiver once.
     private final String prefKey = "checkedInstallReferrer";
@@ -372,7 +368,6 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
     }
 
     void getInstallReferrerFromClient(InstallReferrerClient referrerClient) {
-
         referrerClient.startConnection(new InstallReferrerStateListener() {
             @Override
             public void onInstallReferrerSetupFinished(int responseCode) {
@@ -386,18 +381,12 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
                             return;
                         }
                         final String referrerUrl = response.getInstallReferrer();
-
-
                         // TODO: If you're using GTM, call trackInstallReferrerforGTM instead.
                         trackInstallReferrer(referrerUrl);
-
-
                         // Only check this once.
                         getPreferences(MODE_PRIVATE).edit().putBoolean(prefKey, true).commit();
-
                         // End the connection
                         referrerClient.endConnection();
-
                         break;
                     case InstallReferrerClient.InstallReferrerResponse.FEATURE_NOT_SUPPORTED:
                         // API not available on the current Play Store app.
@@ -407,7 +396,6 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
                         break;
                 }
             }
-
             @Override
             public void onInstallReferrerServiceDisconnected() {
 
@@ -420,13 +408,11 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
         new Handler(getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-
                 Log.v("referrer", referrerUrl);
                 CampaignTrackingReceiver receiver = new CampaignTrackingReceiver();
                 Intent intent = new Intent("com.android.vending.INSTALL_REFERRER");
                 intent.putExtra("referrer", referrerUrl);
                 receiver.onReceive(getApplicationContext(), intent);
-
             }
         });
     }

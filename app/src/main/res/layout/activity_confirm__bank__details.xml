@@ -4,18 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.uav.autodebit.Activity.PanVerification"
     android:orientation="vertical"
-    >
+    tools:context="com.uav.autodebit.Activity.PanVerification">
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_awesome_toolbar"
-        android:layout_height="50dp"
         android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:background="@color/appbar"
+        app:contentInsetEnd="0dp"
         app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
         app:contentInsetRight="0dp"
-        app:contentInsetEnd="0dp">
+        app:contentInsetStart="0dp">
+
         <ImageView
             android:id="@+id/back_activity_button"
             android:layout_width="40dp"
@@ -26,10 +27,7 @@
             android:scaleType="center"
             android:src="@drawable/rof_backbutton"
             android:textStyle="bold"
-            android:tint="@color/white"
-
-
-            />
+            android:tint="@color/white" />
 
         <LinearLayout
             android:id="@+id/saveshipmenticonintop"
@@ -61,56 +59,52 @@
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="20dp"
-            android:textStyle="bold"
-
-            />
+            android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="20dp"
-        >
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
+        android:padding="20dp">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/mainlayout"
-            android:orientation="vertical"
-            >
-        </LinearLayout>
-        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="20dp"
+            android:orientation="vertical"/>
+
+        <LinearLayout
             android:id="@+id/buttonLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
             android:visibility="gone">
+
             <Button
-                android:layout_width="50dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="MODIFY"
-                android:textColor="@color/white"
                 android:id="@+id/modify"
-                android:fontFamily="@font/poppinssemibold"
-
-                android:background="@drawable/cornerbtn_bg_grey"
-                android:layout_marginRight="10dp"
-                />
-            <Button
                 android:layout_width="50dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="NEXT"
-                android:id="@+id/next"
-                android:textColor="@color/white"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/cornerbtn_bg_grey"
                 android:fontFamily="@font/poppinssemibold"
 
+                android:text="MODIFY"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/next"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
+                android:layout_weight="1"
                 android:background="@drawable/cornerbtn_bg_grey"
-                />
+                android:fontFamily="@font/poppinssemibold"
+
+                android:text="NEXT"
+                android:textColor="@color/white" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

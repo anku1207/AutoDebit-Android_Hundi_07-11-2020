@@ -1,143 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        tools:context="com.uav.autodebit.Activity.Login"
-        android:background="@drawable/backgroundcolor"
-        >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/backgroundcolor"
+    android:orientation="vertical"
+    tools:context="com.uav.autodebit.Activity.Login">
 
-
-
-
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:paddingTop="50dp"
-       >
-
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:src="@drawable/autodebitlogonew"
-            android:id="@+id/logo"
-            android:layout_gravity="center"
-            />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create a new account!"
-            android:layout_gravity="center"
-            android:textColor="@color/white"
-            android:fontFamily="@font/poppinslight"
-            android:layout_marginTop="20dp"
-            android:gravity="center"
-
-            />
-
-
-
-        <EditText
-            android:id="@+id/username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:backgroundTint="@color/white"
-            android:hint="Name as on Pan Card"
-            android:digits="@string/NameDigits"
-            android:inputType="textCapWords"
-            android:maxLines="1"
-            android:paddingTop="15px"
-            android:paddingBottom="20dp"
-            android:textColor="@color/white"
-            android:maxLength="64"
-
-            style="@style/AutodebitTextHintAppearanceWhitecol"
-            />
-        <EditText
-            android:id="@+id/useremail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:backgroundTint="@color/white"
-            android:hint="Email"
-            android:inputType="text"
-            android:maxLines="1"
-            android:paddingTop="15px"
-            android:paddingBottom="20dp"
-            android:textColor="@color/white"
-            android:maxLength="256"
-            style="@style/AutodebitTextHintAppearanceWhitecol"
-            />
-        <EditText
-            android:id="@+id/userphone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:backgroundTint="@color/white"
-            android:hint="Mobile Number"
-            android:inputType="number"
-            android:maxLength="10"
-            android:maxLines="1"
-            android:paddingTop="15px"
-            android:paddingBottom="20dp"
-            android:textColor="@color/white"
-            android:digits="@string/NumberDigits"
-            style="@style/AutodebitTextHintAppearanceWhitecol"
-            />
-
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-            <CheckBox
-                android:id="@+id/condition_checkbox"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:orientation="vertical"
+            android:paddingTop="50dp">
+
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:src="@drawable/autodebitlogonew" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                />
-            <TextView
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/poppinslight"
+                android:gravity="center"
+                android:text="Create a new account!"
+                android:textColor="@color/white" />
+
+            <EditText
+                android:id="@+id/username"
+                style="@style/AutodebitTextHintAppearanceWhitecol"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/user_registration_condition_msg"
-                android:padding="5dp"
-                android:textColor="@color/white"
-                android:id="@+id/condition_text">
-            </TextView>
+                android:layout_marginTop="50dp"
+                android:backgroundTint="@color/white"
+                android:digits="@string/NameDigits"
+                android:hint="Name as on Pan Card"
+                android:inputType="textCapWords"
+                android:maxLength="64"
+                android:maxLines="1"
+                android:paddingTop="15px"
+                android:paddingBottom="20dp"
+                android:textColor="@color/white" />
 
+            <EditText
+                android:id="@+id/useremail"
+                style="@style/AutodebitTextHintAppearanceWhitecol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/white"
+                android:hint="Email"
+                android:inputType="text"
+                android:maxLength="256"
+                android:maxLines="1"
+                android:paddingTop="15px"
+                android:paddingBottom="20dp"
+                android:textColor="@color/white" />
+
+            <EditText
+                android:id="@+id/userphone"
+                style="@style/AutodebitTextHintAppearanceWhitecol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/white"
+                android:digits="@string/NumberDigits"
+                android:hint="Mobile Number"
+                android:inputType="number"
+                android:maxLength="10"
+                android:maxLines="1"
+                android:paddingTop="15px"
+                android:paddingBottom="20dp"
+                android:textColor="@color/white" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/condition_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp" />
+
+                <TextView
+                    android:id="@+id/condition_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="@string/user_registration_condition_msg"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/otpgeneratebtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/cornerbutton"
+                android:text="@string/agreeAndContinue"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
         </LinearLayout>
-
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/otpgeneratebtn"
-            android:text="@string/agreeAndContinue"
-            android:layout_marginBottom="30dp"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/cornerbutton"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-
-            />
-    </LinearLayout>
     </ScrollView>
-
-
 </LinearLayout>

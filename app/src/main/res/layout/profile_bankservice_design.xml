@@ -30,6 +30,7 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="2"
-        android:text="" />
+        android:text=""
+        android:textColor="@color/black" />
 </LinearLayout>
 

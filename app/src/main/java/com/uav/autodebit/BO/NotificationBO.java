@@ -11,4 +11,13 @@ public class NotificationBO implements Serializable {
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }
+    public static ConnectionVO clearNotificationByUser() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("clearNotificationByUser");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
+
 }

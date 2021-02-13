@@ -2,8 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
+        android:id="@+id/action_TermCondition"
+        android:actionLayout="@layout/layout_menu_tc"
+        android:title="@string/action_tc"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_Logout"
+        android:orderInCategory="101"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+
 </menu>

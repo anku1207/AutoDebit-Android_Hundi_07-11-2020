@@ -155,8 +155,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
 
             @Override
             public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
-                Toast.makeText(Login.this, "Success!",
-                        Toast.LENGTH_LONG).show();
+               // Toast.makeText(Login.this, "Success!", Toast.LENGTH_LONG).show();
 
                 String type = null;
                 boolean checkvalid = false;
@@ -262,8 +261,6 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                         Utility.showSingleButtonDialog(Login.this, "Alert", Content_Message.login_Password_empty, false);
                         return;
                     }
-
-
                 } else {
                     String type = null;
                     boolean checkvalid = false;
@@ -450,10 +447,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                         startActivityForResult(intent, 100);
 
                         // startActivityForResult(new Intent(Login.this,Verify_OTP.class),12000);
-
-
                     }
-
                 }
             }
         });
@@ -496,18 +490,15 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
         switch (v.getId()) {
             case R.id.userid:
                 if (fingerprint_authentication == null) break;
-                ;
                 fingerprint_authentication.cancel();
 
             case R.id.password:
                 if (fingerprint_authentication == null) break;
-                ;
                 fingerprint_authentication.cancel();
                 break;
         }
         return false;
     }
-
 
     public void startActivity() {
         try {
@@ -527,7 +518,5 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
         } catch (Exception e) {
             Toast.makeText(this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-
-
     }
 }

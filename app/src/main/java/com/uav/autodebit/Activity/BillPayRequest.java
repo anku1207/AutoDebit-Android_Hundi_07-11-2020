@@ -4,9 +4,21 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.cardview.widget.CardView;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.Electricity_BillBO;
@@ -18,6 +30,7 @@ import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.ConfirmationGetObjet;
 import com.uav.autodebit.Interface.MandateAndRechargeInterface;
 import com.uav.autodebit.Interface.PaymentGatewayResponse;
+import com.uav.autodebit.Interface.ServiceClick;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
@@ -84,7 +97,7 @@ public class BillPayRequest {
                         }
                         Utility.showSingleButtonDialog(context, oxigenTransactionVOresp.getDialogTitle(), sb.toString(), false);
                         volleyResponse.onError(null);
-                    } else if (oxigenTransactionVOresp.getStatusCode().equals("01")) {
+                    } /*else if (oxigenTransactionVOresp.getStatusCode().equals("01")) {
                         String btn[] = {"Cancel", "Ok"};
                         JSONArray jsonArray = new JSONArray();
 
@@ -137,7 +150,7 @@ public class BillPayRequest {
                         }, context, jsonArray, null, "Do you want to proceed ?", btn);
 
                         volleyResponse.onError(null);
-                    } else {
+                    }*/ else {
                         volleyResponse.onSuccess(oxigenTransactionVOresp);
                     }
                 }
@@ -1025,6 +1038,45 @@ public class BillPayRequest {
             e.printStackTrace();
             ExceptionsNotification.ExceptionHandling(context, Utility.getStackTrace(e));
         }
+    }
+
+    public  static void billFetchFail(Context context , OxigenTransactionVO oxigenTransactionVOresp , LinearLayout fetchbilllayout, CardView fetchbillcard , ServiceClick serviceClick){
+        Typeface typeface = ResourcesCompat.getFont(context, R.font.poppinssemibold);
+        //hide fetch bill button and show amount layout and set amount value
+
+        LinearLayout et = new LinearLayout(new ContextThemeWrapper(context, R.style.confirmation_dialog_layout));
+        et.setPadding(Utility.getPixelsFromDPs(context, 10), Utility.getPixelsFromDPs(context, 10), Utility.getPixelsFromDPs(context, 10), Utility.getPixelsFromDPs(context, 10));
+
+        TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
+        text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+        text.setText("The problem is with Android gradle plugin which doesn't work well with Google's Maven repository.\n" +
+                "\n" +
+                "You can downgrade your google-services down to 4.2.0 as it was said by @mownathi-manigundan. Version 4.2.0 is available in AndroidTools Repository which outdated gradle plugin handles just fine\n" +
+                "\n" +
+                "But it'd be better to update your plugin up to 3.2 or higher and use recommended");
+        text.setTypeface(typeface);
+        text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+        et.addView(text);
+        fetchbilllayout.addView(et);
+
+        Button billPaybtn = Utility.getButton(context);
+        billPaybtn.setText("Proceed");
+        fetchbilllayout.addView(billPaybtn);
+
+        billPaybtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    serviceClick.onSuccess(oxigenTransactionVOresp);
+                } catch (Exception e) {
+                    ExceptionsNotification.ExceptionHandling(context, Utility.getStackTrace(e));
+                }
+            }
+        });
+        Animation animFadeIn = AnimationUtils.loadAnimation(context, R.anim.fadein);
+        fetchbillcard.startAnimation(animFadeIn);
+        fetchbillcard.setVisibility(View.VISIBLE);
     }
 
 
