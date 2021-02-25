@@ -404,13 +404,14 @@ public class IRCTC_Webview extends AppCompatActivity implements View.OnClickList
     }
 
     public void backBtnFun(){
-        if (doubleBackpress){
+        super.onBackPressed();
+      /*  if (doubleBackpress){
             super.onBackPressed();
         }else {
             Toast.makeText(this, getString(R.string.backpress_to_exit), Toast.LENGTH_SHORT).show();
             doubleBackpress = true;
             new Handler().postDelayed(() -> doubleBackpress = false, 2000);
-        }
+        }*/
     }
 
     @Override

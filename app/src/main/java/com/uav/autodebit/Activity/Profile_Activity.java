@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,9 +45,11 @@ import com.uav.autodebit.Interface.CallBackInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.RecyclerViewAdapterMenu;
+import com.uav.autodebit.adpater.RecyclerViewCraditCardAdapterMenu;
 import com.uav.autodebit.adpater.RecyclerViewProfileBankAdapterMenu;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.constant.Paginator;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.CircularImageView;
 import com.uav.autodebit.override.UAVProgressDialog;
@@ -81,19 +85,21 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
 
     BottomNavigationView navigation;
     TextView usename, pannumber, mobileno, email, address, citystate, pincode, creditscore, changepass;
-    ImageView mobileverify, emailverify, addressverify, downloadreport, back_activity_button, more_service, more_bankadd, profileedit;
+    ImageView mobileverify, emailverify, addressverify, downloadreport, back_activity_button, more_service, more_bankadd, profileedit, imagePrev, imageNext;
     String cir_report;
 
     Context context = Profile_Activity.this;
-    RecyclerView servicesrecy, bankrecycler;
+    RecyclerView servicesrecy, bankrecycler, cardrecycler;
     CircularImageView imageView1;
     boolean isemailverify = false;
 
     UAVProgressDialog pd;
     List<ServiceTypeVO> bankServiceList = new ArrayList<>();
     List<ServiceTypeVO> addservice = new ArrayList<>();
+    List<CustomerAuthServiceVO> creditcardservice = new ArrayList<>();
 
     RecyclerViewAdapterMenu recyclerViewAdapter;
+    RecyclerViewCraditCardAdapterMenu recyclerViewCraditCardAdapterMenu;
     int REQ_IMAGE = 1001, REQ_GALLERY = 1002, REQ_ENACH_MANDATE = 1003, PIC_CROP = 1004, REQ_CHANGE_PASS = 300, REQ_ADD_MORE_SERVICE = 200, REQ_EMAIL_VERIFY = 100, REQ_ADDBANK_ANDSERVICE = 400, REQ_MOBILE_VERIFY = 401;
 
     Bitmap bmp;
@@ -108,6 +114,9 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
     PermissionUtils permissionUtils;
     CustomerVO changeAddressCustomerVOObject;
     LinearLayout edit_layout;
+    RecyclerViewProfileBankAdapterMenu recyclerViewProfileBankAdapterMenu;
+    Paginator p = new Paginator();
+    private int currentPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +138,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         servicesrecy = findViewById(R.id.servicerecycler);
         more_service = findViewById(R.id.more_service);
         bankrecycler = findViewById(R.id.bankrecycler);
+        cardrecycler = findViewById(R.id.cardrecycler);
         imageView1 = findViewById(R.id.imageView1);
         progressBar = findViewById(R.id.progressBar);
         changepass = findViewById(R.id.changepass);
@@ -140,6 +150,26 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         downloadreport = findViewById(R.id.downloadreport);
         profileedit = findViewById(R.id.profileedit);
         edit_layout = findViewById(R.id.edit_layout);
+        imagePrev = findViewById(R.id.imagePrev);
+        imageNext = findViewById(R.id.imageNext);
+     //   LinearLayoutManager linearLayoutManager = new LinearLayoutManager(Profile_Activity.this, LinearLayoutManager.HORIZONTAL, false);
+        imagePrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                   LinearLayoutManager linearLayoutManager = new LinearLayoutManager(Profile_Activity.this, LinearLayoutManager.HORIZONTAL, false);
+                //  bankrecycler.getLayoutManager().scrollToPosition(linearLayoutManager.findLastVisibleItemPosition() + 1);
+                bankrecycler.getLayoutManager().scrollToPosition(linearLayoutManager.findFirstVisibleItemPosition() + 1);
+            }
+        });
+        imageNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // Toast.makeText(context, "fjbakjbkj", Toast.LENGTH_SHORT).show();
+                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(Profile_Activity.this, LinearLayoutManager.HORIZONTAL, false);
+                //bankrecycler.getLayoutManager().scrollToPosition(linearLayoutManager.findLastVisibleItemPosition() - 1);
+                bankrecycler.getLayoutManager().scrollToPosition(linearLayoutManager.findLastVisibleItemPosition() + 1);
+            }
+        });
 
         permissionUtils = new PermissionUtils(Profile_Activity.this);
 
@@ -176,6 +206,11 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         bankrecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         // bankrecycler.addItemDecoration(new DividerItemDecorator(serviceautope.size(),2,false));
         bankrecycler.setNestedScrollingEnabled(false);
+
+        cardrecycler.setHasFixedSize(true);
+        cardrecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        // cardrecycler.addItemDecoration(new DividerItemDecorator(serviceautope.size(),2,false));
+        cardrecycler.setNestedScrollingEnabled(false);
     }
 
     BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -240,7 +275,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                         ApplicationConstant.REQ_CAMERA_PERMISSION);
                 break;
             case R.id.changepass:
-                String[] changePass = {"No", "Yes"};
+               /* String[] changePass = {"No", "Yes"};
                 Utility.confirmationDialog(new DialogInterface() {
                     @Override
                     public void confirm(Dialog dialog) {
@@ -256,7 +291,11 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                     public void modify(Dialog dialog) {
                         Utility.dismissDialog(Profile_Activity.this, dialog);
                     }
-                }, this, null, "Would you like change pin ?", "Alert", changePass);
+                }, this, null, "Would you like change pin ?", "Alert", changePass);*/
+                Intent intent = new Intent(Profile_Activity.this, ChangePassword.class);
+                intent.putExtra("customerid", Session.getCustomerId(Profile_Activity.this));
+                intent.putExtra("methodname", "setCustomerChangePassword");
+                startActivityForResult(intent, REQ_CHANGE_PASS);
                 break;
             case R.id.more_bankadd:
                 startActivityForResult(new Intent(Profile_Activity.this, AddBankAndServicelist.class), REQ_ADDBANK_ANDSERVICE);
@@ -392,7 +431,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                 } else {
                     imageView1.setImageBitmap(null);
                     //imageView1.setImageBitmap(Utility.drawableToBitmap(getDrawable(R.drawable.noprofileimage)));
-                    imageView1.setBackgroundResource(R.drawable.ava_user);
+                    imageView1.setBackgroundResource(R.drawable.man);
                 }
             }
         });
@@ -679,7 +718,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                     } else {
                         progressBar.setVisibility(View.GONE);
                         //imageView1.setImageBitmap(Utility.drawableToBitmap(getDrawable(R.drawable.noprofileimage)));
-                        imageView1.setBackgroundResource(R.drawable.ava_user);
+                        imageView1.setBackgroundResource(R.drawable.man);
                     }
 
                     if (customerVO.getMobileVerified() == null) {
@@ -718,12 +757,13 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                 try {
                     bankServiceList.clear();
                     addservice.clear();
+                    creditcardservice.clear();
 
                     JSONArray bankArry = new JSONArray(customerVO.getEnachDetails());
                     for (int i = 0; i < bankArry.length(); i++) {
                         ServiceTypeVO serviceTypeVO = new ServiceTypeVO();
                         JSONObject object = bankArry.getJSONObject(i);
-                        serviceTypeVO.setTitle(object.getString("bankName") + " \n" + object.getString("accountNumber"));
+                        serviceTypeVO.setTitle(object.getString("bankName") /*+ " \n" + object.getString("accountNumber")*/);
                         serviceTypeVO.setAppIcon("bankicon.png");
                         serviceTypeVO.setAnonymousInteger(object.getInt("customerAuthId"));
                         bankServiceList.add(serviceTypeVO);
@@ -734,6 +774,11 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                     }.getType());
                     addservice.addAll(serviceautope);
 
+                    // change this active service To server
+                    List<CustomerAuthServiceVO> creditcardautope = new Gson().fromJson(customerVO.getAnonymousString1(), new TypeToken<ArrayList<CustomerAuthServiceVO>>() {
+                    }.getType());
+                    creditcardservice.addAll(creditcardautope);
+
                 } catch (Exception e) {
                     Log.e("profile_activity", e.getMessage());
                     e.printStackTrace();
@@ -742,8 +787,11 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
 
             @Override
             public void doPostExecute() {
-                RecyclerViewProfileBankAdapterMenu recyclerViewProfileBankAdapterMenu = new RecyclerViewProfileBankAdapterMenu(Profile_Activity.this, bankServiceList, R.layout.profile_bankservice_design);
+                recyclerViewProfileBankAdapterMenu = new RecyclerViewProfileBankAdapterMenu(Profile_Activity.this, bankServiceList, R.layout.profile_bankservice_vertical_design);
                 bankrecycler.setAdapter(recyclerViewProfileBankAdapterMenu);
+
+                recyclerViewCraditCardAdapterMenu = new RecyclerViewCraditCardAdapterMenu(Profile_Activity.this, creditcardservice, R.layout.profile_bankservice_design);
+                cardrecycler.setAdapter(recyclerViewCraditCardAdapterMenu);
 
                 recyclerViewAdapter = new RecyclerViewAdapterMenu(Profile_Activity.this, addservice, R.layout.profile_service_design);
                 servicesrecy.setAdapter(recyclerViewAdapter);
@@ -787,14 +835,15 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         });
     }
 
-    public void bankDetails(int customerAuthId) {
-     //   startActivity(new Intent(Profile_Activity.this, Confirm_Bank_Details.class).putExtra("bankid", customerAuthId));
-        startActivity(new Intent(Profile_Activity.this, MandateDetailsActivity.class).putExtra("bankid", customerAuthId));
+    public void bankDetails(String cardNo) {
+        startActivity(new Intent(Profile_Activity.this, MandateDetailsActivity.class).putExtra("cardNumber", cardNo).putExtra("provider", "6"));
+    }
+
+    public void bankDMRCDetails(String bankname) {
+        startActivity(new Intent(Profile_Activity.this, MandateDetailsActivity.class).putExtra("bankname", bankname).putExtra("provider", "3"));
     }
 
     public void showBankDetailsDialog(CustomerAuthServiceVO customerAuthServiceVO) throws Exception {
-
-
         String[] changePass = {"Cancel", "Modify"};
         JSONArray jsonArray = new JSONArray();
         JSONObject object = new JSONObject();

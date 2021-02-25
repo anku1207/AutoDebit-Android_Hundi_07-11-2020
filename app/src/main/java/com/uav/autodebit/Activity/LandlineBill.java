@@ -254,9 +254,32 @@ public class LandlineBill extends Base_Activity implements View.OnClickListener,
                     ((EditText) eleMap.get("mobile")).setText(DynamicLayout.addMobileNumberInEdittext(this, data));
                     ((EditText) eleMap.get("mobile")).setSelection(((EditText) eleMap.get("mobile")).getText().toString().length());
                     netAmount.setText("");
-                } else if (requestCode == 200 || requestCode == ApplicationConstant.REQ_ENACH_MANDATE || requestCode == ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE || requestCode == ApplicationConstant.REQ_SI_MANDATE || requestCode == ApplicationConstant.REQ_MANDATE_FOR_BILL_FETCH_ERROR || requestCode == ApplicationConstant.REQ_SI_FOR_BILL_FETCH_ERROR) {
+                } else if (requestCode == 200 || requestCode == ApplicationConstant.REQ_ENACH_MANDATE || requestCode == ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE ||
+                        requestCode == ApplicationConstant.REQ_SI_MANDATE || requestCode == ApplicationConstant.REQ_MANDATE_FOR_BILL_FETCH_ERROR ||
+                        requestCode == ApplicationConstant.REQ_SI_FOR_BILL_FETCH_ERROR ) {
                     if (data != null) {
                         BillPayRequest.onActivityResult(this, data, requestCode);
+                    } else {
+                        Utility.showSingleButtonDialog(this, "Error !", "Something went wrong, Please try again!", false);
+                    }
+                }else if( requestCode== ApplicationConstant.REQ_DIRECT_PAYMENT_RESULT){
+                    if (data != null) {
+                        CustomerVO customerVO1 = new Gson().fromJson(data.getStringExtra("data"),CustomerVO.class);
+                        if(customerVO1.getStatusCode().equals("400")) {
+                            BillPayRequest.utilityPaymentFailed(LandlineBill.this,Integer.parseInt(data.getStringExtra(DirectPaymentActivity.EXTRAS_ID)),new VolleyResponse((VolleyResponse.OnSuccess)(fail)->{
+                            },(VolleyResponse.OnError)(Error)->{
+                                try {
+                                    JSONObject jsonObject = new JSONObject(Error);
+                                    removefetchbilllayout();
+                                    Utility.showSingleButtonDialog(LandlineBill.this, jsonObject.getString("title"), jsonObject.getString("message"), false);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    ExceptionsNotification.ExceptionHandling(LandlineBill.this, Utility.getStackTrace(e));
+                                }
+                            }));
+                        }else {
+                            BillPayRequest.onActivityResult(this, data, requestCode);
+                        }
                     } else {
                         Utility.showSingleButtonDialog(this, "Error !", "Something went wrong, Please try again!", false);
                     }
@@ -291,6 +314,8 @@ public class LandlineBill extends Base_Activity implements View.OnClickListener,
                     oxigenTransactionVO.setCustomer(customerVO);
                     oxigenTransactionVO.setServiceType(serviceTypeVO);
                     oxigenTransactionVO.setAnonymousString(dataarray.toString());
+                    oxigenTransactionVO.setEventIs(isFetchBill);
+                    if(!isFetchBill) oxigenTransactionVO.setAmount(Double.valueOf(netAmount.getText().toString()));
 
                     BillPayRequest.proceedFetchBill(oxigenTransactionVO, this, new VolleyResponse((VolleyResponse.OnSuccess) (s) -> {
                         try {
@@ -392,7 +417,7 @@ public class LandlineBill extends Base_Activity implements View.OnClickListener,
     }
 
     private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception {
-        return BillPayRequest.getNewTypeQuestionLabelData(this, operator, netAmount.getText().toString(), fetchBill, isFetchBill, questionsVOS, minAmt);
+        return BillPayRequest.getNewTypeQuestionLabelData(this, operator,netAmount, netAmount.getText().toString(), fetchBill, isFetchBill, questionsVOS, minAmt);
     }
 
     public void proceedBillPay() {

@@ -50,6 +50,9 @@ public class BaseVO implements Serializable {
     private String encryptedValue;
     private Boolean hasDirectPayment;
 
+    private String anonymousString3;
+    private String anonymousString4;
+
 
     public String getStatusCode() {
         return statusCode;
@@ -366,5 +369,21 @@ public class BaseVO implements Serializable {
 
     public void setHasDirectPayment(Boolean hasDirectPayment) {
         this.hasDirectPayment = hasDirectPayment;
+    }
+
+    public String getAnonymousString3() {
+        return anonymousString3;
+    }
+
+    public void setAnonymousString3(String anonymousString3) {
+        this.anonymousString3 = anonymousString3;
+    }
+
+    public String getAnonymousString4() {
+        return anonymousString4;
+    }
+
+    public void setAnonymousString4(String anonymousString4) {
+        this.anonymousString4 = anonymousString4;
     }
 }

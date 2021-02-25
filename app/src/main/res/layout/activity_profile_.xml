@@ -114,7 +114,7 @@
                     <RelativeLayout
                         android:id="@+id/rv"
                         android:layout_width="150dp"
-                        android:layout_height="150dp">
+                        android:layout_height="120dp">
 
                         <!-- <ImageButton
                              android:id="@+id/imageView1"
@@ -142,7 +142,8 @@
                             android:id="@+id/imageView1"
                             android:layout_width="120dp"
                             android:layout_height="120dp"
-                            android:scaleType="centerCrop" />
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/man" />
 
                         <ImageView
                             android:id="@+id/imgFloating"
@@ -151,7 +152,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentBottom="true"
                             android:layout_marginEnd="45dp"
-                            android:layout_marginBottom="35dp"
+                            android:layout_marginBottom="5dp"
                             android:background="@drawable/circle_shape"
                             android:elevation="5dp"
                             android:padding="2dp"
@@ -402,137 +403,378 @@
                         android:layout_width="1dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="15dp"
+                        android:layout_marginRight="15dp"
                         android:layout_weight=".1"
                         android:scaleType="fitEnd"
-                        android:tint="@drawable/creditreporttext" />
+                        android:src="@drawable/changepasswordicon" />
                 </LinearLayout>
 
-                <LinearLayout
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight=".1"
-                        android:src="@drawable/bankicon"
-                        android:tint="@color/appbar" />
-
-                    <TextView
-                        android:layout_width="10dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/poppinsbold"
-                        android:text="Bank Account"
-                        android:textColor="@color/black"
-                        android:textSize="15sp" />
-
-                    <ImageView
-                        android:id="@+id/more_bankadd"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_weight=".3"
-                        android:scaleType="fitEnd"
-                        android:src="@drawable/addicon"
-                        android:visibility="gone" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight=".1"
-                        android:tint="@color/appbar" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/bankrecycler"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1">
-
-                    </androidx.recyclerview.widget.RecyclerView>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight=".1"
-                        android:src="@drawable/bankicon"
-                        android:tint="@color/appbar" />
-
-                    <TextView
-                        android:layout_width="10dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/poppinsbold"
-                        android:text="Services Activated"
-                        android:textColor="@color/black"
-                        android:textSize="15sp" />
+                    android:layout_margin="5dp"
+                    app:cardCornerRadius="10dp">
 
                     <LinearLayout
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight=".3">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:orientation="vertical">
 
-                        <ImageView
-                            android:id="@+id/more_service"
-                            android:layout_width="0dp"
-                            android:layout_height="20dp"
-                            android:layout_weight=".3"
-                            android:scaleType="fitEnd"
-                            android:src="@drawable/addicon"
-                            android:visibility="gone" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="@font/poppinsbold"
+                            android:text="Mandate Details"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="15dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight=".1"
+                                android:src="@drawable/bankicon"
+                                android:tint="@color/appbar" />
+
+                            <TextView
+                                android:layout_width="10dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/poppinsbold"
+                                android:text="Bank Account"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                            <ImageView
+                                android:id="@+id/more_bankadd"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_weight=".3"
+                                android:scaleType="fitEnd"
+                                android:src="@drawable/addicon"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight=".1"
+                                android:tint="@color/appbar" />
+
+                            <ImageView
+                                android:id="@+id/imagePrev"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="-10dp"
+                                android:src="@drawable/leftarrow"
+                                android:visibility="gone" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/bankrecycler"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1" />
+
+                            <ImageView
+                                android:id="@+id/imageNext"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="2dp"
+                                android:src="@drawable/rightarrow"
+                                android:visibility="gone" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="15dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight=".1"
+                                android:src="@drawable/bankicon"
+                                android:tint="@color/appbar" />
+
+                            <TextView
+                                android:layout_width="10dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/poppinsbold"
+                                android:text="Credit Card"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                            <ImageView
+                                android:id="@+id/more_cardadd"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_weight=".3"
+                                android:scaleType="fitEnd"
+                                android:src="@drawable/addicon"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight=".1"
+                                android:tint="@color/appbar" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/cardrecycler"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                            </androidx.recyclerview.widget.RecyclerView>
+                        </LinearLayout>
+
                     </LinearLayout>
-                </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
-                <LinearLayout
+                <!--
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="10dp"
+                                        android:fontFamily="@font/poppinsbold"
+                                        android:text="Mandate Details"
+                                        android:textColor="@color/black"
+                                        android:textSize="15sp" />
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_marginBottom="10dp"
+                                        android:orientation="horizontal">
+
+                                        <ImageView
+                                            android:layout_width="15dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight=".1"
+                                            android:src="@drawable/bankicon"
+                                            android:tint="@color/appbar" />
+
+                                        <TextView
+                                            android:layout_width="10dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:fontFamily="@font/poppinsbold"
+                                            android:text="Bank Account"
+                                            android:textColor="@color/black"
+                                            android:textSize="15sp" />
+
+                                        <ImageView
+                                            android:id="@+id/more_bankadd"
+                                            android:layout_width="20dp"
+                                            android:layout_height="20dp"
+                                            android:layout_weight=".3"
+                                            android:scaleType="fitEnd"
+                                            android:src="@drawable/addicon"
+                                            android:visibility="gone" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_marginBottom="10dp"
+                                        android:orientation="horizontal">
+
+                                        <ImageView
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight=".1"
+                                            android:tint="@color/appbar" />
+
+                                        <androidx.recyclerview.widget.RecyclerView
+                                            android:id="@+id/bankrecycler"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1">
+
+                                        </androidx.recyclerview.widget.RecyclerView>
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_marginBottom="10dp"
+                                        android:orientation="horizontal">
+
+                                        <ImageView
+                                            android:layout_width="15dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight=".1"
+                                            android:src="@drawable/bankicon"
+                                            android:tint="@color/appbar" />
+
+                                        <TextView
+                                            android:layout_width="10dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:fontFamily="@font/poppinsbold"
+                                            android:text="Bank Account"
+                                            android:textColor="@color/black"
+                                            android:textSize="15sp" />
+
+                                        <ImageView
+                                            android:id="@+id/more_cardadd"
+                                            android:layout_width="20dp"
+                                            android:layout_height="20dp"
+                                            android:layout_weight=".3"
+                                            android:scaleType="fitEnd"
+                                            android:src="@drawable/addicon"
+                                            android:visibility="gone" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_marginBottom="10dp"
+                                        android:orientation="horizontal">
+
+                                        <ImageView
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight=".1"
+                                            android:tint="@color/appbar" />
+
+                                        <androidx.recyclerview.widget.RecyclerView
+                                            android:id="@+id/cardrecycler"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1">
+
+                                        </androidx.recyclerview.widget.RecyclerView>
+                                    </LinearLayout>
+
+                                </LinearLayout>
+                -->
+
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="horizontal">
+                    android:layout_margin="5dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="5dp">
 
-                    <ImageView
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight=".1"
-                        android:tint="@color/appbar" />
+                        android:orientation="vertical">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/servicerecycler"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:orientation="horizontal">
 
-                    </androidx.recyclerview.widget.RecyclerView>
+                            <ImageView
+                                android:layout_width="15dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight=".1"
+                                android:src="@drawable/bankicon"
+                                android:tint="@color/appbar" />
 
-                    <!-- <ImageView
-                         android:layout_width="1dp"
-                         android:layout_height="15dp"
-                         android:layout_gravity="center"
-                         android:layout_weight=".3"
-                         android:scaleType="fitEnd"
-                          />-->
+                            <TextView
+                                android:layout_width="10dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/poppinsbold"
+                                android:text="Services Activated"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
 
-                </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight=".3">
+
+                                <ImageView
+                                    android:id="@+id/more_service"
+                                    android:layout_width="0dp"
+                                    android:layout_height="20dp"
+                                    android:layout_weight=".3"
+                                    android:scaleType="fitEnd"
+                                    android:src="@drawable/addicon"
+                                    android:visibility="gone" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="0dp"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight=".1"
+                                android:tint="@color/appbar" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/servicerecycler"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="horizontal">
+
+                            </androidx.recyclerview.widget.RecyclerView>
+
+                            <!-- <ImageView
+                                 android:layout_width="1dp"
+                                 android:layout_height="15dp"
+                                 android:layout_gravity="center"
+                                 android:layout_weight=".3"
+                                 android:scaleType="fitEnd"
+                                  />-->
+
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

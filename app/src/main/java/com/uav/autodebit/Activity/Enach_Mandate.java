@@ -89,8 +89,11 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enach__mandate);
         getSupportActionBar().hide();
-
-
+/*
+        intent.putExtra("forresutl", true);
+        intent.putExtra("DmrcId",dmrc_customer_cardVO.getDmrcid());
+        intent.putExtra("customerAuthId",dmrc_customer_cardVO.getDmrcBankMandate());
+        intent.putExtra("providerId", dmrc_customer_cardVO.getAnonymousInteger());*/
         setElementId();
         foractivity=getIntent().getBooleanExtra("forresutl",true);//success finish activity
         selectServiceIds=getIntent().getIntegerArrayListExtra("selectservice"); // get select service list for get mandate amount and set bank id again serviceid

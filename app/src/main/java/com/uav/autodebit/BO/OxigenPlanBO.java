@@ -86,6 +86,13 @@ public class OxigenPlanBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO utilityPaymentFailed() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("utilityPaymentFailed");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
 
 
 

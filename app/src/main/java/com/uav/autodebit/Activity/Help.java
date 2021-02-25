@@ -11,6 +11,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,7 +45,7 @@ public class Help extends Base_Activity implements View.OnClickListener ,Permiss
     //email,contact_request;
     PermissionUtils permissionUtils;
     //FloatingActionButton fabCall;
-    ImageButton email,contact_request,fabCall;
+    private LinearLayout linearRequestCallback,linearEmail,linearCallSupport;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,15 +54,15 @@ public class Help extends Base_Activity implements View.OnClickListener ,Permiss
         getSupportActionBar().hide();
 
         permissionUtils =new PermissionUtils(Help.this);
-        contact_request=findViewById(R.id.contact_request);
-        fabCall =findViewById(R.id.fabCall);
-        email=findViewById(R.id.email);
+        linearRequestCallback=findViewById(R.id.linearRequestCallback);
+        linearEmail =findViewById(R.id.linearEmail);
+        linearCallSupport=findViewById(R.id.linearCallSupport);
 
         back_activity_button = findViewById(R.id.back_activity_button);
         back_activity_button.setOnClickListener(this);
-        contact_request.setOnClickListener(this);
-        email.setOnClickListener(this);
-        fabCall.setOnClickListener(this);
+        linearRequestCallback.setOnClickListener(this);
+        linearEmail.setOnClickListener(this);
+        linearCallSupport.setOnClickListener(this);
 
     }
 
@@ -89,16 +90,16 @@ public class Help extends Base_Activity implements View.OnClickListener ,Permiss
             case R.id.back_activity_button:
                 backbuttonfun();
                 break;
-            case R.id.contact_request:
-                contact_request.startAnimation(animation);
+            case R.id.linearRequestCallback:
+                linearRequestCallback.startAnimation(animation);
                 sendUserDetail();
                 break;
-            case R.id.email:
-                email.startAnimation(animation);
+            case R.id.linearEmail:
+                linearEmail.startAnimation(animation);
                 sendMail();
                 break;
-            case R.id.fabCall:
-                fabCall.startAnimation(animation);
+            case R.id.linearCallSupport:
+                linearCallSupport.startAnimation(animation);
                 permissionUtils.check_permission(PermissionHandler.makeCallPermissionArrayList(Help.this),
                         Content_Message.MAKE_CALL_PERMISSION, ApplicationConstant.REQ_MAKE_CALL_PERMISSION);
                 break;

@@ -5,24 +5,36 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -79,6 +91,9 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
     PermissionUtils permissionUtils;
     static OxigenTransactionVO oxigenValidateResponce;
 
+    CardView fetchbillcard;
+    LinearLayout fetchbilllayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +105,8 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
         amount = findViewById(R.id.amount);
         proceed = findViewById(R.id.proceed);
         browseplan = findViewById(R.id.browseplan);
+        fetchbillcard=findViewById(R.id.fetchbillcard);
+        fetchbilllayout=findViewById(R.id.fetchbilllayout);
         permissionUtils = new PermissionUtils(Mobile_Prepaid_Recharge_Service.this);
 
         browseplan.setVisibility(View.GONE);
@@ -103,6 +120,13 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
         proceed.setOnClickListener(this);
         browseplan.setOnClickListener(this);
         operator.setClickable(false);
+
+
+        //change 24-02-2021
+        changeEdittextValue(operator);
+        changeEdittextValue(amount);
+        changeEdittextValue(mobilenumber);
+
 
         Intent intent = getIntent();
         serviceid = intent.getStringExtra("serviceid");
@@ -274,6 +298,27 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                     proceedToRecharge(oxigenValidateResponce.getTypeId().toString(), String.valueOf(upiMandateId), AuthServiceProviderVO.AUTOPE_PG_UPI, true);
                 } else {
                     Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this, "Error !", Content_Message.error_message, false);
+                }
+            }else if(requestCode == ApplicationConstant.REQ_DIRECT_PAYMENT_RESULT){
+                if (data != null) {
+                    CustomerVO customerVO1 = new Gson().fromJson(data.getStringExtra("data"),CustomerVO.class);
+                    if(customerVO1.getStatusCode().equals("400")) {
+                        BillPayRequest.utilityPaymentFailed(Mobile_Prepaid_Recharge_Service.this,Integer.parseInt(data.getStringExtra(DirectPaymentActivity.EXTRAS_ID)),new VolleyResponse((VolleyResponse.OnSuccess)(fail)->{
+                        },(VolleyResponse.OnError)(Error)->{
+                            try {
+                                JSONObject jsonObject = new JSONObject(Error);
+                                removefetchbilllayout();
+                                Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this, jsonObject.getString("title"), jsonObject.getString("message"), false);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                ExceptionsNotification.ExceptionHandling(Mobile_Prepaid_Recharge_Service.this, Utility.getStackTrace(e));
+                            }
+                        }));
+                    }else {
+                        //BillPayRequest.onActivityResult(this, data, requestCode);
+                    }
+                } else {
+                    Utility.showSingleButtonDialog(this, "Error !", "Something went wrong, Please try again!", false);
                 }
             }
         }
@@ -454,8 +499,58 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                         Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this, "Error !", "Something went wrong, Please try again!", false);
                         return;
                     }
+                    proceed.setVisibility(View.GONE);
+                    //remove all edit text focus
+                    getWindow().getDecorView().clearFocus();
+                    JSONArray dataArry = new JSONArray(oxigenValidateResponce.getAnonymousString3());
+                    Typeface typeface = ResourcesCompat.getFont(Mobile_Prepaid_Recharge_Service.this, R.font.poppinssemibold);
+                    for (int i = 0; i < dataArry.length(); i++) {
+                        JSONObject jsonObject = dataArry.getJSONObject(i);
 
-                    Utility.showSelectPaymentTypeDialog(Mobile_Prepaid_Recharge_Service.this, "Payment Type", oxigenValidateResponce.getPaymentTypeObject(), new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (position) -> {
+                        LinearLayout et = new LinearLayout(new ContextThemeWrapper(Mobile_Prepaid_Recharge_Service.this, R.style.confirmation_dialog_layout));
+                        et.setPadding(Utility.getPixelsFromDPs(Mobile_Prepaid_Recharge_Service.this, 10), Utility.getPixelsFromDPs(Mobile_Prepaid_Recharge_Service.this, 10), Utility.getPixelsFromDPs(Mobile_Prepaid_Recharge_Service.this, 10), Utility.getPixelsFromDPs(Mobile_Prepaid_Recharge_Service.this, 10));
+
+                        TextView text = new TextView(new ContextThemeWrapper(Mobile_Prepaid_Recharge_Service.this, R.style.confirmation_dialog_filed));
+                        text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                        text.setText(jsonObject.getString("key"));
+                        text.setMaxLines(1);
+                        text.setEllipsize(TextUtils.TruncateAt.END);
+                        text.setTypeface(typeface);
+                        text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+                        TextView value = new TextView(new ContextThemeWrapper(Mobile_Prepaid_Recharge_Service.this, R.style.confirmation_dialog_value));
+                        value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                        value.setText(jsonObject.getString("value"));
+                        value.setTypeface(typeface);
+                        value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+                        et.addView(text);
+                        et.addView(value);
+                        fetchbilllayout.addView(et);
+                    }
+
+                    Button billPaybtn = Utility.getButton(Mobile_Prepaid_Recharge_Service.this);
+                    billPaybtn.setText("Proceed");
+                    fetchbilllayout.addView(billPaybtn);
+
+                    billPaybtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            startDirectPaymentActivity(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce);
+                        }
+                    });
+
+                    Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
+                    fetchbillcard.startAnimation(animFadeIn);
+                    fetchbillcard.setVisibility(View.VISIBLE);
+                }
+
+
+
+
+
+
+                 /*   Utility.showSelectPaymentTypeDialog(Mobile_Prepaid_Recharge_Service.this, "Payment Type", oxigenValidateResponce.getPaymentTypeObject(), new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (position) -> {
                         int selectPosition = Integer.parseInt(position);
                         if (selectPosition == ApplicationConstant.BankMandatePayment) {
                             // 07/05/2020
@@ -496,8 +591,49 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                             }));
                             // proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),"AUTOPETXNID60", AuthServiceProviderVO.PAYU);
                         }
-                    }));
-                }
+                    }));*/
+
+            }
+        });
+    }
+
+    public static void startDirectPaymentActivity(Context context, OxigenTransactionVO oxigenTransactionVO) {
+        try {
+            Intent intent = new Intent(context, DirectPaymentActivity.class);
+            intent.putExtra(DirectPaymentActivity.EXTRAS_ID, oxigenTransactionVO.getTypeId());
+            intent.putExtra(DirectPaymentActivity.EXTRAS_ENCRYPTED_VALUE, oxigenTransactionVO.getEncryptedValue());
+            intent.putExtra(DirectPaymentActivity.EXTRAS_DIRECT_PAYMENT, 1);
+            intent.putExtra(DirectPaymentActivity.EXTRAS_TITLE, ApplicationConstant.DIRECT_PAYMENT_TITLE);
+            ((Activity) context).startActivityForResult(intent, ApplicationConstant.REQ_DIRECT_PAYMENT_RESULT);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(context, Utility.getStackTrace(e));
+        }
+
+    }
+
+    public void removefetchbilllayout() {
+        oxigenValidateResponce = new OxigenTransactionVO();
+        //if fetch bill is true and fetch bill layout not = null
+        if (fetchbilllayout.getChildCount() > 0) {
+            fetchbilllayout.removeAllViews();
+            proceed.setVisibility(View.VISIBLE);
+            fetchbillcard.setVisibility(View.GONE);
+        }
+    }
+
+    public void changeEdittextValue(EditText editText) {
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                removefetchbilllayout();
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Log.w("onTextChanged", charSequence.toString());
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
             }
         });
     }

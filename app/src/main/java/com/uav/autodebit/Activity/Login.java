@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.google.gson.Gson;
 import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.OTP.helper.AppSignatureHelper;
 import com.uav.autodebit.R;
+import com.uav.autodebit.SessionTimeLimit.LogOutTimerUtil;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.fingerprint.Fingerprint_Authentication;
@@ -43,7 +45,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Login extends Base_Activity implements View.OnClickListener, View.OnTouchListener {
+public class Login extends Base_Activity implements View.OnClickListener, View.OnTouchListener,LogOutTimerUtil.LogOutListener {
     EditText password, userid;
     TextView forgorpassword, fingerprinttext;
     Button newuserbtn;
@@ -52,17 +54,20 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
     LinearLayout fingerprintlayout;
 
 
+    //Class level variable
+    private boolean inBackground = false;
+
     @TargetApi(Build.VERSION_CODES.O)
     private void disableAutofill() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             getWindow().getDecorView().setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
         }
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+     //   inBackground = false;
     }
 
     @Override
@@ -116,6 +121,10 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
 
         userid.setText(getIntent().getStringExtra("user_mobile"));
 
+        if (Session.check_Exists_Timer_key(Login.this,Session.CACHE_IS_LOGIN_TIME)){
+            LogOutTimerUtil.startLogoutTimer(Login.this, this);
+        }
+
 
         if (Session.check_Exists_key(Login.this, Session.CACHE_USER_LOGINID)) {
             userid.setText(Session.getSessionByKey(Login.this, Session.CACHE_USER_LOGINID));
@@ -126,10 +135,9 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
             } catch (Exception e) {
                 fingerprintlayout.removeAllViews();
             }
-
         }
-
     }
+
 
     @TargetApi(Build.VERSION_CODES.M)
     public void startLoginFingerPrint() {
@@ -155,7 +163,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
 
             @Override
             public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
-               // Toast.makeText(Login.this, "Success!", Toast.LENGTH_LONG).show();
+                // Toast.makeText(Login.this, "Success!", Toast.LENGTH_LONG).show();
 
                 String type = null;
                 boolean checkvalid = false;
@@ -202,6 +210,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                     } else {
                         //override Local Cache
                         CustomerCacheUpdate.updateCustomerCache(Login.this, customerVO);
+
                         startActivity();
                     }
                 }
@@ -211,12 +220,29 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
         }
     }
 
-
     @Override
     protected void onPause() {
         super.onPause();
         if (fingerprint_authentication == null) return;
         fingerprint_authentication.cancel();
+
+      /*  inBackground = true;
+        new CountDownTimer( 60000 , 1000 )
+        {
+            public void onTick(long millisUntilFinished) {}
+
+            public void onFinish()
+            {
+                if ( inBackground )
+                {
+                    // code to logout
+                    Toast.makeText(Login.this, "Logout App After 5 Min", Toast.LENGTH_SHORT).show();
+                    Intent intentTimeOut = new Intent(Login.this,Splash_Screen.class);
+                    startActivity(intentTimeOut);
+                    finish();
+                }
+            }
+        }.start();*/
     }
 
     @Override
@@ -336,6 +362,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                     Session.set_Data_Sharedprefence(Login.this, Session.CACHE_USER_LOGINID, userid.getText().toString());
                     //override Local Cache
                     CustomerCacheUpdate.updateCustomerCache(Login.this, customerVO);
+
                     startActivity();
                 }
             }
@@ -503,12 +530,15 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
     public void startActivity() {
         try {
             if (getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION) != null) {
+                Session.set_Data_Sharedprefence_BoolenvValue(Login.this, Session.CACHE_IS_LOGIN_TIME, true);
                 Intent intent = new Intent(Login.this, Home.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(ApplicationConstant.NOTIFICATION_ACTION, getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION));
                 startActivity(intent);
+
             } else {
+                Session.set_Data_Sharedprefence_BoolenvValue(Login.this, Session.CACHE_IS_LOGIN_TIME, true);
                 Intent intent = new Intent(Login.this, Home.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

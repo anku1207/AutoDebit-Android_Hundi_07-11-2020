@@ -11,6 +11,7 @@ import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerServiceOperatorVO;
 import com.uav.autodebit.vo.CustomerVO;
+import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -150,6 +151,47 @@ public class MandateRevokeServiceWiseRepository {
                         volleyResponse.onSuccess(respObject);
                     }
 
+                }
+            });
+        } catch (Exception e) {
+            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+        }
+    }
+    public void getDMRCMandateSwapingType(Context context,int DMRCCardId,int customerId,VolleyResponse volleyResponse){
+
+        try {
+            DMRC_Customer_CardVO dmrc_customer_cardVO = new DMRC_Customer_CardVO();
+            dmrc_customer_cardVO.setDmrcid(DMRCCardId);
+            CustomerVO request_data = new CustomerVO();
+            request_data.setCustomerId(customerId);
+            dmrc_customer_cardVO.setCustomer(request_data);
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            ConnectionVO connectionVO = CustomerBO.getDMRCMandateSwapingType();
+            String json = new Gson().toJson(dmrc_customer_cardVO);
+            params.put("volley", json);
+            connectionVO.setParams(params);
+
+            VolleyUtils.makeJsonObjectRequest(context, connectionVO, new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                }
+
+                @Override
+                public void onResponse(Object response) throws JSONException {
+                    JSONObject resp = (JSONObject) response;
+                    Gson gson = new Gson();
+                    DMRC_Customer_CardVO respObject = gson.fromJson(resp.toString(), DMRC_Customer_CardVO.class);
+
+                    if (respObject.getStatusCode().equals("400")) {
+                        ArrayList error = (ArrayList) respObject.getErrorMsgs();
+                        StringBuilder sb = new StringBuilder();
+                        for (int i = 0; i < error.size(); i++) {
+                            sb.append(error.get(i)).append("\n");
+                        }
+                        Utility.showSingleButtonDialog(context, respObject.getDialogTitle(), sb.toString(), false);
+                    } else {
+                        volleyResponse.onSuccess(respObject);
+                    }
                 }
             });
         } catch (Exception e) {

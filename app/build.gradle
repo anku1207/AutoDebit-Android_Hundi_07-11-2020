@@ -7,8 +7,8 @@ android {
         applicationId "com.uav.autodebit"
         minSdkVersion 22
         targetSdkVersion 30
-        versionCode 13
-        versionName "1.13"
+        versionCode 14
+        versionName "1.14"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         lintOptions {
@@ -115,6 +115,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-tagmanager:17.0.0'
    // implementation 'com.google.android.gms.analytics.CampaignTrackingReceiver:17.0.0'
 
+    //Material
+    implementation 'com.google.android.material:material:1.2.1'
 
 
 //////////////////////

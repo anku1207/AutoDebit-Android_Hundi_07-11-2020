@@ -10,6 +10,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.SignUpBO;
@@ -35,8 +36,9 @@ public class ChangePassword extends Base_Activity {
 
     UAVEditText newpassword;
     Button loginbtn;
-    String customerid,methodname;
+    String customerid, methodname;
     UAVEditText repeatpassword;
+    private ImageView back_activity_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,56 +47,64 @@ public class ChangePassword extends Base_Activity {
 
         getSupportActionBar().hide();
 
-        newpassword=findViewById(R.id.newpassword);
-        repeatpassword=findViewById(R.id.repeatpassword);
-        loginbtn=findViewById(R.id.loginbtn);
+        newpassword = findViewById(R.id.newpassword);
+        repeatpassword = findViewById(R.id.repeatpassword);
+        loginbtn = findViewById(R.id.loginbtn);
+        back_activity_button = findViewById(R.id.back_activity_button);
 
-        Intent intent =getIntent();
-        Gson gson=new Gson();
-         customerid=intent.getStringExtra("customerid");
+        back_activity_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
-        repeatpassword.setInputType (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-        newpassword.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        Intent intent = getIntent();
+        Gson gson = new Gson();
+        customerid = intent.getStringExtra("customerid");
+
+        repeatpassword.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        newpassword.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         repeatpassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
         newpassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
-        methodname=intent.getStringExtra("methodname");
+        methodname = intent.getStringExtra("methodname");
 
         loginbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean valid=true;
+                boolean valid = true;
 
-                if(newpassword.getText().toString().equals("") && repeatpassword.getText().toString().equals("")){
-                    Utility.showSingleButtonDialog(ChangePassword.this,"Alert !","empty password not allow",false);
-                    valid=false;
-                }else {
-                    if(newpassword.getText().toString().equals("")) {
+                if (newpassword.getText().toString().equals("") && repeatpassword.getText().toString().equals("")) {
+                    Utility.showSingleButtonDialog(ChangePassword.this, "Alert !", "empty password not allow", false);
+                    valid = false;
+                } else {
+                    if (newpassword.getText().toString().equals("")) {
                         newpassword.setError(ErrorMsg.Field_Required);
-                        valid=false;
+                        valid = false;
                     }
-                    if(repeatpassword.getText().toString().equals("") ){
+                    if (repeatpassword.getText().toString().equals("")) {
                         repeatpassword.setError(ErrorMsg.Field_Required);
-                        valid=false;
+                        valid = false;
                     }
 
 
-                    if(!newpassword.getText().toString().trim().equals(repeatpassword.getText().toString().trim())){
+                    if (!newpassword.getText().toString().trim().equals(repeatpassword.getText().toString().trim())) {
 
                         Log.w("value", String.valueOf(newpassword.getText().toString().trim().length()));
 
-                        Utility.showSingleButtonDialog(ChangePassword.this,"Alert"," These passwords don't match",false);
-                        valid=false;
-                    }else if(newpassword.getText().toString().trim().length()<4){
+                        Utility.showSingleButtonDialog(ChangePassword.this, "Alert", " These passwords don't match", false);
+                        valid = false;
+                    } else if (newpassword.getText().toString().trim().length() < 4) {
 
 
-                        Utility.showSingleButtonDialog(ChangePassword.this,"Alert"," Password must be at least 6 characters",false);
-                        valid=false;
+                        Utility.showSingleButtonDialog(ChangePassword.this, "Alert", " Password must be at least 6 characters", false);
+                        valid = false;
 
                     }
                 }
 
-                if(valid)   savepassword();
+                if (valid) savepassword();
             }
         });
 
@@ -109,7 +119,7 @@ public class ChangePassword extends Base_Activity {
                 switch (target) {
                     case RIGHT:
 
-                        if(repeatpassword.getText().toString().equals("")) return;
+                        if (repeatpassword.getText().toString().equals("")) return;
 
                        /* if(repeatpassword.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD){
                             repeatpassword.setInputType( InputType.TYPE_CLASS_TEXT |
@@ -122,10 +132,10 @@ public class ChangePassword extends Base_Activity {
                         repeatpassword.setSelection(repeatpassword.getText().length());*/
 
 
-                        if(repeatpassword.getTransformationMethod()==PasswordTransformationMethod.getInstance()){
+                        if (repeatpassword.getTransformationMethod() == PasswordTransformationMethod.getInstance()) {
                             repeatpassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ava_showpin, 0);
                             repeatpassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                        }else {
+                        } else {
                             repeatpassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ava_hidepin, 0);
                             repeatpassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
                         }
@@ -157,10 +167,10 @@ public class ChangePassword extends Base_Activity {
                             newpassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ava_hidepin, 0);
                         }*/
 
-                        if(newpassword.getTransformationMethod()==PasswordTransformationMethod.getInstance()){
+                        if (newpassword.getTransformationMethod() == PasswordTransformationMethod.getInstance()) {
                             newpassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ava_showpin, 0);
                             newpassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                        }else {
+                        } else {
                             newpassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ava_hidepin, 0);
                             newpassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
                         }
@@ -178,13 +188,15 @@ public class ChangePassword extends Base_Activity {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
-                if(newpassword.getText().toString().length()<=1){
-                    if(editable.toString().length()>0){
+                if (newpassword.getText().toString().length() <= 1) {
+                    if (editable.toString().length() > 0) {
                         repeatpassword.setText(null);
                     }
                 }
@@ -196,13 +208,13 @@ public class ChangePassword extends Base_Activity {
     }
 
 
-    public void savepassword(){
+    public void savepassword() {
 
 
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = SignUpBO.setCustomerPassword();
 
-        CustomerVO customerVO =new CustomerVO();
+        CustomerVO customerVO = new CustomerVO();
         customerVO.setCustomerId(Integer.parseInt(customerid));
         customerVO.setPassword(newpassword.getText().toString().trim());
         connectionVO.setMethodName(methodname);
@@ -212,10 +224,11 @@ public class ChangePassword extends Base_Activity {
         connectionVO.setParams(params);
 
 
-        VolleyUtils.makeJsonObjectRequest(this,connectionVO, new VolleyResponseListener() {
+        VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
             @Override
             public void onError(String message) {
             }
+
             @Override
             public void onResponse(Object resp) throws JSONException {
                 JSONObject response = (JSONObject) resp;
@@ -224,19 +237,19 @@ public class ChangePassword extends Base_Activity {
                 CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
 
 
-                Log.w("responsesignup",response.toString());
-                if(customerVO.getStatusCode().equals("400")){
+                Log.w("responsesignup", response.toString());
+                if (customerVO.getStatusCode().equals("400")) {
                     ArrayList error = (ArrayList) customerVO.getErrorMsgs();
                     StringBuilder sb = new StringBuilder();
-                    for(int i=0; i<error.size(); i++){
+                    for (int i = 0; i < error.size(); i++) {
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.alertDialog(ChangePassword.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
-                }else {
+                    Utility.alertDialog(ChangePassword.this, customerVO.getDialogTitle(), sb.toString(), "Ok");
+                } else {
                     String json = gson.toJson(customerVO);
-                    Session.set_Data_Sharedprefence(ChangePassword.this,Session.CACHE_CUSTOMER,json);
-                    Intent intent =new Intent();
-                    setResult(RESULT_OK,intent);
+                    Session.set_Data_Sharedprefence(ChangePassword.this, Session.CACHE_CUSTOMER, json);
+                    Intent intent = new Intent();
+                    setResult(RESULT_OK, intent);
                     finish();
                 }
             }

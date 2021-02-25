@@ -1,5 +1,6 @@
 package com.uav.autodebit.Activity;
 
+import android.app.Notification;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -29,6 +30,8 @@ import com.google.gson.reflect.TypeToken;
 import com.uav.autodebit.BO.BannerBO;
 
 import com.uav.autodebit.R;
+import com.uav.autodebit.SessionTimeLimit.LogOutTimerUtil;
+import com.uav.autodebit.SessionTimeLimit.SessionManager;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
@@ -65,12 +68,16 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
     // New 13/01/2021 Gaurav
     private final Executor backgroundExecutor = Executors.newSingleThreadExecutor();
 
+    SessionManager sessionManager;
+    private static final String TAG = "AutoPe";
     ////
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash__screen);
+
+        sessionManager = new SessionManager(this);
 
         ImageView imageView = (ImageView) findViewById(R.id.appstarticon);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -201,18 +208,30 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
     private void startNextActivity() {
 
         Log.e("isuse", Session.getSessionByKey_BoolenValue(Splash_Screen.this, Session.CACHE_IS_NEW_USER).toString());
+        Log.e("isuse", Session.getSessionByKey_BoolenValue(Splash_Screen.this, Session.CACHE_IS_LOGIN_TIME).toString());
         loadHomeActivity();
     }
 
     private void loadHomeActivity() {
         try {
+            Intent intent = null;
             if (getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION) != null) {
-                Intent intent = new Intent(Splash_Screen.this, Login.class);
+                //asking all permission for user
+                if (!Session.getSessionByKey_BoolenValue(Splash_Screen.this, Session.CACHE_IS_LOGIN_TIME)) {
+                    intent = new Intent(Splash_Screen.this, Login.class);
+                } else {
+                    intent = new Intent(Splash_Screen.this, Home.class);
+                }
                 intent.putExtra(ApplicationConstant.NOTIFICATION_ACTION, getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION));
                 startActivity(intent);
                 finish();
             } else {
-                Intent intent = new Intent(Splash_Screen.this, Login.class);
+                if (!Session.getSessionByKey_BoolenValue(Splash_Screen.this, Session.CACHE_IS_LOGIN_TIME)) {
+                    intent = new Intent(Splash_Screen.this, Login.class);
+
+                } else {
+                    intent = new Intent(Splash_Screen.this, Home.class);
+                }
                 startActivity(intent);
                 finish();
             }
@@ -220,6 +239,38 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
             ExceptionsNotification.ExceptionHandling(Splash_Screen.this, Utility.getStackTrace(e));
         }
     }
+
+
+/*
+    private void loadHomeActivity() {
+        try {
+            Intent intent = null;
+            if (getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION) != null) {
+                if(sessionManager.isLoggedIn()){
+>>>>>>> 33e5850a8936eec36ae7a85a2b3710d258525a48
+                     intent = new Intent(Splash_Screen.this, Login.class);
+                }else{
+                    intent = new Intent(Splash_Screen.this, Home.class);
+                }
+             //   intent = new Intent(Splash_Screen.this, Notification.class);
+                intent.putExtra(ApplicationConstant.NOTIFICATION_ACTION, getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION));
+                startActivity(intent);
+                finish();
+            } else {
+                if(!sessionManager.isLoggedIn()){
+                    intent = new Intent(Splash_Screen.this, Login.class);
+                }else{
+                    intent = new Intent(Splash_Screen.this, Home.class);
+                }
+               // intent = new Intent(Splash_Screen.this, Login.class);
+                startActivity(intent);
+                finish();
+            }
+        } catch (Exception e) {
+            ExceptionsNotification.ExceptionHandling(Splash_Screen.this, Utility.getStackTrace(e));
+        }
+    }
+*/
 
     private void startDownloadCache() {
         try {
@@ -346,6 +397,7 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
         bitmapVO.setImageQuality(100);
         imageVos.add(bitmapVO);
     }
+
     // New 13/01/2021 Gaurav
     @Override
     protected void onResume() {
@@ -353,7 +405,7 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
         checkInstallReferrer();
     }
 
-    
+
     // TODO: Change this to use whatever preferences are appropriate. The install referrer should
     // only be sent to the receiver once.
     private final String prefKey = "checkedInstallReferrer";
@@ -396,6 +448,7 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
                         break;
                 }
             }
+
             @Override
             public void onInstallReferrerServiceDisconnected() {
 
@@ -429,7 +482,6 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
             }
         });
     }*/
-
 }
 ////////////////////////////////////////////
 

@@ -3,16 +3,26 @@ package com.uav.autodebit.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.text.TextUtils;
+import android.view.ContextThemeWrapper;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
+import com.uav.autodebit.Interface.ServiceClick;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
@@ -23,6 +33,9 @@ import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.DataAdapterVO;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class DynamicLayout {
 
@@ -117,6 +130,5 @@ public class DynamicLayout {
             }
         }
         return num;
-
     }
 }

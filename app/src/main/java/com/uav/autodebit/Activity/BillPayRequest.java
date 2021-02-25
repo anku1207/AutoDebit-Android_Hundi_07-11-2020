@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.airbnb.lottie.animation.content.Content;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.Electricity_BillBO;
 import com.uav.autodebit.BO.OxigenPlanBO;
@@ -251,7 +252,7 @@ public class BillPayRequest {
 
 
     // fetchbill key is showing bill fetch bill is required or not required and isFetchBill key is showing use bill fetch or not fetch
-    static JSONObject getNewTypeQuestionLabelData(Activity activity, EditText operator, String amount, boolean fetchBill, boolean isFetchBill, List<OxigenQuestionsVO> questionsVOS, int minamt) throws JSONException {
+    static JSONObject getNewTypeQuestionLabelData(Activity activity, EditText operator, EditText amountEditText, String amount, boolean fetchBill, boolean isFetchBill, List<OxigenQuestionsVO> questionsVOS, int minamt) throws JSONException {
         operator.setError(null);
 
         boolean valid = true;
@@ -277,12 +278,13 @@ public class BillPayRequest {
             }
             jsonObject.put(oxigenQuestionsVO.getQuestionLabel(), editText.getText().toString());
         }
-        if (fetchBill && valid) {
-            if (amount == null) {
-                Utility.showSingleButtonDialogconfirmation(activity, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) Dialog::dismiss), "Alert", "Bill Amount is null ");
+
+        if ((!isFetchBill && valid) || fetchBill && valid ) {
+            if (amount==null || amount.equals("")) {
+                amountEditText.setError(ErrorMsg.Field_Required);
                 valid = false;
-            } else if (amount != null && Double.parseDouble(amount) < minamt) {
-                Utility.showSingleButtonDialogconfirmation(activity, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) Dialog::dismiss), "Alert", "Amount Must be greater then " + activity.getString(R.string.Rs) + " " + minamt);
+            } else if (!amount.equals("") && Double.parseDouble(amount) < minamt) {
+                amountEditText.setError("Amount Must be greater then " + activity.getString(R.string.Rs) + " " + minamt);
                 valid = false;
             }
         }
@@ -389,6 +391,10 @@ public class BillPayRequest {
                 OxigenTransactionVO upimandateOxigenresp = (OxigenTransactionVO) upimandate;
                 upimandateOxigenresp.setSiMandateType(ApplicationConstant.PG_MANDATE);
                 setBankMandateOrRecharge(context, upimandateOxigenresp);
+            },(PaymentGatewayResponse.OnDirectPayment)(ondirectpayment)->{
+                OxigenTransactionVO ondirectpaymentOxigenresp = (OxigenTransactionVO) ondirectpayment;
+                handelRechargeSuccess(context,ondirectpaymentOxigenresp);
+
             }));
         }
     }
@@ -654,51 +660,60 @@ public class BillPayRequest {
                 } else {
                     if (oxigenValidateResponce.getTypeId() == null) {
                         Utility.showSingleButtonDialog(context, "Error !", "Something went wrong, Please try again!", false);
+                    }else if(oxigenValidateResponce.getStatusCode().equals("DR101")){
+                        paymentGatewayResponse.onDirectPayment(oxigenValidateResponce);
                     } else {
+
                         //if due date > 2 paybill date show payment dialog select recharge mode
                         if (oxigenValidateResponce.getPaymentDialogShowMandate()) {
-                            Utility.showSelectPaymentTypeDialog(context, "Payment Type", oxigenValidateResponce.getPaymentTypeObject(), new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (position) -> {
-                                int selectPosition = Integer.parseInt(position);
-                                if (selectPosition == ApplicationConstant.BankMandatePayment) {
-                                    // 07/05/2020
-                                    showBankMandateOrSiMandateInfo(context, oxigenValidateResponce.getBankMandateHtml(), new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
-                                        if (oxigenValidateResponce.getShowDialog()) {
-                                            // 07/05/2020
-                                            MyDialog.showWebviewConditionalAlertDialog(context, oxigenValidateResponce.getClinkingOnBankMandate(), true, new ConfirmationGetObjet((ConfirmationGetObjet.OnOk) (rechargenow) -> {
-                                                HashMap<String, Object> objectHashMap = (HashMap<String, Object>) rechargenow;
-                                                ((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))).dismiss();
-                                                if (String.valueOf(objectHashMap.get("data")).equalsIgnoreCase("ok")) {
-                                                    paymentGatewayResponse.onPg(oxigenValidateResponce);
-                                                }
-                                            }, (ConfirmationGetObjet.OnCancel) (cancel) -> {
-                                                ((Dialog) cancel).dismiss();
+                            try {
+                                Utility.showSelectPaymentTypeDialog(context, "Payment Type", oxigenValidateResponce.getPaymentTypeObject(), new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (position) -> {
+                                    int selectPosition = Integer.parseInt(position);
+                                    if (selectPosition == ApplicationConstant.BankMandatePayment) {
+                                        // 07/05/2020
+                                        showBankMandateOrSiMandateInfo(context, oxigenValidateResponce.getBankMandateHtml(), new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
+                                            if (oxigenValidateResponce.getShowDialog()) {
+                                                // 07/05/2020
+                                                MyDialog.showWebviewConditionalAlertDialog(context, oxigenValidateResponce.getClinkingOnBankMandate(), true, new ConfirmationGetObjet((ConfirmationGetObjet.OnOk) (rechargenow) -> {
+                                                    HashMap<String, Object> objectHashMap = (HashMap<String, Object>) rechargenow;
+                                                    ((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))).dismiss();
+                                                    if (String.valueOf(objectHashMap.get("data")).equalsIgnoreCase("ok")) {
+                                                        paymentGatewayResponse.onPg(oxigenValidateResponce);
+                                                    }
+                                                }, (ConfirmationGetObjet.OnCancel) (cancel) -> {
+                                                    ((Dialog) cancel).dismiss();
+                                                    oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
+                                                    paymentGatewayResponse.onEnach(oxigenValidateResponce);
+                                                }));
+                                            } else {
                                                 oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
                                                 paymentGatewayResponse.onEnach(oxigenValidateResponce);
-                                            }));
-                                        } else {
-                                            oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
-                                            paymentGatewayResponse.onEnach(oxigenValidateResponce);
-                                        }
-                                    }));
-                                    // if service id is dish show mandate dialog
-                                } else if (selectPosition == ApplicationConstant.SIMandatePayment) {
-                                    showBankMandateOrSiMandateInfo(context, oxigenValidateResponce.getSiMandateHtml(), new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
-                                        oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG));
-                                        paymentGatewayResponse.onSiMandate(oxigenValidateResponce);
-                                    }));
-                                } else if (selectPosition == ApplicationConstant.UPIMandatePayment) {
-                                    showBankMandateOrSiMandateInfo(context, oxigenValidateResponce.getUpiMandateHtml(), new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
-                                        oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG_UPI));
-                                        paymentGatewayResponse.onUPIMandate(oxigenValidateResponce);
-                                    }));
+                                            }
+                                        }));
+                                        // if service id is dish show mandate dialog
+                                    } else if (selectPosition == ApplicationConstant.SIMandatePayment) {
+                                        showBankMandateOrSiMandateInfo(context, oxigenValidateResponce.getSiMandateHtml(), new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
+                                            oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG));
+                                            paymentGatewayResponse.onSiMandate(oxigenValidateResponce);
+                                        }));
+                                    } else if (selectPosition == ApplicationConstant.UPIMandatePayment) {
+                                        showBankMandateOrSiMandateInfo(context, oxigenValidateResponce.getUpiMandateHtml(), new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
+                                            oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG_UPI));
+                                            paymentGatewayResponse.onUPIMandate(oxigenValidateResponce);
+                                        }));
 
-                                }
-                            }));
+                                    }
+                                }));
+                            } catch (JSONException e) {
+                                ExceptionsNotification.ExceptionHandling(context, Utility.getStackTrace(e));
+                            }
                         } else {
                             //if due date <  2 paybill date not show payment dialog and move to SI Mandate automatic
                             paymentGatewayResponse.onPg(oxigenValidateResponce);
                         }
                     }
+
+
                 }
             }
         });
@@ -934,18 +949,83 @@ public class BillPayRequest {
         } else if (requestCode == ApplicationConstant.REQ_DIRECT_PAYMENT_RESULT) {
             Toast.makeText(context, "REQ_DIRECT_PAYMENT_RESULT", Toast.LENGTH_SHORT).show();
             try {
-                JSONObject jsonDataObj = new JSONObject(data.getStringExtra("data"));
-                autoPePGDirectPayment(jsonDataObj.getInt("txnId"), context, new VolleyResponse((VolleyResponse.OnSuccess) (success) -> {
-                    OxigenTransactionVO oxigenTransactionVO = (OxigenTransactionVO) success;
-                    MyDialog.showSingleButtonBigContentDialog(context, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
-                        ok.dismiss();
-                        ((Activity) context).finish();
-                    }), oxigenTransactionVO.getDialogTitle(), oxigenTransactionVO.getAnonymousString());
-                }));
+                CustomerVO customerVO1 = new Gson().fromJson(data.getStringExtra("data"),CustomerVO.class);
+                if(customerVO1.getStatusCode().equals("400")){
+                    //if direct payment fail
+                    utilityPaymentFailed(context,Integer.parseInt(data.getStringExtra(DirectPaymentActivity.EXTRAS_ID)),new VolleyResponse((VolleyResponse.OnSuccess)(fail)->{
+                    },(VolleyResponse.OnError)(Error)->{
+                        try {
+                            JSONObject jsonObject = new JSONObject(Error);
+                            Utility.showSingleButtonDialog(context, jsonObject.getString("title"), jsonObject.getString("message"), false);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            ExceptionsNotification.ExceptionHandling(context, Utility.getStackTrace(e));
+                        }
+                    }));
+                }else {
+                    //if direct payment success
+                    JSONObject jsonDataObj = new JSONObject(customerVO1.getAnonymousString());
+                    autoPePGDirectPayment(jsonDataObj.getInt("txnId"), context, new VolleyResponse((VolleyResponse.OnSuccess) (success) -> {
+                        BaseVO baseVOResp = (BaseVO) success;
+                        MyDialog.showSingleButtonBigContentDialog(context, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
+                            ok.dismiss();
+                            ((Activity) context).finish();
+                        }), baseVOResp.getDialogTitle(), baseVOResp.getAnonymousString());
+                    }));
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
                 ExceptionsNotification.ExceptionHandling(context, Utility.getStackTrace(e));
             }
+        }
+    }
+
+    static void utilityPaymentFailed(Context context,Integer typeId , VolleyResponse volleyResponse){
+        try {
+            Gson gson = new Gson();
+            ConnectionVO connectionVO = OxigenPlanBO.utilityPaymentFailed();
+
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            OxigenTransactionVO  oxigenTransactionVO = new OxigenTransactionVO();
+            oxigenTransactionVO.setTypeId(typeId);
+
+            params.put("volley", gson.toJson(oxigenTransactionVO));
+            connectionVO.setParams(params);
+            Log.w("autopePGDirectPayment", gson.toJson(oxigenTransactionVO));
+            VolleyUtils.makeJsonObjectRequest(context, connectionVO, new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                }
+
+                @Override
+                public void onResponse(Object resp) {
+                    JSONObject response = (JSONObject) resp;
+                    BaseVO baseVO = gson.fromJson(response.toString(), BaseVO.class);
+
+                    if (baseVO.getStatusCode().equals("400")) {
+                        try{
+                            ArrayList error = (ArrayList) baseVO.getErrorMsgs();
+                            StringBuilder sb = new StringBuilder();
+                            for (int i = 0; i < error.size(); i++) {
+                                sb.append(error.get(i)).append("\n");
+                            }
+                            JSONObject  failObject= new JSONObject();
+                            failObject.put("title",baseVO.getDialogTitle());
+                            failObject.put("message",sb.toString());
+                            volleyResponse.onError(failObject.toString());
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            ExceptionsNotification.ExceptionHandling(context, Utility.getStackTrace(e));
+                        }
+                    } else {
+                        volleyResponse.onSuccess(baseVO);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(context, Utility.getStackTrace(e));
         }
     }
 
@@ -1049,11 +1129,7 @@ public class BillPayRequest {
 
         TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
         text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
-        text.setText("The problem is with Android gradle plugin which doesn't work well with Google's Maven repository.\n" +
-                "\n" +
-                "You can downgrade your google-services down to 4.2.0 as it was said by @mownathi-manigundan. Version 4.2.0 is available in AndroidTools Repository which outdated gradle plugin handles just fine\n" +
-                "\n" +
-                "But it'd be better to update your plugin up to 3.2 or higher and use recommended");
+        text.setText(oxigenTransactionVOresp.getAnonymousString1());
         text.setTypeface(typeface);
         text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 

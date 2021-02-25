@@ -22,22 +22,17 @@ import com.uav.autodebit.vo.ServiceTypeVO;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by anku on 10/26/2017.
+ * Created by Gaurav on Feb/15/2021.
  */
-/*
-recyclerview.adapter
-recyclerview.viewholder
-*/
 
 public class RecyclerViewProfileBankAdapterMenu extends RecyclerView.Adapter<RecyclerViewProfileBankAdapterMenu.ProdectViewHolder>{
     Context mctx ;
     List<ServiceTypeVO> serviceTypeVOS;
     int Activityname;
-
-
 
     public RecyclerViewProfileBankAdapterMenu(Context mctx, List<ServiceTypeVO> serviceTypeVOS, int Activityname) {
         this.mctx = mctx;
@@ -61,16 +56,15 @@ public class RecyclerViewProfileBankAdapterMenu extends RecyclerView.Adapter<Rec
          holder.imageView.setImageDrawable(Utility.GetImage(mctx,pro.getAppIcon()));
          holder.mainlayout.setEnabled(true);
 
-
          holder.mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                  ((Profile_Activity)mctx).bankDetails(pro.getAnonymousInteger());
+                  ((Profile_Activity)mctx).bankDMRCDetails(pro.getTitle());
             }
         });
-
     }
 
+   
     @Override
     public int getItemCount() {
         return serviceTypeVOS.size();

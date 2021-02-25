@@ -113,7 +113,8 @@
                     android:inputType="number|textVisiblePassword"
                     android:maxLength="10"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    />
             </androidx.cardview.widget.CardView>
 
 
@@ -194,6 +195,24 @@
                 android:background="@drawable/cornerbutton"
                 android:text="Proceed"
                 android:textColor="@color/white" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="7dp"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="15dp"
+                android:id="@+id/fetchbillcard"
+                android:visibility="gone"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/fetchbilllayout">
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <include
                 android:id="@+id/offer_fragment"

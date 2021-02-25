@@ -1214,11 +1214,12 @@ public class Home extends Base_Activity implements View.OnClickListener {
             return true;
         }
         if (id == R.id.action_Logout) {
+            Session.set_Data_Sharedprefence_BoolenvValue(Home.this, Session.CACHE_IS_LOGIN_TIME, false);
             startActivity(new Intent(Home.this, Login.class));
             finishAffinity();
         }
 
         return super.onOptionsItemSelected(item);
     }
-    
+
 }

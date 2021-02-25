@@ -89,7 +89,7 @@ public class DirectPaymentActivity extends AppCompatActivity implements View.OnC
 
         title.setText(getIntent().getStringExtra(EXTRAS_TITLE));
         encryptedValue=getIntent().getStringExtra(EXTRAS_ENCRYPTED_VALUE);
-        action_Id=getIntent().getStringExtra(EXTRAS_ID);
+        action_Id=String.valueOf(getIntent().getIntExtra(EXTRAS_ID,0));
         isDirectPayment=getIntent().getIntExtra(EXTRAS_DIRECT_PAYMENT,0);
         service_type_id=getIntent().getIntExtra(EXTRAS_SERVICE_TYPE_ID,0);
 
@@ -354,7 +354,16 @@ public class DirectPaymentActivity extends AppCompatActivity implements View.OnC
                 }
                 @Override
                 public void onResponse(Object resp) throws JSONException {
+
                     JSONObject response = (JSONObject) resp;
+                    Intent intent =new Intent();
+                    setResult(RESULT_OK,intent);
+                    intent.putExtra(EXTRAS_ID,action_Id);
+                    intent.putExtra("data",response.toString());
+                    finish();
+
+
+                    /*JSONObject response = (JSONObject) resp;
                     CustomerVO customerVO1 = new Gson().fromJson(response.toString(),CustomerVO.class);
                     if(customerVO1.getStatusCode().equals("400")){
                         ArrayList error = (ArrayList) customerVO1.getErrorMsgs();
@@ -369,7 +378,7 @@ public class DirectPaymentActivity extends AppCompatActivity implements View.OnC
                         intent.putExtra("data",customerVO1.getAnonymousString());
                         setResult(RESULT_OK,intent);
                         finish();
-                    }
+                    }*/
                 }
             });
         } catch (Exception e) {

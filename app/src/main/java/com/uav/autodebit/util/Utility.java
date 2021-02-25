@@ -51,9 +51,11 @@ import android.provider.MediaStore;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
+import android.text.Html;
 import android.text.InputType;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.text.method.DigitsKeyListener;
@@ -2158,6 +2160,16 @@ public class Utility {
 
     public static String stringFormat2Digits(int value){
        return String.format("%02d", value);
+    }
+
+    public static Spanned getHtmlToText(String text){
+        Spanned spanned;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            spanned=Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT);
+        } else {
+            spanned=Html.fromHtml(text);
+        }
+        return spanned;
     }
 
 

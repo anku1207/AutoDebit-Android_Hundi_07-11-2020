@@ -1,6 +1,7 @@
 package com.uav.autodebit.vo;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class CustomerAuthServiceVO extends BaseVO implements Serializable {
     private String providerTokenId;
@@ -13,6 +14,15 @@ public class CustomerAuthServiceVO extends BaseVO implements Serializable {
     private String  bankName;
     private String  accountHolderName;
     private Double mandateAmount;
+
+    //New Fesd 14 2021
+    private Long debitStartDate;
+    private String urmn;
+    private String accountType;
+    private String cardNo;
+    private String cardNoMask;
+
+
 
 
 
@@ -83,5 +93,45 @@ public class CustomerAuthServiceVO extends BaseVO implements Serializable {
 
     public void setMandateAmount(Double mandateAmount) {
         this.mandateAmount = mandateAmount;
+    }
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+
+    public Long getDebitStartDate() {
+        return debitStartDate;
+    }
+
+    public void setDebitStartDate(Long debitStartDate) {
+        this.debitStartDate = debitStartDate;
+    }
+
+    public String getUrmn() {
+        return urmn;
+    }
+
+    public void setUrmn(String urmn) {
+        this.urmn = urmn;
+    }
+
+    public String getCardNo() {
+        return cardNo;
+    }
+
+    public void setCardNo(String cardNo) {
+        this.cardNo = cardNo;
+    }
+
+    public String getCardNoMask() {
+        return cardNoMask;
+    }
+
+    public void setCardNoMask(String cardNoMask) {
+        this.cardNoMask = cardNoMask;
     }
 }

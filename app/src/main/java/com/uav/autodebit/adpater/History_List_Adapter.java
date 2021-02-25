@@ -61,7 +61,7 @@ public class History_List_Adapter  extends RecyclerView.Adapter<History_List_Ada
             DataAdapterVO pro=historyList.get(position);
             holder.cardno.setText(pro.getNumber());
             holder.service_name.setText(pro.getServiceName());
-            holder.status.setText(pro.getStatus());
+            holder.status.setText(Utility.getHtmlToText(pro.getStatus()));
             holder.mainlayout.setTag(pro.getCustmerPassBookId());
             holder.bottom_left_status.setText(Utility.underlineTextViewtext(pro.getLink()));
 

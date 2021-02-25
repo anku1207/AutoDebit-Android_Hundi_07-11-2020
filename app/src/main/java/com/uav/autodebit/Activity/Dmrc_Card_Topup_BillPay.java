@@ -136,14 +136,24 @@ public class Dmrc_Card_Topup_BillPay extends AppCompatActivity implements View.O
             if(resultCode==RESULT_OK){
                if(requestCode== ApplicationConstant.REQ_DIRECT_PAYMENT_RESULT){
                     if(data !=null){
-                        JSONObject jsonDataObj = new JSONObject(data.getStringExtra("data"));
-                        BillPayRequest.autoPePGDirectPayment(jsonDataObj.getInt("txnId"),Dmrc_Card_Topup_BillPay.this,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
-                            BaseVO baseVO = (BaseVO) success;
-                            MyDialog.showSingleButtonBigContentDialog(Dmrc_Card_Topup_BillPay.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                                ok.dismiss();
-                                finish();
-                            }),baseVO.getDialogTitle(),baseVO.getDialogMessage());
-                        }));
+                        CustomerVO customerVO1 = new Gson().fromJson(data.getStringExtra("data"),CustomerVO.class);
+                        if(customerVO1.getStatusCode().equals("400")){
+                            ArrayList error = (ArrayList) customerVO1.getErrorMsgs();
+                            StringBuilder sb = new StringBuilder();
+                            for(int i=0; i<error.size(); i++){
+                                sb.append(error.get(i)).append("\n");
+                            }
+                            Utility.showSingleButtonDialog(Dmrc_Card_Topup_BillPay.this,customerVO1.getDialogTitle(),sb.toString(),false);
+                        }else {
+                            JSONObject jsonDataObj = new JSONObject(customerVO1.getAnonymousString());
+                            BillPayRequest.autoPePGDirectPayment(jsonDataObj.getInt("txnId"), Dmrc_Card_Topup_BillPay.this, new VolleyResponse((VolleyResponse.OnSuccess) (success) -> {
+                                BaseVO baseVO = (BaseVO) success;
+                                MyDialog.showSingleButtonBigContentDialog(Dmrc_Card_Topup_BillPay.this, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
+                                    ok.dismiss();
+                                    finish();
+                                }), baseVO.getDialogTitle(), baseVO.getDialogMessage());
+                            }));
+                        }
                     }else {
                         Utility.showSingleButtonDialog(this,"Error !","Something went wrong, Please try again!",false);
                     }
